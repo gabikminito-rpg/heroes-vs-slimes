@@ -14,7 +14,7 @@ canvas{display:block;background:#000}
 <div id="rot">Gira el teléfono en horizontal para jugar mejor</div>
 <script>
 const MAN={"sword": {"anchor": [323, 333], "walk": {"n": 30, "x": 250, "y": 20, "w": 226, "h": 317, "fps": 10, "cols": 30, "aw": 181, "ah": 254}, "idle": {"n": 18, "x": 252, "y": 21, "w": 230, "h": 317, "fps": 8, "cols": 18, "aw": 184, "ah": 254}, "attack": {"n": 17, "x": 70, "y": 22, "w": 495, "h": 316, "fps": 14, "cols": 16, "aw": 396, "ah": 253}, "ult": {"n": 20, "x": 37, "y": 26, "w": 574, "h": 312, "fps": 12, "cols": 14, "aw": 459, "ah": 250}, "scale": 0.5844155844155844, "tornado": {"n": 87, "x": 105, "y": 0, "w": 432, "h": 348, "fps": 15, "cols": 18}, "thumb": {"n": 1, "x": 252, "y": 21, "w": 230, "h": 317, "fps": 1, "cols": 1, "aw": 184, "ah": 254}}, "mage": {"anchor": [321, 339], "scale": 0.5863192182410424, "walk": {"n": 30, "x": 207, "y": 26, "w": 260, "h": 317, "fps": 10, "cols": 30, "aw": 208, "ah": 254}, "idle": {"n": 30, "x": 179, "y": 26, "w": 293, "h": 317, "fps": 10, "cols": 27, "aw": 234, "ah": 254}, "attack": {"n": 29, "x": 213, "y": 1, "w": 412, "h": 348, "fps": 15, "cols": 19, "aw": 330, "ah": 278}, "skill": {"n": 27, "x": 28, "y": 21, "w": 591, "h": 338, "fps": 12, "cols": 13, "aw": 473, "ah": 270}, "ult": {"n": 36, "x": 11, "y": 11, "w": 618, "h": 349, "fps": 12, "cols": 13, "aw": 494, "ah": 279}, "thumb": {"n": 1, "x": 179, "y": 26, "w": 293, "h": 317, "fps": 1, "cols": 1, "aw": 234, "ah": 254}}, "tank": {"anchor": [321, 339], "scale": 0.6060606060606061, "idle": {"n": 36, "x": 253, "y": 39, "w": 190, "h": 304, "fps": 12, "cols": 36, "aw": 152, "ah": 243}, "walk": {"n": 36, "x": 243, "y": 37, "w": 244, "h": 308, "fps": 12, "cols": 33, "aw": 195, "ah": 246}, "attack": {"n": 34, "x": 75, "y": 15, "w": 530, "h": 345, "fps": 20, "cols": 15, "aw": 424, "ah": 276}, "skill": {"n": 36, "x": 45, "y": 17, "w": 544, "h": 342, "fps": 12, "cols": 15, "aw": 435, "ah": 274}, "ult": {"n": 36, "x": 15, "y": 15, "w": 610, "h": 344, "fps": 12, "cols": 13, "aw": 488, "ah": 275}, "thumb": {"n": 1, "x": 253, "y": 39, "w": 190, "h": 304, "fps": 1, "cols": 1, "aw": 152, "ah": 243}}, "doc": {"anchor": [322, 345], "scale": 0.5787781350482315, "idle": {"n": 36, "x": 249, "y": 23, "w": 196, "h": 326, "fps": 12, "cols": 36, "aw": 157, "ah": 261}, "walk": {"n": 36, "x": 243, "y": 23, "w": 174, "h": 326, "fps": 12, "cols": 36, "aw": 139, "ah": 261}, "attack": {"n": 32, "x": 53, "y": 9, "w": 578, "h": 350, "fps": 22, "cols": 14, "aw": 462, "ah": 280}, "skill": {"n": 36, "x": 21, "y": 16, "w": 583, "h": 343, "fps": 12, "cols": 14, "aw": 466, "ah": 274}, "ult": {"n": 36, "x": 21, "y": 21, "w": 597, "h": 338, "fps": 12, "cols": 13, "aw": 478, "ah": 270}, "thumb": {"n": 1, "x": 249, "y": 23, "w": 196, "h": 326, "fps": 1, "cols": 1, "aw": 157, "ah": 261}}, "ase": {"anchor": [323, 345], "scale": 0.594059405940594, "idle": {"n": 36, "x": 197, "y": 37, "w": 260, "h": 312, "fps": 12, "cols": 31, "aw": 208, "ah": 250}, "walk": {"n": 36, "x": 207, "y": 37, "w": 254, "h": 314, "fps": 12, "cols": 32, "aw": 203, "ah": 251}, "attack": {"n": 26, "x": 51, "y": 9, "w": 580, "h": 340, "fps": 18, "cols": 14, "aw": 464, "ah": 272}, "skill": {"n": 36, "x": 17, "y": 17, "w": 606, "h": 342, "fps": 16, "cols": 13, "aw": 485, "ah": 274}, "ult": {"n": 36, "x": 108, "y": 15, "w": 517, "h": 344, "fps": 14, "cols": 15, "aw": 414, "ah": 275}, "thumb": {"n": 1, "x": 197, "y": 37, "w": 260, "h": 312, "fps": 1, "cols": 1, "aw": 208, "ah": 250}}, "ring": {"anchor": [326, 341], "scale": 0.6060606060606061, "idle": {"n": 36, "x": 191, "y": 39, "w": 334, "h": 306, "fps": 12, "cols": 24, "aw": 267, "ah": 245}, "walk": {"n": 36, "x": 203, "y": 37, "w": 282, "h": 310, "fps": 12, "cols": 29, "aw": 226, "ah": 248}, "attack": {"n": 33, "x": 57, "y": 13, "w": 570, "h": 346, "fps": 18, "cols": 14, "aw": 456, "ah": 277}, "skill": {"n": 36, "x": 17, "y": 17, "w": 606, "h": 342, "fps": 14, "cols": 13, "aw": 485, "ah": 274}, "ult": {"n": 36, "x": 15, "y": 15, "w": 610, "h": 344, "fps": 14, "cols": 13, "aw": 488, "ah": 275}, "thumb": {"n": 1, "x": 191, "y": 39, "w": 334, "h": 306, "fps": 1, "cols": 1, "aw": 267, "ah": 245}}, "chef": {"anchor": [323, 343], "scale": 0.6045, "idle": {"n": 27, "x": 181, "y": 27, "w": 378, "h": 320, "fps": 12, "cols": 21, "aw": 302, "ah": 256}, "walk": {"n": 30, "x": 224, "y": 21, "w": 246, "h": 328, "fps": 12, "cols": 30, "aw": 197, "ah": 262}, "attack": {"n": 49, "x": 81, "y": 3, "w": 546, "h": 356, "fps": 26, "cols": 15, "aw": 437, "ah": 285}, "skill": {"n": 36, "x": 95, "y": 15, "w": 456, "h": 344, "fps": 12, "cols": 17, "aw": 365, "ah": 275}, "ult": {"n": 36, "x": 56, "y": 3, "w": 567, "h": 356, "fps": 12, "cols": 14, "aw": 454, "ah": 285}, "thumb": {"n": 1, "x": 181, "y": 27, "w": 378, "h": 320, "fps": 1, "cols": 1, "aw": 302, "ah": 256}}, "pizza": {"anchor": [323, 343], "scale": 0.6124, "idle": {"n": 19, "x": 179, "y": 11, "w": 382, "h": 336, "fps": 12, "cols": 19, "aw": 306, "ah": 269}, "walk": {"n": 12, "x": 188, "y": 28, "w": 368, "h": 320, "fps": 12, "cols": 12, "aw": 294, "ah": 256}, "attack": {"n": 44, "x": 48, "y": 0, "w": 579, "h": 351, "fps": 26, "cols": 14, "aw": 463, "ah": 281}, "skill": {"n": 33, "x": 13, "y": 5, "w": 614, "h": 346, "fps": 14, "cols": 13, "aw": 491, "ah": 277}, "ult": {"n": 36, "x": 50, "y": 0, "w": 573, "h": 359, "fps": 12, "cols": 14, "aw": 458, "ah": 287}, "thumb": {"n": 1, "x": 179, "y": 11, "w": 382, "h": 336, "fps": 1, "cols": 1, "aw": 306, "ah": 269}}, "cuervo": {"anchor": [332, 339], "scale": 0.5893, "idle": {"n": 70, "x": 209, "y": 17, "w": 306, "h": 326, "fps": 12, "cols": 26, "aw": 245, "ah": 261}, "walk": {"n": 19, "x": 256, "y": 17, "w": 158, "h": 328, "fps": 12, "cols": 19, "aw": 126, "ah": 262}, "attack": {"n": 46, "x": 193, "y": 17, "w": 395, "h": 326, "fps": 26, "cols": 20, "aw": 316, "ah": 261}, "skill": {"n": 20, "w": 318, "h": 328, "fps": 12, "cols": 20, "x": 254, "y": 18, "aw": 254, "ah": 262}, "ult": {"n": 36, "x": 17, "y": 1, "w": 606, "h": 358, "fps": 12, "cols": 13, "aw": 485, "ah": 286}, "crows": {"n": 9, "w": 99, "h": 88, "fps": 12, "cols": 9, "ox": 49, "oy": 44}, "thumb": {"n": 1, "x": 209, "y": 17, "w": 306, "h": 326, "fps": 1, "cols": 1, "aw": 245, "ah": 261}}, "kira": {"anchor": [318, 333], "scale": 0.6763, "idle": {"n": 24, "x": 183, "y": 49, "w": 258, "h": 288, "fps": 12, "cols": 24, "aw": 206, "ah": 230}, "walk": {"n": 22, "x": 169, "y": 50, "w": 270, "h": 292, "fps": 12, "cols": 22, "aw": 216, "ah": 234}, "attack": {"n": 27, "w": 400, "h": 288, "fps": 24, "cols": 20, "x": 71, "y": 46, "aw": 320, "ah": 230}, "skill": {"n": 31, "x": 13, "y": 7, "w": 614, "h": 352, "fps": 12, "cols": 13, "aw": 491, "ah": 282}, "ult": {"n": 36, "x": 17, "y": 7, "w": 606, "h": 352, "fps": 12, "cols": 13, "aw": 485, "ah": 282}, "kunai": {"n": 2, "w": 113, "h": 37, "fps": 12, "cols": 2, "ox": 56, "oy": 18, "tip": 56}, "impact": {"n": 23, "w": 200, "h": 220, "fps": 30, "cols": 23, "ox": 100, "oy": 110}, "thumb": {"n": 1, "x": 183, "y": 49, "w": 258, "h": 288, "fps": 1, "cols": 1, "aw": 206, "ah": 230}}, "mimo": {"anchor": [308, 339], "scale": 0.6026, "idle": {"n": 70, "x": 209, "y": 19, "w": 250, "h": 324, "fps": 12, "cols": 32, "aw": 200, "ah": 259}, "walk": {"n": 24, "x": 230, "y": 36, "w": 196, "h": 308, "fps": 12, "cols": 24, "aw": 157, "ah": 246}, "attack": {"n": 36, "w": 318, "h": 313, "fps": 24, "cols": 25, "x": 196, "y": 21, "aw": 254, "ah": 250}, "skill": {"n": 30, "x": 216, "y": 1, "w": 407, "h": 347, "fps": 12, "cols": 20, "aw": 326, "ah": 278}, "ult": {"n": 27, "x": 39, "y": 4, "w": 562, "h": 355, "fps": 12, "cols": 14, "aw": 450, "ah": 284}, "wire": {"n": 1, "w": 36, "h": 18, "fps": 1, "cols": 1, "ox": 0, "oy": 9, "tipy": 9}, "impact": {"n": 8, "w": 220, "h": 220, "fps": 26, "cols": 8, "ox": 110, "oy": 110}, "thumb": {"n": 1, "x": 209, "y": 19, "w": 250, "h": 324, "fps": 1, "cols": 1, "aw": 200, "ah": 259}}, "roca": {"anchor": [320, 347], "scale": 0.582, "idle": {"n": 70, "x": 215, "y": 19, "w": 210, "h": 332, "fps": 12, "cols": 39, "aw": 168, "ah": 266}, "walk": {"n": 26, "x": 108, "y": 9, "w": 522, "h": 351, "fps": 12, "cols": 15, "aw": 418, "ah": 281}, "attack": {"n": 31, "x": 175, "y": 7, "w": 452, "h": 353, "fps": 24, "cols": 18, "aw": 362, "ah": 282}, "skill": {"n": 27, "x": 27, "y": 1, "w": 592, "h": 358, "fps": 10, "cols": 13, "aw": 474, "ah": 286}, "ult": {"n": 33, "x": 20, "y": 1, "w": 603, "h": 359, "fps": 12, "cols": 13, "aw": 482, "ah": 287}, "thumb": {"n": 1, "x": 215, "y": 19, "w": 210, "h": 332, "fps": 1, "cols": 1, "aw": 168, "ah": 266}}, "marea": {"anchor": [326, 343], "scale": 0.5893, "idle": {"n": 25, "x": 211, "y": 13, "w": 338, "h": 340, "fps": 12, "cols": 24, "aw": 270, "ah": 272}, "walk": {"n": 18, "x": 150, "y": 19, "w": 362, "h": 330, "fps": 12, "cols": 18, "aw": 290, "ah": 264}, "attack": {"n": 46, "x": 85, "y": 0, "w": 542, "h": 359, "fps": 24, "cols": 15, "aw": 434, "ah": 287}, "skill": {"n": 36, "x": 13, "y": 0, "w": 614, "h": 359, "fps": 12, "cols": 13, "aw": 491, "ah": 287}, "ult": {"n": 36, "x": 22, "y": 0, "w": 575, "h": 359, "fps": 12, "cols": 14, "aw": 460, "ah": 287}, "thumb": {"n": 1, "x": 211, "y": 13, "w": 338, "h": 340, "fps": 1, "cols": 1, "aw": 270, "ah": 272}}, "rey": {"anchor": [321, 351], "scale": 0.5857, "idle": {"n": 31, "x": 93, "y": 23, "w": 410, "h": 332, "fps": 12, "cols": 19, "aw": 328, "ah": 266}, "walk": {"n": 16, "x": 122, "y": 23, "w": 324, "h": 334, "fps": 12, "cols": 16, "aw": 259, "ah": 267}, "attack": {"n": 45, "x": 44, "y": 2, "w": 583, "h": 358, "fps": 24, "cols": 14, "aw": 466, "ah": 286}, "skill": {"n": 36, "x": 48, "y": 2, "w": 553, "h": 358, "fps": 12, "cols": 14, "aw": 442, "ah": 286}, "ult": {"n": 36, "x": 17, "y": 2, "w": 606, "h": 358, "fps": 12, "cols": 13, "aw": 485, "ah": 286}, "thumb": {"n": 1, "x": 93, "y": 23, "w": 410, "h": 332, "fps": 1, "cols": 1, "aw": 328, "ah": 266}}, "luna": {"anchor": [291, 355], "scale": 0.5418, "idle": {"n": 15, "x": 183, "y": 5, "w": 298, "h": 352, "fps": 12, "cols": 15, "aw": 238, "ah": 282}, "walk": {"n": 26, "x": 161, "y": 2, "w": 316, "h": 357, "fps": 12, "cols": 25, "aw": 253, "ah": 286}, "attack": {"n": 56, "x": 147, "y": 3, "w": 480, "h": 354, "fps": 24, "cols": 17, "aw": 384, "ah": 283}, "skill": {"n": 36, "x": 149, "y": 0, "w": 478, "h": 359, "fps": 12, "cols": 17, "aw": 382, "ah": 287}, "ult": {"n": 36, "x": 35, "y": 0, "w": 542, "h": 359, "fps": 12, "cols": 15, "aw": 434, "ah": 287}, "thumb": {"n": 1, "x": 183, "y": 5, "w": 298, "h": 352, "fps": 1, "cols": 1, "aw": 238, "ah": 282}}, "dj": {"anchor": [338, 353], "scale": 0.5646, "idle": {"n": 19, "x": 3, "y": 0, "w": 546, "h": 357, "fps": 12, "cols": 15, "aw": 437, "ah": 286}, "walk": {"n": 15, "x": 226, "y": 11, "w": 282, "h": 348, "fps": 12, "cols": 15, "aw": 226, "ah": 278}, "attack": {"n": 56, "x": 136, "y": 0, "w": 491, "h": 357, "fps": 24, "cols": 16, "aw": 393, "ah": 286}, "skill": {"n": 36, "x": 187, "y": 0, "w": 440, "h": 359, "fps": 12, "cols": 18, "aw": 352, "ah": 287}, "ult": {"n": 36, "x": 17, "y": 0, "w": 606, "h": 359, "fps": 12, "cols": 13, "aw": 485, "ah": 287}, "thumb": {"n": 1, "x": 3, "y": 0, "w": 546, "h": 357, "fps": 1, "cols": 1, "aw": 437, "ah": 286}}, "abeja": {"anchor": [342, 351], "scale": 0.582, "idle": {"n": 16, "x": 123, "y": 21, "w": 440, "h": 334, "fps": 12, "cols": 16, "aw": 352, "ah": 267}, "walk": {"n": 22, "x": 78, "y": 3, "w": 498, "h": 356, "fps": 12, "cols": 16, "aw": 398, "ah": 285}, "attack": {"n": 56, "x": 13, "y": 29, "w": 614, "h": 326, "fps": 24, "cols": 13, "aw": 491, "ah": 261}, "skill": {"n": 36, "x": 109, "y": 1, "w": 494, "h": 354, "fps": 12, "cols": 16, "aw": 395, "ah": 283}, "ult": {"n": 36, "x": 57, "y": 1, "w": 566, "h": 358, "fps": 12, "cols": 14, "aw": 453, "ah": 286}, "thumb": {"n": 1, "x": 123, "y": 21, "w": 440, "h": 334, "fps": 1, "cols": 1, "aw": 352, "ah": 267}}, "catrina": {"anchor": [330, 353], "scale": 0.5497, "idle": {"n": 15, "x": 29, "y": 0, "w": 608, "h": 357, "fps": 12, "cols": 13, "aw": 486, "ah": 286}, "walk": {"n": 29, "x": 27, "y": 6, "w": 476, "h": 353, "fps": 12, "cols": 17, "aw": 381, "ah": 282}, "attack": {"n": 56, "x": 130, "y": 0, "w": 497, "h": 357, "fps": 24, "cols": 16, "aw": 398, "ah": 286}, "skill": {"n": 36, "x": 68, "y": 0, "w": 510, "h": 359, "fps": 12, "cols": 16, "aw": 408, "ah": 287}, "ult": {"n": 30, "x": 17, "y": 0, "w": 620, "h": 359, "fps": 10, "cols": 13, "aw": 496, "ah": 287}, "thumb": {"n": 1, "x": 29, "y": 0, "w": 608, "h": 357, "fps": 1, "cols": 1, "aw": 486, "ah": 286}}, "esq": {"anchor": [318, 346], "scale": 0.5912, "idle": {"n": 58, "x": 222, "y": 20, "w": 240, "h": 330, "fps": 10, "cols": 34, "aw": 192, "ah": 264}, "walk": {"n": 14, "x": 212, "y": 13, "w": 252, "h": 338, "fps": 12, "cols": 14, "aw": 202, "ah": 270}, "attack": {"n": 48, "x": 113, "y": 2, "w": 514, "h": 348, "fps": 24, "cols": 15, "aw": 411, "ah": 278}, "skill": {"n": 36, "x": 203, "y": 16, "w": 424, "h": 340, "fps": 12, "cols": 19, "aw": 339, "ah": 272}, "ult": {"n": 36, "x": 17, "y": 1, "w": 606, "h": 357, "fps": 12, "cols": 13, "aw": 485, "ah": 286}, "thumb": {"n": 1, "x": 222, "y": 20, "w": 240, "h": 330, "fps": 1, "cols": 1, "aw": 192, "ah": 264}}, "barista": {"anchor": [318, 342], "scale": 0.5671, "idle": {"n": 34, "x": 218, "y": 0, "w": 281, "h": 347, "fps": 10, "cols": 29, "aw": 225, "ah": 278}, "walk": {"n": 16, "x": 229, "y": 12, "w": 230, "h": 344, "fps": 12, "cols": 16, "aw": 184, "ah": 275}, "attack": {"n": 30, "x": 121, "y": 0, "w": 506, "h": 356, "fps": 10, "cols": 16, "aw": 405, "ah": 285}, "skill": {"n": 30, "x": 84, "y": 0, "w": 493, "h": 359, "fps": 10, "cols": 16, "aw": 394, "ah": 287}, "ult": {"n": 30, "x": 77, "y": 0, "w": 501, "h": 352, "fps": 10, "cols": 16, "aw": 401, "ah": 282}, "thumb": {"n": 1, "x": 218, "y": 0, "w": 281, "h": 347, "fps": 1, "cols": 1, "aw": 225, "ah": 278}}, "reina": {"anchor": [339, 351], "scale": 0.5513, "idle": {"n": 25, "x": 3, "y": 0, "w": 550, "h": 358, "fps": 12, "cols": 14, "aw": 440, "ah": 286}, "walk": {"n": 21, "x": 3, "y": 6, "w": 556, "h": 353, "fps": 12, "cols": 14, "aw": 445, "ah": 282}, "attack": {"n": 56, "x": 13, "y": 9, "w": 614, "h": 346, "fps": 24, "cols": 13, "aw": 491, "ah": 277}, "skill": {"n": 36, "x": 13, "y": 0, "w": 614, "h": 359, "fps": 12, "cols": 13, "aw": 491, "ah": 287}, "ult": {"n": 36, "x": 17, "y": 0, "w": 606, "h": 359, "fps": 12, "cols": 13, "aw": 485, "ah": 287}, "thumb": {"n": 1, "x": 3, "y": 0, "w": 550, "h": 358, "fps": 1, "cols": 1, "aw": 440, "ah": 286}}};
-const VERSION=11;
+const VERSION=12;
 const W=960,H=540,HY=392,HX=230,SY=400,CX=610;
 const HEROES={sword:{name:'Espadachín',pre:'',moves:'Tajo · Tornado · Corte'},mage:{name:'Maga',pre:'m_',moves:'Rayo · Flash · Ultimate'},tank:{name:'Abuela',pre:'t_',moves:'Peluchazo · Abrazo · Oso'},doc:{name:'Doctor',pre:'d_',moves:'Látigo · Curar · Jeringa'},ase:{name:'Asesino',pre:'a_',moves:'Bate · Embiste · Jonrón'},ring:{name:'Hechicera',pre:'r_',moves:'Dardo · Runas · Anillo'},
 chef:{name:'Chef Olla',pre:'c_',moves:'Cucharón · Tapa · Olla',btn:[['CUCHARÓN',16],['TAPA',20],['OLLA',22]]},
@@ -106,10 +106,11 @@ function idleOK(){return mode==='battle'&&hero.anim==='idle'&&hero.hp>0;}
 function startCast(clip,hit,fn,invuln,seq,mv){hero.anim='cast';hero.t=0;hero.cast={clip,hit,fn,done:false,invuln:!!invuln,seq,mv};}
 
 /* ---------- acciones ---------- */
-const front=(d,kb,g,sh,rng)=>()=>{const f=alive()[0];if(f&&(!rng||f.x-hero.x<rng)){hurtSlime(f,d);if(kb){f.kb=kb;f.cd+=.8;}gain(g);shake=sh;}};
-const allD=(d,stun,sh)=>()=>{shake=sh;alive().forEach(s=>{hurtSlime(s,d,true);if(stun)s.stun=stun;});};
-const allS=(d,sh)=>()=>{shake=sh;alive().forEach(s=>hurtSlime(s,d));gain(10);};
-const healS=(n,g)=>()=>{const h=Math.min(n,hero.max-hero.hp);hero.hp+=h;gain(g);addFloat(hero.x,HY-200,'+'+h,'#7dff9a',30);};
+const TG=(f,i)=>(f.i=i,f);
+const front=(d,kb,g,sh,rng)=>TG(()=>{const f=alive()[0];if(f&&(!rng||f.x-hero.x<rng)){hurtSlime(f,d);if(kb){f.kb=kb;f.cd+=.8;}gain(g);shake=sh;}},{t:'one',d});
+const allD=(d,stun,sh)=>TG(()=>{shake=sh;alive().forEach(s=>{hurtSlime(s,d,true);if(stun)s.stun=stun;});},{t:'all',d,stun});
+const allS=(d,sh)=>TG(()=>{shake=sh;alive().forEach(s=>hurtSlime(s,d));gain(10);},{t:'all',d});
+const healS=(n,g)=>TG(()=>{const h=Math.min(n,hero.max-hero.hp);hero.hp+=h;gain(g);addFloat(hero.x,HY-200,'+'+h,'#7dff9a',30);},{t:'heal',n});
 function fireKunai(px,py,k){
   const e={t:0,x:px,y:py,tr:[],ang:0,u(dt){
     let s=alive()[0],tx=s?s.x:W+120,ty=s?s.y-40:this.y;
@@ -524,12 +525,100 @@ function drawSelect(){
     if(selOff<maxOff()-4)txt('▶',W-20,280,34,'#fff');
     ctx.globalAlpha=1;
   }
-  txt('Desliza para ver más héroes · toca uno para empezar',W/2,490,20,'#fff');
+  txt('Desliza para ver más héroes · toca uno para ver su ficha',W/2,490,20,'#fff');
+}
+
+/* ---------- ficha de héroe ---------- */
+let dsel=null,dprev=null;
+function openDetail(id){
+  if(dprev&&dprev!==id&&!READY[dprev]&&CS[dprev]&&CS[dprev].idle){const im=CS[dprev].idle;im.onload=im.onerror=null;im.src='';delete CS[dprev].idle;}
+  dsel=dprev=id;use(id);mode='detail';
+  if(!CS[id].idle&&MAN[id].idle&&MAN[id].idle.n)loadClip(id,'idle');
+}
+function rrect(x,y,w,h,r,fill,stroke,lw){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.lineWidth=lw||5;ctx.strokeStyle=stroke;ctx.stroke();}}
+function bar(x,y,w,label,val,max,col,shown){
+  txt(label,x,y,18,'#fff','left');
+  rrect(x+110,y-10,w-110-62,20,10,'#2a2f3a','#14161a',4);
+  rrect(x+110,y-10,Math.max(14,(w-110-62)*clamp(val/max,0,1)),20,10,col);
+  txt(shown==null?String(val):shown,x+w,y,20,'#ffd35c','right');
+}
+
+const INFO={
+sword:{a:[20,'Daño 20 · 1 enemigo'],s:'Tornado: 5 golpes de 5 · todos',cd:8,u:[60,'Daño 60 · todos']},
+mage:{a:[22,'Daño 22 · 2 enemigos'],s:'Daño 15 · todos · aturde 2.5s',cd:5,u:[60,'Daño 60 · todos']},
+tank:{a:[18,'Daño 18 · 1 enemigo · empuja'],s:'Cura 15 de vida',cd:7,u:[35,'Daño 35 · todos · aturde 3.5s']},
+doc:{a:[16,'Daño 16 y 10 · 2 enemigos'],s:'Cura 25 de vida',cd:6,u:[30,'Cura 40 · daño 30 · aturde 2.5s']},
+ase:{a:[24,'Daño 24 · 1 enemigo · empuja'],s:'Daño 22 · todos',cd:6,u:[60,'Daño 60 · todos']},
+ring:{a:[20,'Daño 20, 16 y 12 · 3 enemigos'],s:'Daño 18 · todos · aturde 2.5s',cd:6,u:[60,'Daño 60 · todos']},
+pizza:{a:[22,'Daño 22 · 1 enemigo'],s:'Embestida: 8 y 7 · todos',cd:6,u:[60,'Daño 60 · todos']},
+cuervo:{a:[24,'Daño 24 · 1 enemigo'],s:'Bandada: daño 15 · todos',cd:5,u:[60,'Daño 60 · todos']},
+kira:{a:[22,'2 kunais · 11 c/u'],s:null,cd:6,u:[60,'Clones: daño 60 · todos']},
+mimo:{a:[22,'Daño 22 · 1 enemigo'],s:'Daño 8 · 2 enemigos · aturde 3s',cd:6,u:[60,'Daño 60 · todos']}
+};
+function infoFor(id){
+  const x=X[id]||{},o=INFO[id]||{};
+  const d=i=>!i?null:i.t==='heal'?'Cura '+i.n+' de vida':i.t==='one'?'Daño '+i.d+' · 1 enemigo':'Daño '+i.d+' · todos'+(i.stun?' · aturde '+i.stun+'s':'');
+  const ai=x.atk&&x.atk[1]&&x.atk[1].i,si=x.sk&&x.sk.fn&&x.sk.fn.i,ui=x.ult&&x.ult.fn&&x.ult.fn.i;
+  const r={};
+  r.a=ai?(ai.d||0):(o.a?o.a[0]:0);r.at=ai?d(ai):(o.a?o.a[1]:'Ataque básico');
+  r.st=si?d(si):(o.s||'Habilidad especial');
+  r.cd=x.sk&&x.sk.cd?x.sk.cd:(o.cd||6);
+  r.u=ui?(ui.d||0):(o.u?o.u[0]:0);r.ut=ui?d(ui):(o.u?o.u[1]:'Ultimate');
+  return r;
+}
+function moveInfo(id,k){const r=infoFor(id);return [r.at,r.st,r.ut][k];}
+const DBTN={back:{x:468,y:462,w:150,h:50},go:{x:636,y:456,w:290,h:62},prev:{x:14,y:260,w:46,h:80},next:{x:900,y:20,w:0,h:0}};
+function drawDetail(){
+  bg();const id=dsel,H0=HEROES[id];
+  ctx.fillStyle='rgba(8,12,24,.45)';ctx.fillRect(0,0,W,H);
+  txt('Cambio '+VERSION,W-18,22,20,'#fff','right');
+  // marco izquierdo con la pose idle
+  rrect(66,40,350,440,26,'rgba(20,22,26,.85)','#ffd35c',6);
+  const g=ctx.createLinearGradient(0,60,0,420);g.addColorStop(0,'#cfeaff');g.addColorStop(1,'#8fd0a0');
+  rrect(86,100,310,300,18,g,'#14161a',5);
+  ctx.save();ctx.beginPath();ctx.roundRect(86,100,310,300,18);ctx.clip();
+  use(id);const c=M.idle;
+  if(c&&c.n&&CS[id].idle&&CS[id].idle.complete){const fr=Math.floor(time*c.fps)%c.n;ctx.fillStyle='rgba(20,60,30,.25)';ctx.beginPath();ctx.ellipse(241,372,70,12,0,0,7);ctx.fill();drawClip('idle',fr,241,372);}
+  else txt('…',241,250,40,'#fff');
+  ctx.restore();
+  rrect(106,52,270,40,20,'#ff9a3c','#14161a',5);txt(H0.name,241,73,24,'#fff');
+  txt(H0.moves,241,436,16,'#ffd35c');
+  txt((PANELS.findIndex(p=>p.id===id)+1)+' / '+PANELS.length,241,462,15,'#cfd6e4');
+  // panel derecho
+  rrect(440,40,480,400,26,'rgba(20,22,26,.85)','#ffd35c',6);
+  txt('ESTADÍSTICAS',680,72,24,'#ffd35c');
+  bar(470,112,420,'VIDA',TANKS.includes(id)?140:100,140,'#5fdc7d');
+  const nf=infoFor(id);
+  bar(470,148,420,'ATAQUE',nf.a,40,'#ff6b6b',nf.a?String(nf.a):'—');
+  bar(470,184,420,'ULTIMATE',nf.u,60,'#b27dff',nf.u?String(nf.u):'—');
+  bar(470,220,420,'ESPERA',nf.cd,10,'#4fc3ff',nf.cd+'s');
+  const cols=['#ffd35c','#ff9a3c','#b27dff'],nm=['ATAQUE','HABILIDAD','ULTIMATE'];
+  for(let k=0;k<3;k++){
+    const y=250+k*62;
+    rrect(466,y,428,54,14,'rgba(255,255,255,.08)',cols[k],4);
+    ctx.fillStyle=cols[k];ctx.beginPath();ctx.arc(496,y+27,17,0,7);ctx.fill();ctx.lineWidth=4;ctx.strokeStyle='#14161a';ctx.stroke();
+    txt(String(k+1),496,y+28,20,'#14161a');
+    txt(H0.btn?H0.btn[k][0]:(H0.moves.split(' · ')[k]||nm[k]).toUpperCase(),522,y+17,20,'#fff','left');
+    txt(moveInfo(id,k),522,y+40,15,'#cfd6e4','left');
+  }
+  const b=DBTN.back,o=DBTN.go;
+  rrect(b.x,b.y,b.w,b.h,22,'#e0607e','#14161a',5);txt('← VOLVER',b.x+b.w/2,b.y+b.h/2,22,'#fff');
+  rrect(o.x,o.y,o.w,o.h,26,'#3bbf6b','#14161a',6);txt('ELEGIR HÉROE ▶',o.x+o.w/2,o.y+o.h/2,28,'#fff');
+  txt('◀',30,270,40,'#fff');txt('▶',W-30,270,40,'#fff');
+}
+function detailStep(d){const i=PANELS.findIndex(p=>p.id===dsel);openDetail(PANELS[(i+d+PANELS.length)%PANELS.length].id);}
+function detailPress(x,y){
+  const hit=r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h;
+  if(hit(DBTN.go)){startGame(dsel);return;}
+  if(hit(DBTN.back)){mode='select';return;}
+  if(x<62&&y>200&&y<340){detailStep(-1);return;}
+  if(x>W-62&&y>200&&y<340){detailStep(1);return;}
 }
 function draw(){
   ctx.setTransform(K,0,0,K,0,0);
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   if(mode==='select'){drawSelect();return;}
+  if(mode==='detail'){drawDetail();return;}
   if(mode==='loading'){bg();txt('Cargando '+HEROES[sel].name+'…',W/2,H/2,38,'#fff');return;}
   ctx.save();
   if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
@@ -568,9 +657,10 @@ function unloadOthers(id){for(const h in CS){if(h===id)continue;for(const n in C
 function startGame(id){use(id);unloadOthers(id);if(READY[id]){reset();return;}mode='loading';need(id).then(()=>{READY[id]=true;if(mode==='loading'&&sel===id)reset();});}
 function press(x,y){
   if(mode==='select'){
-    for(const p of PANELS)if(x>=p.x&&x<=p.x+p.w&&y>=p.y&&y<=p.y+p.h){startGame(p.id);return;}
+    for(const p of PANELS)if(x>=p.x&&x<=p.x+p.w&&y>=p.y&&y<=p.y+p.h){openDetail(p.id);return;}
     return;
   }
+  if(mode==='detail'){detailPress(x,y);return;}
   if(mode==='loading')return;
   if(false){
   }
@@ -601,7 +691,8 @@ cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',end
 cv.addEventListener('wheel',e=>{if(mode==='select'){e.preventDefault();selOff=clamp(selOff+(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY),0,maxOff());}},{passive:false});
 addEventListener('keydown',e=>{
   if(e.repeat)return;
-  if(mode==='select'){const m=/^Digit([1-9])$/.exec(e.code);if(m&&PANELS[+m[1]-1])startGame(PANELS[+m[1]-1].id);if(e.code==='ArrowRight')selOff=clamp(selOff+164,0,maxOff());if(e.code==='ArrowLeft')selOff=clamp(selOff-164,0,maxOff());return;}
+  if(mode==='detail'){if(e.code==='Enter'||e.code==='Space'){e.preventDefault();startGame(dsel);}if(e.code==='Escape')mode='select';if(e.code==='ArrowRight')detailStep(1);if(e.code==='ArrowLeft')detailStep(-1);return;}
+  if(mode==='select'){const m=/^Digit([1-9])$/.exec(e.code);if(m&&PANELS[+m[1]-1])openDetail(PANELS[+m[1]-1].id);if(e.code==='ArrowRight')selOff=clamp(selOff+164,0,maxOff());if(e.code==='ArrowLeft')selOff=clamp(selOff-164,0,maxOff());return;}
   if(e.code==='Space'||e.code==='KeyJ'){e.preventDefault();if(mode==='win'||mode==='lose'){if(endT>.5)mode='select';}else actAttack();}
   if(e.code==='KeyL')actSkill();
   if(e.code==='KeyK'||e.code==='KeyU')actUlt();

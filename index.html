@@ -24,7 +24,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v35';
+const VER='iso-prueba v36';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -96,9 +96,9 @@ function drawHero(){
   else if(hero.atkT>0){key='atk'+(hero.combo?'2':'')+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
   else if(hero.hurtT>0){key='hurt'+B;fi=Math.min(29,Math.floor((1-hero.hurtT/.5)*30));}
   else if(hero.longT>0&&!hero.moving){key='long'+B;fi=Math.min(95,Math.floor((1-hero.longT/8)*96));}
-  else if(hero.moving&&hero.run){key='run'+B;const n=B?19:18;fi=Math.floor(performance.now()/33.3)%n;}
+  else if(hero.moving&&hero.run){key='run'+B;const n=B==='B'?19:18;fi=Math.floor(performance.now()/33.3)%n;}
   else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
-  else{key='idle'+B;{const n=B?15:16,P=2*n-2,k=Math.floor(performance.now()/(B?130:83))%P;fi=k<n?k:P-k;}}
+  else{key='idle'+B;{const n=B==='B'?15:16,P=2*n-2,k=Math.floor(performance.now()/(B==='B'?130:83))%P;fi=k<n?k:P-k;}}
   ctx.save(); ctx.translate(sx,sy); if(hero.face!==nat)ctx.scale(-1,1);
   if(hero.hp>0&&hero.ult<=0&&hero.dash<=0&&hero.hurtT<=0&&hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
   const D_={ultF:[75,72,32,63],ultB:[98,78,41,66],dashF:[100,42,38,41],dashB:[98,50,39,46],hurtF:[64,46,21,42],hurtB:[72,49,32,46],deadF:[79,49,47,43],deadB:[82,54,20,46],skillB:[85,49,25,48],skillF:[95,53,58,43],longB:[48,47,15,44],longF:[47,42,19,42],idleF:[47,42,19,42],runF:[55,44,23,42],runB:[51,43,15,41]}[key]||[92,57,40,48];

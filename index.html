@@ -69,16 +69,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v57';
+const VER='iso-prueba v58';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB','enemies/bossAt2F','enemies/bossAt2B','water','swwater','swgnd','bankA','bankB','mushG','swtree','stairs','reeds','flowers','rock','log','wil','oakB','oakT'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB','enemies/bossAt2F','enemies/bossAt2B','water','swwater','swgnd','bankA','bankB','mushG','swtree','stairs','reeds','flowers','rock','log','wil','oakB','oakT','waterA','bird','bfly'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();bakeMap();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=26';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=27';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -87,6 +87,7 @@ const terrace=()=>false;
 const blocks=[[4,9],[5,9],[4,10]];
 const blockSet=new Set(blocks.map(b=>b.join(',')));
 const STUMP=[7.5,5.5], START=[6.5,7.8];
+const ANIM={"waterA":{"fw":110,"fh":57,"n":27},"bird":{"fw":33,"fh":30,"n":28},"bfly":{"fw":29,"fh":22,"n":13}};
 const MAPM={"mushG":{"w":58,"h":53,"ax":27,"ay":53},"swtree":{"w":74,"h":87,"ax":26,"ay":87},"stairs":{"w":86,"h":97,"ax":25,"ay":97},"wil":{"w":95,"h":72,"ax":48,"ay":72},"oakB":{"w":100,"h":64,"ax":49,"ay":64},"oakT":{"w":71,"h":77,"ax":39,"ay":77},"rock":{"w":32,"h":27,"ax":15,"ay":27},"log":{"w":36,"h":27,"ax":8,"ay":27},"flowers":{"w":35,"h":20,"ax":18,"ay":20},"reeds":{"w":24,"h":32,"ax":11,"ay":32},"water":{"w":110,"h":57},"swwater":{"w":110,"h":57},"swgnd":{"w":110,"h":57},"bankA":{"w":110,"h":57},"bankB":{"w":110,"h":57}};
 /* tipos de suelo GT: 0 pasto,1 camino,2 agua río,3/4 orilla clara (agua a +i / -i),5/6 orilla oscura,7 tierra de pantano,8 agua de pantano */
 const RIV=[[10,11],[20,21]];
@@ -242,13 +243,14 @@ function drawHero(){
 }
 const WH={};
 function whiteOf(img){const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const x=c.getContext('2d');x.drawImage(img,0,0);x.globalCompositeOperation='source-in';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);return c;}
-const ROT={};
+let WFI=0;const ROT={};
 function rot(n){if(!ROT[n]){const im=IMG[n],c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.translate(c.width,c.height);x.scale(-1,-1);x.drawImage(im,0,0);ROT[n]=c;}return ROT[n];}
 function groundTile(i,j,cx,cy){
   const g=GT[j*MW+i],alt=((i+j)&1)===1;
   if(g===1){ctx.drawImage(IMG.path_a,cx-58,cy-HH);return;}
   let im;
-  if(g===2)im=alt?rot('water'):IMG.water;else if(g===3)im=IMG.bankA;else if(g===4)im=rot('bankA');else if(g===5)im=IMG.bankB;else if(g===6)im=rot('bankB');
+  if(g===2){const A=ANIM.waterA;ctx.drawImage(alt?rot('waterA'):IMG.waterA,(alt?A.n-1-WFI:WFI)*A.fw,0,A.fw,A.fh,cx-HW,cy-HH,A.fw,A.fh);return;}
+  if(0)im=null;else if(g===3)im=IMG.bankA;else if(g===4)im=rot('bankA');else if(g===5)im=IMG.bankB;else if(g===6)im=rot('bankB');
   else if(g===7)im=alt?rot('swgnd'):IMG.swgnd;else if(g===8)im=alt?rot('swwater'):IMG.swwater;
   else im=IMG['grass_'+'abcd'[(i*7+j*13+((i*j)%5))%4]];
   ctx.drawImage(im,cx-HW,cy-HH);}
@@ -576,11 +578,23 @@ function combat(dt){
 for(let k=0;k<26;k++)flies.push({x:Math.random()*MW,y:Math.random()*MH,ph:Math.random()*6.28,sp:.15+Math.random()*.25,a:Math.random()*6.28});
 let emberT=0;
 
+const birds=[],bflies=[];
+(function(){for(let k=0;k<5;k++){const a=rnd()*6.283,sp=1.5+rnd()*.8;birds.push({x:rnd()*MW,y:rnd()*MH,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,ph:rnd()*6.28,z:62+rnd()*26});}
+  const fl=props.filter(q=>q.n==='flowers');
+  for(let k=0;k<10;k++){const q=fl[k%fl.length];if(!q)break;bflies.push({cx:q.x,cy:q.y,ph:rnd()*6.28,a:.5+rnd()*.5,b:.7+rnd()*.5,r:.8+rnd()*.9});}})();
+function faunaTick(dt,t){
+  for(const b of birds){b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.x<-4)b.x=MW+4;else if(b.x>MW+4)b.x=-4;if(b.y<-4)b.y=MH+4;else if(b.y>MH+4)b.y=-4;}
+}
+function drawBird(b){const A=ANIM.bird,[sx,sy]=S2(b.x,b.y),fi=Math.floor(performance.now()/83+b.ph*4)%A.n,z=b.z+Math.sin(performance.now()/400+b.ph)*3;
+  pixShadow(sx,sy,6,2,.16);ctx.save();ctx.translate(sx,sy-z);ctx.scale((b.vx-b.vy)>0?-1:1,1);ctx.drawImage(IMG.bird,fi*A.fw,0,A.fw,A.fh,-(A.fw>>1),-(A.fh>>1),A.fw,A.fh);ctx.restore();}
+function bflyPos(f,t){return [f.cx+Math.cos(t*f.a+f.ph)*f.r,f.cy+Math.sin(t*f.b+f.ph*1.3)*f.r];}
+function drawBfly(f,t){const A=ANIM.bfly,[x,y]=bflyPos(f,t),[sx,sy]=S2(x,y),fi=Math.floor(t*11+f.ph*3)%A.n,z=16+Math.sin(t*2.4+f.ph)*5;
+  pixShadow(sx,sy,4,1,.12);ctx.drawImage(IMG.bfly,fi*A.fw,0,A.fw,A.fh,sx-(A.fw>>1),sy-z-(A.fh>>1),A.fw,A.fh);}
 let znT=0,znStT=0;
 function znShow(txt){const e=document.getElementById('zn');e.textContent=txt;e.classList.add('on');clearTimeout(znT);znT=setTimeout(()=>e.classList.remove('on'),3200);}
 function zoneTick(){const z=zoneOf(hero.x);if(z!==hero.zn){hero.zn=z;znShow(ZNAME[z]);}
   if(Math.hypot(hero.x-STAIRS[0],hero.y-STAIRS[1])<2.7&&performance.now()>znStT){znStT=performance.now()+6000;znShow('Escalera al piso 2 · próximamente');}}
-function update(dt,t){zoneTick();
+function update(dt,t){zoneTick();faunaTick(dt,t);
   const [ux0,uy0]=inputVec();
   if(hero.em){const e=hero.em;if(hero.hp<=0)hero.em=null;else{e.t+=dt;if(e.ph===0&&e.t>=EM_IN){e.ph=1;e.t=0;}if((ux0||uy0)&&e.ph<2)emOut();if(e.ph===2&&e.t>=e.dur)hero.em=null;}}
   const dead=hero.hp<=0||hero.ult>0||hero.dash>0||hero.skill>0||!!hero.em, ux=dead?0:ux0, uy=dead?0:uy0;
@@ -806,6 +820,7 @@ function frame(now){
   ctx.imageSmoothingEnabled=false;
   ctx.setTransform(S,0,0,S,ox*S,oy*S);
   // suelo
+  WFI=Math.floor(performance.now()/90)%ANIM.waterA.n;
   for(let s=0;s<MW+MH;s++)for(let i=0;i<MW;i++){const j=s-i;if(j<0||j>=MH)continue;
     const [cx,cy]=S2(i+.5,j+.5);if(Math.abs(cx-cam.x)>vw/2+HW+4||Math.abs(cy-cam.y)>vh/2+HH+66)continue;
     groundTile(i,j,cx,cy);}
@@ -816,6 +831,8 @@ function frame(now){
   const list=stat.slice();
   for(const t of tufts){if(Math.abs(t.sx-cam.x)<vw/2+8&&Math.abs(t.sy-cam.y)<vh/2+8)list.push(t.o);}
   list.push({k:hero.x+hero.y,f:drawHero});
+  {const tt=performance.now()/1000;for(const f of bflies){const [x,y]=bflyPos(f,tt);list.push({k:x+y+3,f:()=>drawBfly(f,tt)});}}
+  for(const b of birds)if(b.x>-3&&b.x<MW+3)list.push({k:1e4,f:()=>drawBird(b)});
   for(const w of waves)list.push({k:w.x+w.y,f:()=>drawWave(w)});for(const w of swords)list.push({k:w.x+w.y+.2,f:()=>drawSword(w)});for(const c of slashes)list.push({k:c.x+c.y+.6,f:()=>drawSlash(c)});
   for(const m of mushes)if(m.alive)list.push({k:m.x+m.y,f:()=>drawMush(m)});
   for(const d of drops)list.push({k:d.x+d.y,f:()=>drawDrop(d)});

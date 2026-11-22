@@ -29,8 +29,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .slot.eq{opacity:.75;border-style:dashed}
 #invc,#pjc{position:relative;inset:auto;width:150px;height:132px;flex:none;image-rendering:pixelated;background:#16244a;border:2px solid #2d4678;border-radius:8px}
 #invr{background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:8px;display:grid;grid-template-columns:repeat(6,38px);grid-auto-rows:38px;gap:4px;align-content:start}
-#invg{display:flex;flex-direction:column;gap:6px}
-#invd{background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:5px 8px;font:600 12px/1.3 system-ui;min-height:44px;color:#b8cdf5}
+#invg{display:flex;flex-direction:column;gap:6px;width:268px;flex:none}
+#invd{background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:5px 8px;font:600 12px/1.3 system-ui;height:66px;box-sizing:border-box;overflow:hidden;flex:none;color:#b8cdf5}
 #invd b{color:#fff;font-weight:800}
 #pjb{display:flex;gap:8px;align-items:stretch}
 #pjl{background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:5px;font:700 12px system-ui;text-align:center}
@@ -45,7 +45,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .pr button canvas{width:16px;height:16px}
 .pr button:disabled{opacity:.35}
 #inv.pj #invp{display:none}#inv:not(.pj) #pjp{display:none}
-@media (max-height:420px){#pjc{width:112px;height:108px}.xpb{width:112px}#pjr{width:270px;gap:3px}.pr{padding:3px 6px}.slot{width:32px;height:32px}.slot canvas{width:22px;height:22px}#invr{grid-template-columns:repeat(6,32px);grid-auto-rows:32px}#invc{width:112px;height:108px}}
+@media (max-height:420px){#pjc{width:112px;height:108px}.xpb{width:112px}#pjr{width:270px;gap:3px}.pr{padding:3px 6px}.slot{width:32px;height:32px}.slot canvas{width:22px;height:22px}#invr{grid-template-columns:repeat(6,32px);grid-auto-rows:32px}#invg{width:232px}#invc{width:112px;height:108px}}
 #msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#cfe8d0;font:600 16px system-ui,sans-serif;text-align:center;padding:20px}
 </style></head><body>
 <canvas id="c"></canvas>
@@ -57,7 +57,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v47';
+const VER='iso-prueba v48';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');

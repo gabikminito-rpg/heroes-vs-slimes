@@ -29,6 +29,10 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .slot.eq{opacity:.75;border-style:dashed}
 #invc,#pjc{position:relative;inset:auto;width:150px;height:132px;flex:none;image-rendering:pixelated;background:#16244a;border:2px solid #2d4678;border-radius:8px}
 #invr{background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:8px;display:grid;grid-template-columns:repeat(6,38px);grid-auto-rows:38px;gap:4px;align-content:start}
+#lvup{position:fixed;left:50%;bottom:14px;transform:translateX(-50%) translateY(20px);background:#0d1730ee;border:2px solid #e0b84a;border-radius:10px;padding:7px 14px;color:#cfe0ff;font:600 12px/1.4 system-ui;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:20}
+#lvup.on{opacity:1;transform:translateX(-50%)}
+#lvup b{display:block;color:#ffe27a;font:800 14px system-ui}
+#lvup span{display:block}
 #invg{display:flex;flex-direction:column;gap:6px;width:268px;flex:none}
 #invd{background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:5px 8px;font:600 12px/1.3 system-ui;height:66px;box-sizing:border-box;overflow:hidden;flex:none;color:#b8cdf5}
 #invd b{color:#fff;font-weight:800}
@@ -52,12 +56,13 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <div id="hud"></div>
 <button id="ab">ATK</button><button id="db">DASH</button><button id="sb">ONDA</button><button id="ub">ULT</button>
 <div id="zoom"><button id="bp" title="Inventario"></button><button id="hb" title="Personaje"></button><button id="zm">&minus;</button><button id="zp">+</button></div>
+<div id="lvup"></div>
 <div id="inv"><div id="invp"><div id="invh"><span>INVENTARIO</span><button id="invx">&times;</button></div><div id="invb"><div id="invl"><div class="eqc"><div class="slot eq"></div><div class="slot eq"></div></div><canvas id="invc" width="150" height="132"></canvas><div class="eqc"><div class="slot eq"></div><div class="slot eq"></div></div></div><div id="invg"><div id="invr"></div><div id="invd">Pasa el dedo sobre un objeto para ver qué hace.</div></div></div></div><div id="pjp"><div id="pjh"><span>PERSONAJE</span><button id="pjx">&times;</button></div><div id="pjb"><div id="pjl"><canvas id="pjc" width="150" height="132"></canvas><div id="pjn"></div></div><div id="pjr"></div></div></div></div>
 <div id="msg">Cargando…</div>
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v49';
+const VER='iso-prueba v51';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -66,7 +71,7 @@ const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=21';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=22';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -81,9 +86,9 @@ const trees=[[1.5,1.5],[3.5,0.8],[0.8,4.5],[2.6,12.5],[5.4,13.5],[8.5,14.2],[12.
 trees.push([2.5,9.0],[4.2,2.2],[12.3,8.1],[14.2,11.6],[10.2,12.8],[2.2,3.2],[6.0,12.0],[11.6,9.9],[7.4,12.8]);
 trees.forEach(t=>{t.hp=4;t.sh=0;t.fall=-1;t.gone=false;t.dir=1;t.terr=(t[0]>=10&&t[0]<16&&t[1]>=2&&t[1]<7);});
 const STUMP=[7.5,5.5];
-const ENM={"champWalkF":{"fw":29,"fh":33,"n":17,"ax":14,"ay":32},"champWalkB":{"fw":30,"fh":33,"n":28,"ax":15,"ay":32},"champAtkF":{"fw":62,"fh":33,"n":18,"ax":41,"ay":32,"hit":12},"champAtkB":{"fw":51,"fh":32,"n":20,"ax":21,"ay":32,"hit":12},"puffWalkF":{"fw":32,"fh":45,"n":33,"ax":16,"ay":44},"puffWalkB":{"fw":33,"fh":45,"n":33,"ax":16,"ay":45},"puffAtkF":{"fw":106,"fh":69,"n":28,"ax":88,"ay":40,"hit":12},"puffAtkB":{"fw":103,"fh":65,"n":26,"ax":21,"ay":65,"hit":10},"bossWalkF":{"fw":68,"fh":81,"n":44,"ax":34,"ay":80},"bossWalkB":{"fw":63,"fh":81,"n":40,"ax":31,"ay":80},"bossAtkF":{"fw":116,"fh":85,"n":35,"ax":79,"ay":79,"hit":11},"bossAtkB":{"fw":120,"fh":87,"n":41,"ax":40,"ay":81,"hit":18}};
+const ENM={"champWalkF":{"fw":29,"fh":33,"n":17,"ax":14,"ay":32},"champWalkB":{"fw":30,"fh":33,"n":28,"ax":15,"ay":32},"champAtkF":{"fw":62,"fh":33,"n":18,"ax":41,"ay":32,"hit":12},"champAtkB":{"fw":51,"fh":32,"n":20,"ax":21,"ay":32,"hit":12},"puffWalkF":{"fw":32,"fh":45,"n":33,"ax":16,"ay":45},"puffWalkB":{"fw":33,"fh":45,"n":33,"ax":16,"ay":45},"puffAtkF":{"fw":106,"fh":68,"n":28,"ax":88,"ay":40,"hit":12},"puffAtkB":{"fw":103,"fh":65,"n":26,"ax":21,"ay":65,"hit":10},"bossWalkF":{"fw":68,"fh":81,"n":44,"ax":34,"ay":80},"bossWalkB":{"fw":63,"fh":81,"n":40,"ax":31,"ay":80},"bossAtkF":{"fw":116,"fh":85,"n":35,"ax":79,"ay":79,"hit":11},"bossAtkB":{"fw":120,"fh":87,"n":41,"ax":40,"ay":81,"hit":18}};
 const ET={champ:{hp:20,sp:.55,ch:.95,rng:.8,cd:1.1,xp:10,resp:8,adur:1.0,sh:[9,3],kbr:1,rr:0},
- puff:{hp:26,sp:.5,ch:.8,rng:2.7,cd:2.6,xp:15,resp:10,adur:1.6,sh:[8,3],kbr:1,rr:0},
+ puff:{hp:26,sp:.5,ch:.8,rng:1.3,cd:2.6,xp:15,resp:10,adur:1.6,sh:[8,3],kbr:1,rr:0},
  boss:{hp:260,sp:.45,ch:.6,rng:2.0,cd:3.0,xp:150,resp:90,adur:2.0,sh:[26,7],kbr:.2,rr:.6}};
 const BOSSHOME=[15,13.5];
 function mkE(t,x,y,k){const T=ET[t];return{type:t,x,y,hx:x,hy:y,tx:x,ty:y,wait:Math.random()*2,face:-1,back:false,ph:k*1.7,hp:T.hp,mhp:T.hp,rr:T.rr,cd:0,flash:0,kx:0,ky:0,alive:true,resp:0,at:0,atHit:true,hitF:.5,mv:false};}
@@ -93,10 +98,15 @@ const hero={chopT:0,chopHit:true,chopTree:null,run:false,runT:0,gap:0,rs:0,x:6.5
 const bag={esp:0,somb:0,mad:0};
 const LV={lvl:1,xp:0,sk:{atk:1,onda:1,ult:1}},LVMAX=60,SKMAX=10;
 const xpNeed=l=>50+50*l;
+let lvTimer=0;
+function lvToast(l0){const e=document.getElementById('lvup'),n=LV.lvl-l0;
+  e.innerHTML='<b>¡Subiste a nivel '+LV.lvl+'!</b><span>Vida máx '+(100+2*(l0-1))+' → '+hero.mhp+' (+'+(2*n)+')</span><span>Daño +'+(3*(LV.lvl-1))+'% en total (+'+(3*n)+'%)</span>';
+  e.classList.add('on');clearTimeout(lvTimer);lvTimer=setTimeout(()=>e.classList.remove('on'),3500);}
 function dm(k,b){return Math.max(1,Math.round(b*(1+.12*(LV.sk[k]-1))*(1+.03*(LV.lvl-1))));}
-function addXp(n){if(LV.lvl>=LVMAX)return;LV.xp+=n;
+function addXp(n){if(LV.lvl>=LVMAX)return;LV.xp+=n;const l0=LV.lvl;
   while(LV.lvl<LVMAX&&LV.xp>=xpNeed(LV.lvl)){LV.xp-=xpNeed(LV.lvl);LV.lvl++;hero.mhp=100+2*(LV.lvl-1);hero.hp=hero.mhp;addFloat(hero.x,hero.y,'¡Nivel '+LV.lvl+'!','#ffe27a');ring(hero.x,hero.y);}
-  if(LV.lvl>=LVMAX)LV.xp=0;}
+  if(LV.lvl>=LVMAX)LV.xp=0;
+  if(LV.lvl>l0)lvToast(l0);}
 const R=0.17;
 {const q=new URLSearchParams(location.search);if(q.get('x'))hero.x=+q.get('x');if(q.get('y'))hero.y=+q.get('y');}
 
@@ -280,7 +290,7 @@ function killMush(m){
 function enemyHit(m,hd0){
   const hd=Math.hypot(hero.x-m.x,hero.y-m.y);
   if(m.type==='champ'){if(hd<1.1&&los(m.x,m.y,hero.x,hero.y))hurtHero(6);}
-  else if(m.type==='puff'){const px=m.x+(hero.x-m.x)/(hd||1)*1.2,py=m.y+(hero.y-m.y)/(hd||1)*1.2;spark(px,py,6,3);if(hd<3.3&&los(m.x,m.y,hero.x,hero.y))hurtHero(5);}
+  else if(m.type==='puff'){const px=m.x+(hero.x-m.x)/(hd||1)*.8,py=m.y+(hero.y-m.y)/(hd||1)*.8;spark(px,py,6,3);if(hd<1.7&&los(m.x,m.y,hero.x,hero.y))hurtHero(5);}
   else{addShake(4,.3);ring(m.x,m.y);dust(m.x,m.y,6);if(hd<2.7&&los(m.x,m.y,hero.x,hero.y))hurtHero(18);}
 }
 function respawn(m){
@@ -461,13 +471,13 @@ function update(dt,t){
     hero.walk+=dt*4.2*((68+67*hero.rs)/95);hero.stepT=(hero.stepT||0)-dt;if(hero.stepT<=0&&hero.atkT<=0){hero.stepT=.17;dust(hero.x,hero.y,1,1);if(Math.random()<.5)leaf(hero.x,hero.y);}
   }
   if(hero.dashAtk&&hero.dash<=0){hero.dashAtk=false;hero.dRet=false;hero.back=(hero.fx+hero.fy)<0;hero.face=(hero.fx-hero.fy)>=0?1:-1;}
-  if(hero.dash>0&&hero.dashAtk){const p=1-hero.dash/hero.dDur,P=q=>Math.sin(Math.PI*Math.min(1,Math.max(0,(q-.08)/.84)));let d=(P(p)-P(hero.dp||0))*1.5;hero.dp=p;
+  if(hero.dash>0&&hero.dashAtk){const p=1-hero.dash/hero.dDur,P=q=>Math.sin(Math.PI*Math.min(1,Math.max(0,(q-.08)/.84)));let d=(P(p)-P(hero.dp||0))*.75;hero.dp=p;
     if(p>=.5&&!hero.dRet){hero.dRet=true;hero.back=(-hero.fx-hero.fy)<0;hero.face=(-hero.fx+hero.fy)>=0?1:-1;}
     if(d>0){if(Math.random()<dt*22)dust(hero.x,hero.y,1);const x0=hero.x,y0=hero.y;if(!blockedAt(hero.x+hero.fx*d,hero.y,R))hero.x+=hero.fx*d;if(!blockedAt(hero.x,hero.y+hero.fy*d,R))hero.y+=hero.fy*d;hero.dOut=(hero.dOut||0)+Math.hypot(hero.x-x0,hero.y-y0);}
     else if(d<0){const b=Math.min(-d,hero.dOut||0);hero.x-=hero.fx*b;hero.y-=hero.fy*b;hero.dOut-=b;if(Math.random()<dt*22)dust(hero.x,hero.y,1);}}
   else if(hero.dash>0){const p=1-hero.dash/hero.dDur,E=q=>{const u=Math.min(1,Math.max(0,(q-.15)/.6));return u*u*(3-2*u);};const d=(E(p)-E(hero.dp||0))*1.28;hero.dp=p;
     if(d>0){if(Math.random()<dt*22)dust(hero.x,hero.y,1);if(Math.random()<dt*30)leaf(hero.x,hero.y);const wx=hero.fx*d,wy=hero.fy*d;if(!blockedAt(hero.x+wx,hero.y,R))hero.x+=wx;if(!blockedAt(hero.x,hero.y+wy,R))hero.y+=wy;}}
-  if(hero.dash>0&&hero.dashAtk){if(hero.dash<=hero.dDur*.5&&!hero.dashHit){hero.dashHit=true;dashStrike(2.0,true);}else if(!hero.dashHit)dashStrike(1.0,false);}
+  if(hero.dash>0&&hero.dashAtk){if(hero.dash<=hero.dDur*.5&&!hero.dashHit){hero.dashHit=true;dashStrike(1.5,true);}else if(!hero.dashHit)dashStrike(1.0,false);}
   combat(dt);
   for(let k=floats.length-1;k>=0;k--){floats[k].t+=dt;if(floats[k].t>.9)floats.splice(k,1);}
   for(const m of mushes){
@@ -486,7 +496,7 @@ function update(dt,t){
       if(!m.atHit&&m.at<=T.adur*(1-m.hitF)){m.atHit=true;enemyHit(m,hd);}
     }else if(hd<(m.type==='boss'?7:3.6)&&hero.hp>0){
       dx=hero.x-m.x;dy=hero.y-m.y;face();
-      if(m.type==='puff'){sp=hd<1.9?T.ch:(hd>T.rng+.5?T.ch:0);if(hd<1.9){dx=-dx;dy=-dy;}}
+      if(m.type==='puff'){sp=hd<.9?T.ch:(hd>T.rng+.4?T.ch:0);if(hd<.9){dx=-dx;dy=-dy;}}
       else sp=hd>T.rng-.2?T.ch:0;
       if(hd<=T.rng&&m.cd<=0&&(m.type!=='puff'||los(m.x,m.y,hero.x,hero.y))){
         m.at=T.adur;m.atHit=false;m.cd=T.cd+T.adur;sp=0;

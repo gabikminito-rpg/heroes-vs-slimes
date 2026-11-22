@@ -24,7 +24,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v33';
+const VER='iso-prueba v34';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -96,7 +96,7 @@ function drawHero(){
   else if(hero.atkT>0){key='atk'+(hero.combo?'2':'')+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
   else if(hero.hurtT>0){key='hurt'+B;fi=Math.min(29,Math.floor((1-hero.hurtT/.5)*30));}
   else if(hero.longT>0&&!hero.moving){key='long'+B;fi=Math.min(95,Math.floor((1-hero.longT/8)*96));}
-  else if(hero.moving&&hero.run){key='run'+B;const n=B?19:18;fi=Math.floor(hero.walk*n/3.36)%n;}
+  else if(hero.moving&&hero.run){key='run'+B;const n=B?19:18;fi=Math.floor(performance.now()/33.3)%n;}
   else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
   else{key='idle'+B;{const n=B?15:16,P=2*n-2,k=Math.floor(performance.now()/(B?130:83))%P;fi=k<n?k:P-k;}}
   ctx.save(); ctx.translate(sx,sy); if(hero.face!==nat)ctx.scale(-1,1);
@@ -343,13 +343,13 @@ function update(dt,t){
   if(hero.moving){hero.runT+=dt;hero.gap=0;}else{hero.gap+=dt;if(hero.gap>.25)hero.runT=0;}
   hero.run=hero.runT>1.5;hero.rs+=((hero.run?1:0)-hero.rs)*Math.min(1,dt*5);
   if(hero.moving){
-    const sp=95+50*hero.rs; // px de pantalla por segundo
+    const sp=68+67*hero.rs; // px de pantalla por segundo
     const wx=(ux/HW+uy/HH)/2*sp*dt, wy=(uy/HH-ux/HW)/2*sp*dt;
     if(!blockedAt(hero.x+wx,hero.y,R))hero.x+=wx;
     if(!blockedAt(hero.x,hero.y+wy,R))hero.y+=wy;
     if(hero.atkT<=0){if(ux)hero.face=ux>0?1:-1;if(uy)hero.back=uy<0;}
     {const a_=(ux/HW+uy/HH)/2,b_=(uy/HH-ux/HW)/2,l_=Math.hypot(a_,b_)||1;hero.fx=a_/l_;hero.fy=b_/l_;}
-    hero.walk+=dt*4.2*(1+.5*hero.rs);hero.stepT=(hero.stepT||0)-dt;if(hero.stepT<=0&&hero.atkT<=0){hero.stepT=.17;dust(hero.x,hero.y,1,1);if(Math.random()<.5)leaf(hero.x,hero.y);}
+    hero.walk+=dt*4.2*((68+67*hero.rs)/95);hero.stepT=(hero.stepT||0)-dt;if(hero.stepT<=0&&hero.atkT<=0){hero.stepT=.17;dust(hero.x,hero.y,1,1);if(Math.random()<.5)leaf(hero.x,hero.y);}
   }
   if(hero.dash>0){const p=1-hero.dash/.32,E=q=>{const u=Math.min(1,Math.max(0,(q-.15)/.6));return u*u*(3-2*u);};const d=(E(p)-E(hero.dp||0))*1.28;hero.dp=p;
     if(d>0){if(Math.random()<dt*22)dust(hero.x,hero.y,1);if(Math.random()<dt*30)leaf(hero.x,hero.y);const wx=hero.fx*d,wy=hero.fy*d;if(!blockedAt(hero.x+wx,hero.y,R))hero.x+=wx;if(!blockedAt(hero.x,hero.y+wy,R))hero.y+=wy;}}

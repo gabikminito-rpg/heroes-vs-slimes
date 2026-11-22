@@ -23,16 +23,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v27';
+const VER='iso-prueba v28';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','hero/wave'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','hero/waveF','hero/waveB','hero/slashF','hero/slashB'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=13';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=14';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -258,7 +258,7 @@ function drawParts(){
     ctx.fillRect(Math.round(p.x),Math.round(p.y),sz,sz);}
   ctx.globalCompositeOperation='source-over';
 }
-const waves=[];
+const waves=[],slashes=[];
 function castSkill(){
   if(hero.hp<=0||hero.ult>0||hero.dash>0||hero.skill>0||hero.skillCd>0)return;
   let best=null,bd=7;for(const m of mushes){if(!m.alive)continue;const d=Math.hypot(m.x-hero.x,m.y-hero.y);if(d<bd){bd=d;best=m;}}
@@ -267,6 +267,7 @@ function castSkill(){
   hero.skill=.75;hero.skillCd=4;hero.skillFired=false;hero.atkT=0;hero.pend=false;hero.longT=0;
 }
 function waveUpdate(dt){
+  for(let k=slashes.length-1;k>=0;k--){slashes[k].t+=dt;if(slashes[k].t>slashes[k].n*.05)slashes.splice(k,1);}
   for(let k=waves.length-1;k>=0;k--){const w=waves[k];w.t+=dt;
     const nx=w.x+w.dx*9*dt,ny=w.y+w.dy*9*dt;
     if(w.t>.75||blockedAt(nx,ny,.15)){spark(w.x,w.y,6,14);waves.splice(k,1);continue;}
@@ -277,15 +278,16 @@ function waveUpdate(dt){
         m.hp-=dmg;m.flash=.12;m.kx=w.dx*4;m.ky=w.dy*4;addFloat(m.x,m.y,'-'+dmg,'#9fe8ff');spark(m.x,m.y,10);hs=.05;addShake(1,.08);
         if(m.hp<=0)killMush(m);}}}
 }
-const WAVEC=[[54.6, 45.4], [54.3, 45.0], [54.3, 44.9], [53.8, 44.9], [42.9, 53.9], [43.1, 53.9], [45.0, 52.9], [46.3, 52.3], [48.9, 51.1], [51.0, 50.6], [52.8, 49.8], [57.4, 47.1], [59.3, 45.9], [62.8, 43.3], [66.9, 40.6], [69.1, 39.3], [74.4, 36.2], [77.0, 35.0], [82.2, 32.3], [86.7, 29.1], [88.4, 27.5], [86.5, 28.4], [83.5, 30.1], [78.8, 32.7], [77.8, 33.2], [77.5, 34.1], [77.1, 34.0], [77.2, 32.8], [77.2, 32.8], [58.8, 43.9]];
-function drawWave(w){
-  const [sx,sy]=S2(w.x,w.y),fi=Math.min(27,4+Math.floor(w.t/.75*23)),cc=WAVEC[fi];
-  const fxs=(w.dx-w.dy)>=0?1:-1,fys=(w.dx+w.dy)>=0?-1:1;
-  ctx.save();ctx.translate(sx,sy-14);ctx.scale(fxs,fys);
-  ctx.globalCompositeOperation='lighter';
-  ctx.drawImage(IMG['hero/wave'],fi*128,0,128,81,-cc[0],-cc[1],128,81);
+const WV={waveF:{fw:110,fh:34,n:6,ax:50,ay:18},waveB:{fw:63,fh:34,n:8,ax:34,ay:17},slashF:{fw:73,fh:39,n:10,ax:25,ay:20},slashB:{fw:60,fh:44,n:12,ax:33,ay:20}};
+function drawFx(name,wx,wy,dx,dy,fi,up){
+  const m=WV[name],[sx,sy]=S2(wx,wy),px=dx-dy,py=dx+dy;
+  ctx.save();ctx.translate(sx,sy-(up||14));
+  if(Math.abs(py*28)>1.7*Math.abs(px*55)){ctx.rotate(py>0?Math.PI/2:-Math.PI/2);}else{ctx.scale(px>=0?1:-1,1);ctx.transform(1,py>=0?.509:-.509,0,1,0,0);}
+  ctx.imageSmoothingEnabled=false;ctx.drawImage(IMG['hero/'+name],fi*m.fw,0,m.fw,m.fh,-m.ax,-m.ay,m.fw,m.fh);
   ctx.restore();
 }
+function drawWave(w){const v=(w.dx+w.dy)<0?'B':'F',n=WV['wave'+v].n;drawFx('wave'+v,w.x,w.y,w.dx,w.dy,Math.floor(w.t*14)%n);}
+function drawSlash(c){const v=(c.dx+c.dy)<0?'B':'F',n=WV['slash'+v].n;drawFx('slash'+v,c.x+c.dx*.5,c.y+c.dy*.5,c.dx,c.dy,Math.min(n-1,Math.floor(c.t/.05)),16);}
 function los(ax,ay,bx,by){const d=Math.hypot(bx-ax,by-ay),n=Math.max(1,Math.ceil(d/.12));for(let k=1;k<n;k++){const t=k/n;if(blockedAt(ax+(bx-ax)*t,ay+(by-ay)*t,.04))return false;}return true;}
 function attack(){
   hero.cd=.55;hero.atkT=.5;hero.pend=true;
@@ -310,7 +312,7 @@ function castDash(){if(hero.hp<=0||hero.ult>0||hero.dash>0||hero.dashCd>0)return
   hero.back=(hero.fx+hero.fy)<0;hero.face=(hero.fx-hero.fy)>=0?1:-1;}
 function combat(dt){
   hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);hero.atkT=Math.max(0,hero.atkT-dt);hero.hurtT=Math.max(0,hero.hurtT-dt);hero.skillCd=Math.max(0,hero.skillCd-dt);
-  if(hero.skill>0){hero.skill=Math.max(0,hero.skill-dt);if(!hero.skillFired&&hero.skill<=.75*(1-12/30)){hero.skillFired=true;waves.push({x:hero.x,y:hero.y,dx:hero.fx,dy:hero.fy,t:0,hit:new Set()});addShake(1,.08);}}
+  if(hero.skill>0){hero.skill=Math.max(0,hero.skill-dt);if(!hero.skillFired&&hero.skill<=.75*(1-12/30)){hero.skillFired=true;waves.push({x:hero.x,y:hero.y,dx:hero.fx,dy:hero.fy,t:0,hit:new Set()});slashes.push({x:hero.x,y:hero.y,dx:hero.fx,dy:hero.fy,t:0,n:((hero.fx+hero.fy)<0?12:10)});addShake(1,.08);}}
   waveUpdate(dt);
   { const act=hero.moving||hero.atkT>0||hero.dash>0||hero.ult>0||hero.skill>0||hero.hurtT>0||hero.hp<=0||hero.held;
     if(act){hero.idleT=0;hero.longT=0;}else{if(hero.longT>0){hero.longT=Math.max(0,hero.longT-dt);hero.idleT=0;}else{hero.idleT+=dt;if(hero.idleT>4.5){hero.longT=8;hero.idleT=0;}}} }hero.ultCd=Math.max(0,hero.ultCd-dt);hero.dashCd=Math.max(0,hero.dashCd-dt);
@@ -479,7 +481,7 @@ function frame(now){
   const list=stat.slice();
   for(const t of tufts){if(Math.abs(t.sx-cam.x)<vw/2+8&&Math.abs(t.sy-cam.y)<vh/2+8)list.push(t.o);}
   list.push({k:hero.x+hero.y,f:drawHero});
-  for(const w of waves)list.push({k:w.x+w.y,f:()=>drawWave(w)});
+  for(const w of waves)list.push({k:w.x+w.y,f:()=>drawWave(w)});for(const c of slashes)list.push({k:c.x+c.y+.6,f:()=>drawSlash(c)});
   for(const m of mushes)if(m.alive)list.push({k:m.x+m.y,f:()=>drawMush(m)});
   for(const d of drops)list.push({k:d.x+d.y,f:()=>drawDrop(d)});
   list.sort((a,b)=>a.k-b.k);

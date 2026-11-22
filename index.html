@@ -112,7 +112,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v68';
+const VER='iso-prueba v69';
 const CKEY='hvs_iso_cfg_v1';const FX=Object.assign({water:1,tiles:1,fly:1,fire:1,light:1,rays:1},(()=>{try{return JSON.parse(localStorage.getItem('hvs_iso_cfg_v1')||'{}');}catch(e){return {};}})());
 const cv=document.getElementById('c'); let ctx=cv.getContext('2d'); const ctxMain=ctx;
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
@@ -237,25 +237,26 @@ const SETS=[
  {nm:'Set Campeón',nv:20,atq:.60,def:.35,pc:.22,dc:.80,rg:1.6,c:{a:'#25252d',A:'#e0b84a',b:'#0a0a0e'},r:{mad:[6,10,6,8],tela:[6,10,6,8],hilo:[6,10,6,8],baba:[6,10,6,8],chq:[6,10,6,8],frag:[2,4,2,4]}}];
 const gear=[], EQP=[null,null,null,null];
 let GS={atq:0,def:0,pc:0,dc:0,rg:0};
-function gsCalc(){const g={atq:0,def:0,pc:0,dc:0,rg:0};for(const id of EQP){if(id==null)continue;const S=SETS[id>>2];for(const k in g)g[k]+=S[k]/4;}GS=g;heroTint(EQP.every(id=>id!=null&&(id>>2)===4));}
-const HORIG={},HTINT={};let htOn=false;
-function heroTint(on){
-  if(on===htOn||!IMG['hero/idleF'])return;
+function gsCalc(){const g={atq:0,def:0,pc:0,dc:0,rg:0};for(const id of EQP){if(id==null)continue;const S=SETS[id>>2];for(const k in g)g[k]+=S[k]/4;}GS=g;{const cnt=[0,0,0,0,0];for(const id of EQP)if(id!=null)cnt[id>>2]++;let sw=-1,mx=1;cnt.forEach((c,i)=>{if(c>=2&&c>=mx){mx=c;sw=i;}});heroTint(sw,sw===4&&cnt[4]===4);}}
+const HORIG={},HTINT={};let htTag='',htSw=-1;
+const SWC=[{m:[1.2,.22,.22],h:[255,175,165]},{m:[1.2,.68,.18],h:[245,200,130]},{m:[.6,.38,.2],h:[190,150,105]},{m:[1.25,1.25,1.3],a:[30,30,35],h:[255,255,255]},{m:[.2,.16,.3],h:[170,120,220]}];
+function heroTint(sw,hair){const tag=sw<0?'':sw+(hair?'h':'');if(tag===htTag||!IMG['hero/idleF'])return;
   const keys=Object.keys(IMG).filter(k=>k.startsWith('hero/'));
   try{
     for(const k of keys){
-      if(on){
-        if(!HTINT[k]){const im=HORIG[k]||IMG[k],c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);
-          const d=x.getImageData(0,0,c.width,c.height),a=d.data;
-          for(let i=0;i<a.length;i+=4){if(a[i+3]<8)continue;const r=a[i],g=a[i+1],b=a[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b),L=(r+g+b)/3;
-            if(mx-mn<=28&&L>110){const v=L*.3;a[i]=v;a[i+1]=v;a[i+2]=v*1.2;}
-            else if(b>r+20&&g>r+10&&L>90){if(L>215){a[i]=170;a[i+1]=120;a[i+2]=220;}else{const v=L;a[i]=v*.2;a[i+1]=v*.16;a[i+2]=v*.3;}}}
-          x.putImageData(d,0,0);HTINT[k]=c;}
-        if(!HORIG[k])HORIG[k]=IMG[k];IMG[k]=HTINT[k];
+      if(tag){
+        const T=HTINT[tag]||(HTINT[tag]={});
+        if(!T[k]){const im=HORIG[k]||IMG[k],c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);
+          const d=x.getImageData(0,0,c.width,c.height),a=d.data,C=SWC[sw],ad=C.a||[0,0,0];
+          for(let q=0;q<a.length;q+=4){if(a[q+3]<8)continue;const r=a[q],g=a[q+1],b=a[q+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b),L=(r+g+b)/3;
+            if(hair&&mx-mn<=28&&L>110){const v=L*.3;a[q]=v;a[q+1]=v;a[q+2]=v*1.2;}
+            else if(b>r+20&&g>r+10&&L>90){if(L>215){a[q]=C.h[0];a[q+1]=C.h[1];a[q+2]=C.h[2];}else{const v=L;a[q]=Math.min(255,v*C.m[0]+ad[0]);a[q+1]=Math.min(255,v*C.m[1]+ad[1]);a[q+2]=Math.min(255,v*C.m[2]+ad[2]);}}}
+          x.putImageData(d,0,0);T[k]=c;}
+        if(!HORIG[k])HORIG[k]=IMG[k];IMG[k]=T[k];
       }else if(HORIG[k])IMG[k]=HORIG[k];
       delete ROT[k];
     }
-    htOn=on;
+    htTag=tag;htSw=sw;for(const g in GL)delete GL[g];
   }catch(e){}
 }
 const ZXP=[1,2.2,4,7];
@@ -304,9 +305,9 @@ const GL={};
 function glowOf(key){
   if(GL[key])return GL[key];
   const im=IMG['hero/'+key], c=document.createElement('canvas');c.width=im.width;c.height=im.height;
-  const x=c.getContext('2d');x.drawImage(im,0,0);let d;try{d=x.getImageData(0,0,c.width,c.height);}catch(e){x.clearRect(0,0,c.width,c.height);return GL[key]=c;}const p=d.data;
-  for(let i=0;i<p.length;i+=4){const r=p[i],g=p[i+1],b=p[i+2];
-    if(!(p[i+3]>0&&b>150&&b-r>=45)){p[i+3]=0;}}
+  const x=c.getContext('2d');let d,o;try{x.drawImage(HORIG['hero/'+key]||im,0,0);o=x.getImageData(0,0,c.width,c.height);x.clearRect(0,0,c.width,c.height);x.drawImage(im,0,0);d=x.getImageData(0,0,c.width,c.height);}catch(e){x.clearRect(0,0,c.width,c.height);return GL[key]=c;}const p=d.data,q=o.data;
+  for(let i=0;i<p.length;i+=4){const r=q[i],g=q[i+1],b=q[i+2];
+    if(!(q[i+3]>0&&b>150&&b-r>=45)){p[i+3]=0;}}
   x.putImageData(d,0,0);return GL[key]=c;
 }
 function drawHero(){
@@ -345,8 +346,8 @@ function drawHero(){
   ctx.drawImage(hc,0,0,W_,H_,-D_[2]+xo,-D_[3],W_,H_);
   // brillo de la espada / arco (aditivo)
   if(key[0]==='a'&&key[1]==='t'||key.startsWith('ult')||key.startsWith('dash')||key.startsWith('skill')){
-    const gl=glowOf(key); ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.3;
-    for(const [ox_,oy_] of [[0,0],[-1,0],[1,0],[0,-1],[0,1],[-2,0],[2,0]])ctx.drawImage(gl,fi*W_,0,W_,H_,-D_[2]+xo+ox_,-D_[3]+oy_,W_,H_);
+    const gl=glowOf(key),dk=htSw===4,fl=Math.floor(performance.now()/80)%3; ctx.globalCompositeOperation=dk?'source-over':'lighter';ctx.globalAlpha=dk?.5:(htSw===3?.45:.3);
+    for(const [ox_,oy_] of (dk?[[0,-1-fl],[-1,-2-fl],[1,-2-fl],[0,-4+fl],[0,0]]:[[0,0],[-1,0],[1,0],[0,-1],[0,1],[-2,0],[2,0]]))ctx.drawImage(gl,fi*W_,0,W_,H_,-D_[2]+xo+ox_,-D_[3]+oy_,W_,H_);
     ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';}
   ctx.restore();
 }

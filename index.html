@@ -22,16 +22,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v13';
+const VER='iso-prueba v14';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=7';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=8';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -45,7 +45,7 @@ const trees=[[1.5,1.5],[3.5,0.8],[0.8,4.5],[2.6,12.5],[5.4,13.5],[8.5,14.2],[12.
  [11.5,3.4],[13.6,3.2],[14.5,5.4],[10.8,5.6],[12.6,4.6]];
 const STUMP=[7.5,5.5];
 const mushes=[[7.5,9.5],[12.5,10.5],[3.5,4.5],[14.5,13.5]].map((p,k)=>({x:p[0],y:p[1],tx:p[0],ty:p[1],wait:Math.random()*2,face:-1,ph:k*1.7,hp:20,cd:0,flash:0,kx:0,ky:0,alive:true,resp:0}));
-const hero={x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,hp:100,cd:0,inv:0,swing:0,dead:0,back:false,atkT:0,ult:0,ultCd:0,ultHit:false,dash:0,dashCd:0,fx:1,fy:0,held:false,combo:false,lastAtk:0,pend:false};
+const hero={x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,hp:100,cd:0,inv:0,swing:0,dead:0,back:false,atkT:0,ult:0,ultCd:0,ultHit:false,dash:0,dashCd:0,fx:1,fy:0,held:false,combo:false,lastAtk:0,pend:false,hurtT:0};
 const bag={esp:0,somb:0};
 const R=0.17;
 {const q=new URLSearchParams(location.search);if(q.get('x'))hero.x=+q.get('x');if(q.get('y'))hero.y=+q.get('y');}
@@ -75,14 +75,16 @@ function drawHero(){
   pixShadow(sx,sy,8,3,0.3);
   const B=hero.back?'B':'F', nat=hero.back?1:-1;
   let key,fi;
-  if(hero.ult>0){key='ult'+B;fi=Math.min(29,Math.floor((1-hero.ult/1.0)*30));}
+  if(hero.hp<=0){key='dead'+B;fi=Math.min(29,Math.floor((2.2-hero.dead)/1.0*30));}
+  else if(hero.ult>0){key='ult'+B;fi=Math.min(29,Math.floor((1-hero.ult/1.0)*30));}
   else if(hero.dash>0){key='dash'+B;fi=Math.min(23,Math.floor((1-hero.dash/.32)*24));}
   else if(hero.atkT>0){key='atk'+(hero.combo?'2':'')+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
+  else if(hero.hurtT>0){key='hurt'+B;fi=Math.min(29,Math.floor((1-hero.hurtT/.5)*30));}
   else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
   else{key='idle'+B;fi=Math.floor(performance.now()/130)%15;}
   ctx.save(); ctx.translate(sx,sy); if(hero.face!==nat)ctx.scale(-1,1);
-  if(hero.hp<=0)ctx.globalAlpha=.3; else if(hero.ult<=0&&hero.dash<=0&&hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
-  const D_={ultF:[75,72,38,63],ultB:[98,78,56,67],dashF:[100,42,44,40],dashB:[98,50,53,47]}[key]||[92,57,40,48];
+  if(hero.hp>0&&hero.ult<=0&&hero.dash<=0&&hero.hurtT<=0&&hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
+  const D_={ultF:[75,72,38,63],ultB:[98,78,56,67],dashF:[100,42,44,40],dashB:[98,50,53,47],hurtF:[64,46,26,42],hurtB:[72,49,47,47],deadF:[79,49,52,42],deadB:[82,54,29,47]}[key]||[92,57,40,48];
   ctx.drawImage(IMG['hero/'+key],fi*D_[0],0,D_[0],D_[1],-D_[2],-D_[3],D_[0],D_[1]);
   ctx.restore();
 }
@@ -178,8 +180,8 @@ const embers=[], flies=[], floats=[], drops=[];
 function addFloat(x,y,txt,col){floats.push({x,y,txt,col,t:0});}
 function hurtHero(n){
   if(hero.inv>0||hero.hp<=0)return;
-  hero.hp-=n;hero.inv=.5;addFloat(hero.x,hero.y,'-'+n,'#ff6a5a');
-  if(hero.hp<=0){hero.hp=0;hero.dead=2.2;}
+  hero.hp-=n;hero.inv=.5;hero.hurtT=.5;addShake(2,.1);addFloat(hero.x,hero.y,'-'+n,'#ff6a5a');
+  if(hero.hp<=0){hero.hp=0;hero.dead=2.2;hero.atkT=0;hero.pend=false;hero.dash=0;hero.ult=0;}
 }
 function killMush(m){
   m.alive=false;m.resp=8;
@@ -245,12 +247,12 @@ function strike(){
 function castDash(){if(hero.hp<=0||hero.ult>0||hero.dash>0||hero.dashCd>0)return;hero.dash=.32;hero.dashCd=1.4;hero.atkT=0;hero.pend=false;dust(hero.x,hero.y,6);
   hero.back=(hero.fx+hero.fy)<0;hero.face=(hero.fx-hero.fy)>=0?1:-1;}
 function combat(dt){
-  hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);hero.atkT=Math.max(0,hero.atkT-dt);hero.ultCd=Math.max(0,hero.ultCd-dt);hero.dashCd=Math.max(0,hero.dashCd-dt);
+  hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);hero.atkT=Math.max(0,hero.atkT-dt);hero.hurtT=Math.max(0,hero.hurtT-dt);hero.ultCd=Math.max(0,hero.ultCd-dt);hero.dashCd=Math.max(0,hero.dashCd-dt);
   if(hero.dash>0){hero.dash=Math.max(0,hero.dash-dt);hero.inv=Math.max(hero.inv,.1);}
   if(hero.ult>0){hero.ult=Math.max(0,hero.ult-dt);hero.inv=Math.max(hero.inv,.1);
     if(!hero.ultHit&&hero.ult<=0.5){hero.ultHit=true;ring(hero.x,hero.y);addShake(4,.3);hs=.1;for(const m of mushes){if(!m.alive)continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;if(d<2.6){m.hp-=30;m.flash=.15;m.kx=dx/d*5;m.ky=dy/d*5;addFloat(m.x,m.y,'-30','#9fe8ff');if(m.hp<=0)killMush(m);}}}
     return;}
-  if(hero.hp<=0){hero.dead-=dt;if(hero.dead<=0){hero.hp=100;hero.x=6.5;hero.y=7.8;hero.inv=1.5;}return;}
+  if(hero.hp<=0){hero.dead-=dt;if(hero.dead<=0){hero.hp=100;hero.x=6.5;hero.y=7.8;hero.inv=1.5;hero.hurtT=0;}return;}
   if(hero.pend&&hero.atkT<=(hero.combo?.30:.35)){hero.pend=false;strike();}
   if(hero.held&&hero.cd<=0&&hero.dash<=0)attack();
   for(let k=drops.length-1;k>=0;k--){

@@ -113,7 +113,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v73';
+const VER='iso-prueba v74';
 const CKEY='hvs_iso_cfg_v1';const FX=Object.assign({water:1,tiles:1,fly:1,fire:1,light:1,rays:1},(()=>{try{return JSON.parse(localStorage.getItem('hvs_iso_cfg_v1')||'{}');}catch(e){return {};}})());
 const cv=document.getElementById('c'); let ctx=cv.getContext('2d'); const ctxMain=ctx;
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
@@ -655,7 +655,7 @@ function addPxp(k,n){const p=PR[k];if(p.lv>=PMAX)return;p.xp+=n;while(p.lv<PMAX&
 const FM={castF:[55,44,31,42,40],waitF:[55,44,31,42,23],reelF:[55,44,31,42,36],catchF:[55,44,31,42,36],castB:[56,42,31,41,40],waitB:[56,42,31,41,21],reelB:[56,42,31,41,36],catchB:[56,42,31,41,36]};
 const FISH=[{n:'Pececillo gris',h:.15,d:.05,c:['#8f9fae','#dfe7ee'],x:12},{n:'Trucha plateada',h:.25,d:.08,c:['#7fa3c0','#eaf4fb'],x:16},{n:'Carpa dorada',h:.4,d:.12,c:['#c8962a','#ffe08a'],x:32},{n:'Anguila del pantano',h:.3,d:.1,c:['#4f7a3a','#a4d470'],x:20},{n:'Pez cueva violeta',h:.45,d:.14,c:['#6a3aa8','#c9a0ff'],x:26},{n:'Pez ascua negro',h:.4,d:.12,c:['#2a2a36','#ff8a3a'],x:24}];
 const FK=['f0','f1','f2','f3','f4','f5'],FZ=[[[0,70],[1,30]],[[1,40],[3,60]],[[5,80],[1,20]],[[4,80],[5,20]]];
-function waterNear(){let best=null,bd=9;for(let a=0;a<16;a++){const ang=a*Math.PI/8;for(const r of [.9,1.4,1.9]){const wx=hero.x+Math.cos(ang)*r,wy=hero.y+Math.sin(ang)*r,ci=Math.floor(wx),cj=Math.floor(wy);if(ci<0||cj<0||ci>=MW||cj>=MH)continue;const g=GT[cj*MW+ci];if((g===2||g===8)&&WSOL[cj*MW+ci]){const d=Math.hypot(wx-hero.x,wy-hero.y);if(d<bd){bd=d;best=[wx,wy];}}}}return best;}
+function waterNear(){let best=null,bd=9;for(let a=0;a<16;a++){const ang=a*Math.PI/8;for(const r of [.35,.55,.75]){const wx=hero.x+Math.cos(ang)*r,wy=hero.y+Math.sin(ang)*r,ci=Math.floor(wx),cj=Math.floor(wy);if(ci<0||cj<0||ci>=MW||cj>=MH)continue;const g=GT[cj*MW+ci];if((g===2||g===8)&&WSOL[cj*MW+ci]){const d=Math.hypot(wx-hero.x,wy-hero.y);if(d<bd){bd=d;best=[wx,wy];}}}}return best;}
 function startFish(){if(hero.moving||hero.hp<=0||hero.chopT>0)return false;const w=waterNear();if(!w)return false;const dx=w[0]-hero.x,dy=w[1]-hero.y;hero.face=(dx-dy)>=0?1:-1;hero.back=(dx+dy)<0;hero.fish={ph:'cast',t:0,fi:0,bt:0,ok:false,got:false};hero.atkT=0;hero.pend=false;hero.longT=0;hero.cd=.3;return true;}
 function giveFish(){const z=zoneOf(hero.x,hero.y),lv=PR.pesca.lv;let i;
   if(Math.random()<.04+.003*lv)i=2;else{const W=FZ[z],t=W.reduce((a,b)=>a+b[1],0);let r=Math.random()*t;i=W[0][0];for(const [f,w] of W){if(r<w){i=f;break;}r-=w;}}
@@ -689,7 +689,7 @@ function startChop(t){const dx=t[0]-hero.x,dy=t[1]-hero.y,d=Math.hypot(dx,dy)||1
 function attack(){
   if(hero.em){emOut();return;}
   if(hero.fish){hero.fish=null;return;}
-  {let tb=null,td=1.05;for(const t of trees){if(t.gone||t.fall>=0||t.terr)continue;const d=Math.hypot(t[0]-hero.x,t[1]-hero.y);if(d<td){td=d;tb=t;}}
+  {let tb=null,td=.68;for(const t of trees){if(t.gone||t.fall>=0||t.terr)continue;const d=Math.hypot(t[0]-hero.x,t[1]-hero.y);if(d<td){td=d;tb=t;}}
    let mb=false;for(const m of mushes){if(m.alive&&Math.hypot(m.x-hero.x,m.y-hero.y)<1.9&&los(hero.x,hero.y,m.x,m.y)){mb=true;break;}}
    if(tb&&!mb){startChop(tb);return;}
    if(!tb&&!mb&&startFish())return;}
@@ -959,7 +959,7 @@ function emMenu(){const m=document.getElementById('emn');m.innerHTML='';
 document.getElementById('eb').onclick=()=>{const m=document.getElementById('emn');if(m.classList.contains('on'))m.classList.remove('on');else{emMenu();m.classList.add('on');}};
 document.getElementById('hb').style.backgroundImage='url('+ICONS.helm().toDataURL()+')';
 FISH.forEach((F,i)=>{ICONS['f'+i]=()=>{const c=document.createElement('canvas');c.width=49;c.height=49;c.getContext('2d').drawImage(IMG.fish,i*49,0,49,49,0,0,49,49);return c;};});
-const DESC={tela:['Tela','Material del taller. La sueltan los monstruos del pantano en adelante.'],hilo:['Hilo','Material del taller. Lo sueltan los monstruos.'],baba:['Baba','Material del taller. Lo sueltan los monstruos.'],chq:['Champiñón chiquillo','Material del taller. Lo sueltan los monstruos.'],frag:['Fragmento de campeón','Solo lo suelta el jefe final. Sirve para el Set Campeón.'],lena:['Leña','Sirve para crear objetos.'],f0:['Pececillo gris','Cura 15% de vida y +5% resistencia 20 s.'],f1:['Trucha plateada','Cura 25% de vida y +8% resistencia 20 s.'],f2:['Carpa dorada','Rara. Cura 40% de vida y +12% resistencia 20 s.'],f3:['Anguila del pantano','Cura 30% de vida y +10% resistencia 20 s.'],f4:['Pez cueva violeta','Cura 45% de vida y +14% resistencia 20 s.'],f5:['Pez ascua negro','Cura 40% de vida y +12% resistencia 20 s.'],espora:['Espora','Sirve para subir de nivel al héroe: cada una da +20 de experiencia.'],sombrero:['Sombrero','Sirve para subir el nivel de las habilidades del héroe.']};
+const DESC={tela:['Tela','Material del taller. La sueltan los monstruos del pantano en adelante.'],hilo:['Hilo','Material del taller. Lo sueltan los monstruos.'],baba:['Baba','Material del taller. Lo sueltan los monstruos.'],chq:['Champiñón chiquillo','Material del taller. Lo sueltan los monstruos.'],frag:['Fragmento de campeón','Solo lo suelta el jefe final. Sirve para el Set Campeón.'],lena:['Leña','Sirve para crear objetos.'],f0:['Pececillo gris','Cura 15% de vida y +5% resistencia 20 s.'],f1:['Trucha plateada','Cura 25% de vida y +8% resistencia 20 s.'],f2:['Carpa dorada','Rara. Cura 40% de vida y +12% resistencia 20 s.'],f3:['Anguila del pantano','Cura 30% de vida y +10% resistencia 20 s.'],f4:['Pez cueva violeta','Cura 45% de vida y +14% resistencia 20 s.'],f5:['Pez ascua negro','Cura 40% de vida y +12% resistencia 20 s.'],espora:['Espora','Sin uso por ahora.'],sombrero:['Sombrero','Sirve para subir el nivel de las habilidades del héroe.']};
 function pieceDesc(id){const S=SETS[id>>2],q=n=>Math.round(n*1000)/10+'%';return [PCN[id&3]+' · '+S.nm,'Nv '+S.nv+' · Atq +'+q(S.atq/4)+' · Def '+q(S.def/4)+' · Crít '+q(S.pc/4)+' (+'+q(S.dc/4)+') · Regen '+(Math.round(S.rg/4*100)/100)+'/s. Toca otra vez para equipar.'];}
 function invShow(k,eqSlot){const d=document.getElementById('invd');d.innerHTML='';d.classList.remove('pc');
   if(typeof k==='number'){const S=SETS[k>>2],q=n=>Math.round(n*1000)/10+'%';d.classList.add('pc');const t=document.createElement('div');t.style.flex='1';
@@ -1000,9 +1000,7 @@ function pjRender(){
   const row=(ic,html,btn)=>{const d=document.createElement('div');d.className='pr';d.appendChild(ICONS[ic]());const t=document.createElement('div');t.className='pt';t.innerHTML=html;d.appendChild(t);if(btn)d.appendChild(btn);r.appendChild(d);};
   if(PJT==='est'){const q=n=>Math.round(n*1000)/10+'%',d=document.createElement('div');d.className='pr';const t=document.createElement('div');t.className='pt';
    t.innerHTML='<b>Equipo</b><br>Ataque +'+q(GS.atq)+' · Defensa '+q(GS.def)+'<br>Crítico '+q(GS.pc)+' (+'+q(GS.dc)+') · Regen '+(Math.round(GS.rg*100)/100)+' HP/s';d.appendChild(t);r.appendChild(d);}
-  if(PJT==='est'){const ub=document.createElement('button');ub.textContent='Usar';ub.disabled=bag.esp<1||LV.lvl>=LVMAX;
-  ub.onclick=()=>{if(bag.esp<1||LV.lvl>=LVMAX)return;bag.esp--;addXp(20);pjRender();};
-  row('espora','<b>Esporas: '+bag.esp+'</b><br>Cada una da +20 XP al héroe',ub);}
+  if(PJT==='est'){row('espora','<b>Esporas: '+bag.esp+'</b><br>Sin uso por ahora.',null);}
   if(PJT==='hab'){const sp=document.createElement('div');sp.className='pr';sp.appendChild(ICONS.sombrero());const st=document.createElement('div');st.className='pt';st.innerHTML='<b>Sombreros: '+bag.somb+'</b><br>Mejoran tus habilidades (el dash no sube)';sp.appendChild(st);r.appendChild(sp);
   SKN.forEach(([k,nm])=>{const l=LV.sk[k],cost=l,b=document.createElement('button');
     if(l>=SKMAX){b.textContent='MÁX';b.disabled=true;}else{b.appendChild(document.createTextNode('+'));b.appendChild(ICONS.sombrero());b.appendChild(document.createTextNode(cost));b.disabled=bag.somb<cost;}

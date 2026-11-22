@@ -1,0 +1,275 @@
+{
+ "t_piso_de_plaza": {
+  "w": 110,
+  "h": 57
+ },
+ "t_piso_de_plaza_2": {
+  "w": 110,
+  "h": 57
+ },
+ "t_camino_de_tierra": {
+  "w": 110,
+  "h": 57
+ },
+ "t_pasto_del_pueblo": {
+  "w": 110,
+  "h": 57
+ },
+ "t_pasto": {
+  "w": 110,
+  "h": 57
+ },
+ "t_borde_de_plaza": {
+  "w": 220,
+  "h": 83,
+  "ax": 110,
+  "ay": 83
+ },
+ "b_gremio_de_aventureros": {
+  "w": 385,
+  "h": 497,
+  "ax": 212,
+  "ay": 497
+ },
+ "b_tienda": {
+  "w": 385,
+  "h": 504,
+  "ax": 215,
+  "ay": 504
+ },
+ "b_taberna": {
+  "w": 385,
+  "h": 502,
+  "ax": 212,
+  "ay": 502
+ },
+ "b_casa_a": {
+  "w": 330,
+  "h": 423,
+  "ax": 181,
+  "ay": 423
+ },
+ "b_casa_b": {
+  "w": 330,
+  "h": 427,
+  "ax": 170,
+  "ay": 427
+ },
+ "b_casa_c": {
+  "w": 330,
+  "h": 431,
+  "ax": 165,
+  "ay": 431
+ },
+ "b_entrada_de_la_mazmorra_del_bosque": {
+  "w": 330,
+  "h": 434,
+  "ax": 256,
+  "ay": 434
+ },
+ "d_fuente_de_la_plaza": {
+  "w": 220,
+  "h": 187,
+  "ax": 110,
+  "ay": 187
+ },
+ "d_pozo": {
+  "w": 73,
+  "h": 90,
+  "ax": 37,
+  "ay": 90
+ },
+ "d_farol_de_calle": {
+  "w": 21,
+  "h": 75,
+  "ax": 14,
+  "ay": 75
+ },
+ "d_cerca_de_madera": {
+  "w": 110,
+  "h": 107,
+  "ax": 12,
+  "ay": 107
+ },
+ "d_cerca_de_madera_2": {
+  "w": 110,
+  "h": 107,
+  "ax": 97,
+  "ay": 107
+ },
+ "d_letrero_de_madera": {
+  "w": 55,
+  "h": 80,
+  "ax": 26,
+  "ay": 80
+ },
+ "d_puesto_de_mercado": {
+  "w": 112,
+  "h": 150,
+  "ax": 51,
+  "ay": 150
+ },
+ "d_barriles_y_cajas": {
+  "w": 56,
+  "h": 70,
+  "ax": 42,
+  "ay": 70
+ },
+ "d_arbusto_con_flores": {
+  "w": 52,
+  "h": 55,
+  "ax": 26,
+  "ay": 55
+ },
+ "d_arbol_del_pueblo": {
+  "w": 115,
+  "h": 140,
+  "ax": 54,
+  "ay": 140
+ },
+ "d_banca_de_plaza": {
+  "w": 58,
+  "h": 60,
+  "ax": 37,
+  "ay": 60
+ },
+ "d_tablon_de_anuncios": {
+  "w": 74,
+  "h": 110,
+  "ax": 65,
+  "ay": 110
+ },
+ "d_carreta_con_heno": {
+  "w": 112,
+  "h": 110,
+  "ax": 55,
+  "ay": 110
+ },
+ "i_piso_de_madera": {
+  "w": 110,
+  "h": 57
+ },
+ "i_piso_de_madera_2": {
+  "w": 110,
+  "h": 57
+ },
+ "i_pared_trasera_izquierda": {
+  "w": 70,
+  "h": 122,
+  "topSlope": 0.49582691840207443,
+  "topY0": -4.844123922966803,
+  "ax": 61,
+  "ay": 122,
+  "seg": 61
+ },
+ "i_pared_trasera_derecha": {
+  "w": 130,
+  "h": 153,
+  "topSlope": -0.4851730547933084,
+  "topY0": 58.53725177775815,
+  "ax": 129,
+  "ay": 90,
+  "seg": 124
+ },
+ "i_pared_con_ventana": {
+  "w": 64,
+  "h": 116,
+  "ax": 0,
+  "ay": 116,
+  "topSlope": -0.5281376518218621,
+  "topY0": 26.885087719298237
+ },
+ "i_esquina_de_pared": {
+  "w": 141,
+  "h": 122,
+  "topSlope": -0.007107421281765532,
+  "topY0": 11.255870540987473,
+  "ax": 70,
+  "ay": 95,
+  "seamTopY": 0
+ },
+ "i_alfombra_de_entrada": {
+  "w": 165,
+  "h": 94,
+  "ax": 46,
+  "ay": 94
+ },
+ "i_mostrador_del_gremio": {
+  "w": 275,
+  "h": 207,
+  "ax": 222,
+  "ay": 207
+ },
+ "i_tablero_de_pergaminos": {
+  "w": 165,
+  "h": 242,
+  "ax": 82,
+  "ay": 242
+ },
+ "i_pergamino_cerrado": {
+  "w": 57,
+  "h": 40,
+  "ax": 28,
+  "ay": 40
+ },
+ "i_banca_larga": {
+  "w": 165,
+  "h": 123,
+  "ax": 124,
+  "ay": 123
+ },
+ "i_mostrador_de_la_tienda": {
+  "w": 330,
+  "h": 275,
+  "ax": 260,
+  "ay": 275
+ },
+ "i_estante_con_mercancia": {
+  "w": 165,
+  "h": 234,
+  "ax": 82,
+  "ay": 234
+ },
+ "i_barra_de_la_taberna": {
+  "w": 330,
+  "h": 259,
+  "ax": 212,
+  "ay": 259
+ },
+ "i_mesa_redonda_de_taberna": {
+  "w": 216,
+  "h": 205,
+  "ax": 108,
+  "ay": 205
+ },
+ "i_taburete": {
+  "w": 32,
+  "h": 35,
+  "ax": 16,
+  "ay": 35
+ },
+ "i_chimenea": {
+  "w": 102,
+  "h": 120,
+  "ax": 48,
+  "ay": 120
+ },
+ "i_barril_grande": {
+  "w": 49,
+  "h": 70,
+  "ax": 24,
+  "ay": 70
+ },
+ "i_farol_colgante": {
+  "w": 41,
+  "h": 90,
+  "ax": 20,
+  "ay": 90
+ },
+ "i_escalera_puerta_de_salida": {
+  "w": 137,
+  "h": 150,
+  "ax": 68,
+  "ay": 150
+ }
+}

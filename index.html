@@ -69,16 +69,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v59';
+const VER='iso-prueba v60';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB','enemies/bossAt2F','enemies/bossAt2B','water','swwater','swgnd','bankA','bankB','mushG','swtree','stairs','reeds','flowers','rock','log','wil','oakB','oakT','waterA','bird','bfly'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB','enemies/bossAt2F','enemies/bossAt2B','water','swwater','swgnd','bankA','bankB','mushG','swtree','stairs','reeds','flowers','rock','log','wil','oakB','oakT','waterA','bird','bfly','swwaterA','swgndA'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();bakeMap();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=28';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=29';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -87,7 +87,7 @@ const terrace=(i,j)=>i>=10&&i<=15&&j>=2&&j<=6;
 const blocks=[[4,9],[5,9],[4,10]];
 const blockSet=new Set(blocks.map(b=>b.join(',')));
 const STUMP=[7.5,5.5], START=[6.5,7.8];
-const ANIM={"waterA":{"fw":110,"fh":57,"n":27},"bird":{"fw":24,"fh":22,"n":29},"bfly":{"fw":15,"fh":11,"n":13}};
+const ANIM={"waterA":{"fw":110,"fh":57,"n":27},"bird":{"fw":24,"fh":22,"n":29},"bfly":{"fw":15,"fh":11,"n":13},"swwaterA":{"fw":110,"fh":57,"n":27},"swgndA":{"fw":110,"fh":57,"n":19}};
 const MAPM={"mushG":{"w":58,"h":53,"ax":28,"ay":53},"swtree":{"w":74,"h":87,"ax":26,"ay":87},"stairs":{"w":86,"h":97,"ax":25,"ay":97},"wil":{"w":95,"h":72,"ax":55,"ay":72},"oakB":{"w":100,"h":64,"ax":49,"ay":64},"oakT":{"w":71,"h":77,"ax":39,"ay":77},"rock":{"w":32,"h":27,"ax":15,"ay":27},"log":{"w":36,"h":27,"ax":8,"ay":27},"flowers":{"w":35,"h":20,"ax":18,"ay":20},"reeds":{"w":24,"h":32,"ax":11,"ay":32},"water":{"w":110,"h":57},"swwater":{"w":110,"h":57},"swgnd":{"w":110,"h":57},"bankA":{"w":110,"h":57},"bankB":{"w":110,"h":57}};
 /* tipos de suelo GT: 0 pasto,1 camino,2 agua río,3/4 orilla clara (agua a +i / -i),5/6 orilla oscura,7 tierra de pantano,8 agua de pantano */
 const BRG=[{i0:27,i1:28,j:10}];
@@ -258,13 +258,14 @@ function drawHero(){
 }
 const WH={};
 function whiteOf(img){const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const x=c.getContext('2d');x.drawImage(img,0,0);x.globalCompositeOperation='source-in';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);return c;}
-let WFI=0;const ROT={};
+let WFI=0,WFR=0;const ROT={};
 function rot(n){if(!ROT[n]){const im=IMG[n],c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.translate(c.width,c.height);x.scale(-1,-1);x.drawImage(im,0,0);ROT[n]=c;}return ROT[n];}
 function groundTile(i,j,cx,cy){
   const g=GT[j*MW+i],alt=((i+j)&1)===1;
   if(g===1){ctx.drawImage(IMG.path_a,cx-58,cy-HH);return;}
   let im;
   if(g===2){const A=ANIM.waterA;ctx.drawImage(alt?rot('waterA'):IMG.waterA,(alt?A.n-1-WFI:WFI)*A.fw,0,A.fw,A.fh,cx-HW,cy-HH,A.fw,A.fh);return;}
+  if(g===7||g===8){const nm=g===7?'swgndA':'swwaterA',A=ANIM[nm],o=((i*7+j*3)+WFR)%A.n,k=alt?A.n-1-o:o;ctx.drawImage(alt?rot(nm):IMG[nm],k*A.fw,0,A.fw,A.fh,cx-HW,cy-HH,A.fw,A.fh);return;}
   if(0)im=null;else if(g===3)im=IMG.bankA;else if(g===4)im=rot('bankA');else if(g===5)im=IMG.bankB;else if(g===6)im=rot('bankB');
   else if(g===7)im=alt?rot('swgnd'):IMG.swgnd;else if(g===8)im=alt?rot('swwater'):IMG.swwater;
   else im=IMG['grass_'+'abcd'[(i*7+j*13+((i*j)%5))%4]];
@@ -835,7 +836,7 @@ function frame(now){
   ctx.imageSmoothingEnabled=false;
   ctx.setTransform(S,0,0,S,ox*S,oy*S);
   // suelo
-  WFI=Math.floor(performance.now()/90)%ANIM.waterA.n;
+  WFR=Math.floor(performance.now()/90);WFI=WFR%ANIM.waterA.n;
   for(let s=0;s<MW+MH;s++)for(let i=0;i<MW;i++){const j=s-i;if(j<0||j>=MH)continue;
     if(terrace(i,j))continue;
     const [cx,cy]=S2(i+.5,j+.5);if(Math.abs(cx-cam.x)>vw/2+HW+4||Math.abs(cy-cam.y)>vh/2+HH+66)continue;

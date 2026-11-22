@@ -17,16 +17,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v2';
+const VER='iso-prueba v3';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','hero/atkF','hero/atkB'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=1';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=2';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -40,7 +40,7 @@ const trees=[[1.5,1.5],[3.5,0.8],[0.8,4.5],[2.6,12.5],[5.4,13.5],[8.5,14.2],[12.
  [11.5,3.4],[13.6,3.2],[14.5,5.4],[10.8,5.6],[12.6,4.6]];
 const STUMP=[7.5,5.5];
 const mushes=[[7.5,9.5],[12.5,10.5],[3.5,4.5],[14.5,13.5]].map((p,k)=>({x:p[0],y:p[1],tx:p[0],ty:p[1],wait:Math.random()*2,face:-1,ph:k*1.7,hp:20,cd:0,flash:0,kx:0,ky:0,alive:true,resp:0}));
-const hero={x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,hp:100,cd:0,inv:0,swing:0,dead:0};
+const hero={x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,hp:100,cd:0,inv:0,swing:0,dead:0,back:false,atkT:0};
 const bag={esp:0,somb:0};
 const R=0.17;
 {const q=new URLSearchParams(location.search);if(q.get('x'))hero.x=+q.get('x');if(q.get('y'))hero.y=+q.get('y');}
@@ -68,29 +68,15 @@ function spr(name,wx,wy,z,ax,ay){const [sx,sy]=S2(wx,wy);ctx.drawImage(IMG[name]
 function drawHero(){
   const [sx,sy0]=S2(hero.x,hero.y); const sy=sy0-Math.round(hero.z);
   pixShadow(sx,sy,8,3,0.3);
-  const f=hero.moving?Math.floor(hero.walk*2)%2:0, bob=hero.moving&&f?1:0;
-  ctx.save(); ctx.translate(sx,sy-bob); ctx.scale(hero.face,1);
+  const B=hero.back?'B':'F', nat=hero.back?1:-1;
+  let key,fi;
+  if(hero.atkT>0){key='atk'+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
+  else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
+  else{key='idle'+B;fi=Math.floor(performance.now()/130)%15;}
+  const bob=(hero.moving&&hero.atkT<=0&&Math.floor(hero.walk*2)%2)?1:0;
+  ctx.save(); ctx.translate(sx,sy-bob); if(hero.face!==nat)ctx.scale(-1,1);
   if(hero.hp<=0)ctx.globalAlpha=.3; else if(hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
-  const O='#1a1220';
-  const R_=(c,x,y,w,h)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
-  // contorno
-  R_(O,-7,-23,14,12);R_(O,-6,-12,12,9);R_(O,-8,-11,16,6);
-  // piernas
-  const l=hero.moving&&f?1:0;
-  R_(O,-5,-4,4,4);R_(O,1,-4+l,4,4-l);
-  R_('#5a3a24',-4,-3,2,3);R_('#5a3a24',2,-3+l,2,3-l);
-  R_('#3a3250',-4,-5,2,2);R_('#3a3250',2,-5,2,2);
-  // cuerpo
-  R_('#3b6fc4',-5,-12,10,7);R_('#5b8fe0',-5,-12,10,1);R_('#d8b04a',-5,-7,10,1);
-  R_('#2a4f94',2,-11,3,4);
-  R_('#c44040',-5,-12,10,1);
-  // brazos
-  R_('#3b6fc4',-7,-11,2,5);R_('#3b6fc4',5,-11,2,5);R_('#f0c8a0',-7,-6,2,1);R_('#f0c8a0',5,-6,2,1);
-  // cabeza
-  R_('#f0c8a0',-6,-22,12,10);R_('#d8a47c',-6,-13,12,1);
-  R_('#6b3a2a',-6,-22,12,4);R_('#6b3a2a',-6,-18,2,3);R_('#6b3a2a',4,-18,2,2);R_('#8a5238',-3,-22,4,1);
-  R_(O,-3,-16,2,2);R_(O,1,-16,2,2);R_('#ffffff',-3,-16,1,1);R_('#ffffff',1,-16,1,1);
-  R_('#e0907c',-5,-14,2,1);R_('#e0907c',3,-14,2,1);
+  ctx.drawImage(IMG['hero/'+key],fi*79,0,79,47,-33,-44,79,47);
   ctx.restore();
 }
 const WH={};
@@ -196,14 +182,14 @@ function respawn(m){
   m.resp=2;
 }
 function combat(dt){
-  hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);
+  hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);hero.atkT=Math.max(0,hero.atkT-dt);
   if(hero.hp<=0){hero.dead-=dt;if(hero.dead<=0){hero.hp=100;hero.x=6.5;hero.y=7.8;hero.inv=1.5;}return;}
   let best=null,bd=1.45;
   for(const m of mushes){if(!m.alive)continue;const d=Math.hypot(m.x-hero.x,m.y-hero.y);if(d<bd){bd=d;best=m;}}
   if(best&&hero.cd<=0){
-    hero.cd=.55;hero.swing=.18;
+    hero.cd=.55;hero.swing=0;hero.atkT=.5;
     const dx=best.x-hero.x,dy=best.y-hero.y,d=Math.hypot(dx,dy)||1;
-    hero.face=(dx-dy)>=0?1:-1;
+    hero.face=(dx-dy)>=0?1:-1;hero.back=(dx+dy)<0;
     const dmg=7+Math.floor(Math.random()*4);
     best.hp-=dmg;best.flash=.1;best.kx=dx/d*3.2;best.ky=dy/d*3.2;
     addFloat(best.x,best.y,'-'+dmg,'#ffffff');
@@ -229,7 +215,7 @@ function update(dt,t){
     const wx=(ux/HW+uy/HH)/2*sp*dt, wy=(uy/HH-ux/HW)/2*sp*dt;
     if(!blockedAt(hero.x+wx,hero.y,R))hero.x+=wx;
     if(!blockedAt(hero.x,hero.y+wy,R))hero.y+=wy;
-    if(ux)hero.face=ux>0?1:-1;
+    if(hero.atkT<=0){if(ux)hero.face=ux>0?1:-1;if(uy)hero.back=uy<0;}
     hero.walk+=dt*4.2;
   }
   combat(dt);
@@ -326,7 +312,6 @@ function frame(now){
   // objetos ordenados
   const list=stat.slice();
   list.push({k:hero.x+hero.y,f:drawHero});
-  list.push({k:hero.x+hero.y+.01,f:drawSlash});
   for(const m of mushes)if(m.alive)list.push({k:m.x+m.y,f:()=>drawMush(m)});
   for(const d of drops)list.push({k:d.x+d.y,f:()=>drawDrop(d)});
   list.sort((a,b)=>a.k-b.k);

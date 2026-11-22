@@ -57,7 +57,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v46';
+const VER='iso-prueba v47';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -83,7 +83,7 @@ trees.forEach(t=>{t.hp=4;t.sh=0;t.fall=-1;t.gone=false;t.dir=1;t.terr=(t[0]>=10&
 const STUMP=[7.5,5.5];
 const mushes=[[7.5,9.5],[12.5,10.5],[3.5,4.5],[14.5,13.5]].map((p,k)=>({x:p[0],y:p[1],tx:p[0],ty:p[1],wait:Math.random()*2,face:-1,ph:k*1.7,hp:20,cd:0,flash:0,kx:0,ky:0,alive:true,resp:0}));
 const CHOP=.86;
-const hero={chopT:0,chopHit:true,chopTree:null,run:false,runT:0,gap:0,rs:0,x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,hp:100,mhp:100,cd:0,inv:0,swing:0,dead:0,back:false,atkT:0,ult:0,ultCd:0,ultHit:false,dash:0,dashCd:0,fx:1,fy:0,held:false,combo:false,lastAtk:0,pend:false,hurtT:0,skill:0,skillCd:0,skillFired:true,idleT:0,longT:0};
+const hero={chopT:0,chopHit:true,chopTree:null,run:false,runT:0,gap:0,rs:0,x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,dDur:.32,hp:100,mhp:100,cd:0,inv:0,swing:0,dead:0,back:false,atkT:0,ult:0,ultCd:0,ultHit:false,dash:0,dashCd:0,fx:1,fy:0,held:false,combo:false,lastAtk:0,pend:false,hurtT:0,skill:0,skillCd:0,skillFired:true,idleT:0,longT:0};
 const bag={esp:0,somb:0,mad:0};
 const LV={lvl:1,xp:0,sk:{atk:1,onda:1,ult:1}},LVMAX=60,SKMAX=10;
 const xpNeed=l=>50+50*l;
@@ -133,7 +133,7 @@ function drawHero(){
   let key,fi;
   if(hero.hp<=0){key='dead'+B;fi=Math.min(29,Math.floor((2.2-hero.dead)/1.0*30));}
   else if(hero.ult>0){key='ult'+B;fi=Math.min(29,Math.floor((1-hero.ult/1.0)*30));}
-  else if(hero.dash>0){key='dash'+B;fi=Math.min(23,Math.floor((1-hero.dash/.32)*24));}
+  else if(hero.dash>0){key='dash'+B;fi=Math.min(23,Math.floor((1-hero.dash/hero.dDur)*24));}
   else if(hero.skill>0){key='skill'+B;fi=Math.min(29,Math.floor((1-hero.skill/.75)*30));}
   else if(hero.chopT>0){key='chop'+B;fi=Math.min(23,Math.floor((1-hero.chopT/CHOP)*24));}
   else if(hero.atkT>0){key='atk'+(hero.combo?'2':'')+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
@@ -378,7 +378,7 @@ function attack(){
   let best=null,bd=1.9;
   for(const m of mushes){if(!m.alive)continue;const d=Math.hypot(m.x-hero.x,m.y-hero.y);if(d<bd&&los(hero.x,hero.y,m.x,m.y)){bd=d;best=m;}}
   if(best){const dx=best.x-hero.x,dy=best.y-hero.y,d=Math.hypot(dx,dy)||1;hero.fx=dx/d;hero.fy=dy/d;hero.face=(dx-dy)>=0?1:-1;hero.back=(dx+dy)<0;}
-  if(hero.cmb===2&&!hero.dash){hero.dash=.32;hero.dp=0;hero.dashAtk=true;hero.dashHit=false;hero.dashSet=new Set();hero.dOut=0;hero.dRet=false;hero.atkT=0;hero.pend=false;hero.skill=0;hero.longT=0;hero.cd=.6;dust(hero.x,hero.y,6);
+  if(hero.cmb===2&&!hero.dash){hero.dDur=.457;hero.dash=.457;hero.dp=0;hero.dashAtk=true;hero.dashHit=false;hero.dashSet=new Set();hero.dOut=0;hero.dRet=false;hero.atkT=0;hero.pend=false;hero.skill=0;hero.longT=0;hero.cd=.75;dust(hero.x,hero.y,6);
     hero.back=(hero.fx+hero.fy)<0;hero.face=(hero.fx-hero.fy)>=0?1:-1;}
 }
 function dashStrike(R,fin){
@@ -400,7 +400,7 @@ function strike(){
     }}
   if(hit){hs=c2?.08:.05;addShake(c2?2:1,.1);}
 }
-function castDash(){if(hero.hp<=0||hero.ult>0||hero.dash>0||hero.dashCd>0)return;hero.dash=.32;hero.dp=0;hero.dashCd=1.4;hero.dashAtk=false;hero.atkT=0;hero.pend=false;hero.skill=0;hero.longT=0;dust(hero.x,hero.y,6);
+function castDash(){if(hero.hp<=0||hero.ult>0||hero.dash>0||hero.dashCd>0)return;hero.dDur=.32;hero.dash=.32;hero.dp=0;hero.dashCd=1.4;hero.dashAtk=false;hero.atkT=0;hero.pend=false;hero.skill=0;hero.longT=0;dust(hero.x,hero.y,6);
   hero.back=(hero.fx+hero.fy)<0;hero.face=(hero.fx-hero.fy)>=0?1:-1;}
 function combat(dt){
   hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);hero.atkT=Math.max(0,hero.atkT-dt);hero.hurtT=Math.max(0,hero.hurtT-dt);hero.skillCd=Math.max(0,hero.skillCd-dt);
@@ -442,13 +442,13 @@ function update(dt,t){
     hero.walk+=dt*4.2*((68+67*hero.rs)/95);hero.stepT=(hero.stepT||0)-dt;if(hero.stepT<=0&&hero.atkT<=0){hero.stepT=.17;dust(hero.x,hero.y,1,1);if(Math.random()<.5)leaf(hero.x,hero.y);}
   }
   if(hero.dashAtk&&hero.dash<=0){hero.dashAtk=false;hero.dRet=false;hero.back=(hero.fx+hero.fy)<0;hero.face=(hero.fx-hero.fy)>=0?1:-1;}
-  if(hero.dash>0&&hero.dashAtk){const p=1-hero.dash/.32,P=q=>Math.sin(Math.PI*Math.min(1,Math.max(0,(q-.08)/.84)));let d=(P(p)-P(hero.dp||0))*1.5;hero.dp=p;
+  if(hero.dash>0&&hero.dashAtk){const p=1-hero.dash/hero.dDur,P=q=>Math.sin(Math.PI*Math.min(1,Math.max(0,(q-.08)/.84)));let d=(P(p)-P(hero.dp||0))*1.5;hero.dp=p;
     if(p>=.5&&!hero.dRet){hero.dRet=true;hero.back=(-hero.fx-hero.fy)<0;hero.face=(-hero.fx+hero.fy)>=0?1:-1;}
     if(d>0){if(Math.random()<dt*22)dust(hero.x,hero.y,1);const x0=hero.x,y0=hero.y;if(!blockedAt(hero.x+hero.fx*d,hero.y,R))hero.x+=hero.fx*d;if(!blockedAt(hero.x,hero.y+hero.fy*d,R))hero.y+=hero.fy*d;hero.dOut=(hero.dOut||0)+Math.hypot(hero.x-x0,hero.y-y0);}
     else if(d<0){const b=Math.min(-d,hero.dOut||0);hero.x-=hero.fx*b;hero.y-=hero.fy*b;hero.dOut-=b;if(Math.random()<dt*22)dust(hero.x,hero.y,1);}}
-  else if(hero.dash>0){const p=1-hero.dash/.32,E=q=>{const u=Math.min(1,Math.max(0,(q-.15)/.6));return u*u*(3-2*u);};const d=(E(p)-E(hero.dp||0))*1.28;hero.dp=p;
+  else if(hero.dash>0){const p=1-hero.dash/hero.dDur,E=q=>{const u=Math.min(1,Math.max(0,(q-.15)/.6));return u*u*(3-2*u);};const d=(E(p)-E(hero.dp||0))*1.28;hero.dp=p;
     if(d>0){if(Math.random()<dt*22)dust(hero.x,hero.y,1);if(Math.random()<dt*30)leaf(hero.x,hero.y);const wx=hero.fx*d,wy=hero.fy*d;if(!blockedAt(hero.x+wx,hero.y,R))hero.x+=wx;if(!blockedAt(hero.x,hero.y+wy,R))hero.y+=wy;}}
-  if(hero.dash>0&&hero.dashAtk){if(hero.dash<=.32*.5&&!hero.dashHit){hero.dashHit=true;dashStrike(2.0,true);}else if(!hero.dashHit)dashStrike(1.0,false);}
+  if(hero.dash>0&&hero.dashAtk){if(hero.dash<=hero.dDur*.5&&!hero.dashHit){hero.dashHit=true;dashStrike(2.0,true);}else if(!hero.dashHit)dashStrike(1.0,false);}
   combat(dt);
   for(let k=floats.length-1;k>=0;k--){floats[k].t+=dt;if(floats[k].t>.9)floats.splice(k,1);}
   for(const m of mushes){

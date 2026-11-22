@@ -29,8 +29,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .slot.eq{opacity:.75;border-style:dashed}
 #invc,#pjc{position:relative;inset:auto;width:150px;height:132px;flex:none;image-rendering:pixelated;background:#16244a;border:2px solid #2d4678;border-radius:8px}
 #invr{background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:8px;display:grid;grid-template-columns:repeat(6,38px);grid-auto-rows:38px;gap:4px;align-content:start}
-#lvup{position:fixed;left:50%;bottom:14px;transform:translateX(-50%) translateY(20px);background:#0d1730ee;border:2px solid #e0b84a;border-radius:10px;padding:7px 14px;color:#cfe0ff;font:600 12px/1.4 system-ui;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:20}
-#lvup.on{opacity:1;transform:translateX(-50%)}
+#lvup{position:fixed;left:50%;top:50%;transform:translate(-50%,-40%);background:#0d1730ee;border:2px solid #e0b84a;border-radius:10px;padding:7px 14px;color:#cfe0ff;font:600 12px/1.4 system-ui;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:20}
+#lvup.on{opacity:1;transform:translate(-50%,-50%)}
 #lvup b{display:block;color:#ffe27a;font:800 14px system-ui}
 #lvup span{display:block}
 #invg{display:flex;flex-direction:column;gap:6px;width:268px;flex:none}
@@ -62,7 +62,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v51';
+const VER='iso-prueba v52';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -101,7 +101,7 @@ const xpNeed=l=>50+50*l;
 let lvTimer=0;
 function lvToast(l0){const e=document.getElementById('lvup'),n=LV.lvl-l0;
   e.innerHTML='<b>¡Subiste a nivel '+LV.lvl+'!</b><span>Vida máx '+(100+2*(l0-1))+' → '+hero.mhp+' (+'+(2*n)+')</span><span>Daño +'+(3*(LV.lvl-1))+'% en total (+'+(3*n)+'%)</span>';
-  e.classList.add('on');clearTimeout(lvTimer);lvTimer=setTimeout(()=>e.classList.remove('on'),3500);}
+  e.classList.add('on');clearTimeout(lvTimer);lvTimer=setTimeout(()=>e.classList.remove('on'),3000);}
 function dm(k,b){return Math.max(1,Math.round(b*(1+.12*(LV.sk[k]-1))*(1+.03*(LV.lvl-1))));}
 function addXp(n){if(LV.lvl>=LVMAX)return;LV.xp+=n;const l0=LV.lvl;
   while(LV.lvl<LVMAX&&LV.xp>=xpNeed(LV.lvl)){LV.xp-=xpNeed(LV.lvl);LV.lvl++;hero.mhp=100+2*(LV.lvl-1);hero.hp=hero.mhp;addFloat(hero.x,hero.y,'¡Nivel '+LV.lvl+'!','#ffe27a');ring(hero.x,hero.y);}
@@ -286,6 +286,33 @@ function killMush(m){
   const n=m.type==='boss'?9:1+Math.floor(Math.random()*2);
   for(let k=0;k<n;k++)drops.push({x:m.x+(Math.random()-.5)*(m.type==='boss'?1.6:.5),y:m.y+(Math.random()-.5)*(m.type==='boss'?1.6:.5),type:m.type==='boss'?(k<4?'somb':'esp'):Math.random()<(m.type==='puff'?.3:.2)?'somb':'esp',ph:Math.random()*6});
   if(m.type==='boss'){addShake(4,.4);ring(m.x,m.y);addFloat(m.x,m.y,'¡Jefe derrotado!','#ffe27a');}
+}
+const NG=.5,NW=Math.ceil(MW/NG),NH=Math.ceil(MH/NG);let navOk=null,navT=-9e9;
+function navBuild(){navOk=new Uint8Array(NW*NH);for(let j=0;j<NH;j++)for(let i=0;i<NW;i++){const x=(i+.5)*NG,y=(j+.5)*NG;navOk[j*NW+i]=(x>.4&&y>.4&&x<MW-.4&&y<MH-.4&&!cellSolid(Math.floor(x),Math.floor(y))&&!blockedAt(x,y,.3))?1:0;}navT=performance.now();}
+function navNear(x,y){if(!navOk||performance.now()-navT>1500)navBuild();const ci=Math.min(NW-1,Math.max(0,Math.floor(x/NG))),cj=Math.min(NH-1,Math.max(0,Math.floor(y/NG)));
+  for(let r=0;r<=8;r++)for(let dj=-r;dj<=r;dj++)for(let di=-r;di<=r;di++){if(Math.max(Math.abs(di),Math.abs(dj))!==r)continue;const i=ci+di,j=cj+dj;if(i<0||j<0||i>=NW||j>=NH)continue;if(navOk[j*NW+i])return [i,j];}return null;}
+function navPath(x0,y0,x1,y1){
+  const a=navNear(x0,y0),b=navNear(x1,y1);if(!a||!b)return [];
+  const g=new Float32Array(NW*NH).fill(1e9),par=new Int32Array(NW*NH).fill(-1),done=new Uint8Array(NW*NH),heap=[];
+  const push=(f,k)=>{heap.push([f,k]);let i=heap.length-1;while(i>0){const p=(i-1)>>1;if(heap[p][0]<=heap[i][0])break;[heap[p],heap[i]]=[heap[i],heap[p]];i=p;}};
+  const pop=()=>{const t=heap[0],l=heap.pop();if(heap.length){heap[0]=l;let i=0;for(;;){let c=2*i+1;if(c>=heap.length)break;if(c+1<heap.length&&heap[c+1][0]<heap[c][0])c++;if(heap[i][0]<=heap[c][0])break;[heap[i],heap[c]]=[heap[c],heap[i]];i=c;}}return t;};
+  const sk=a[1]*NW+a[0],gk=b[1]*NW+b[0];g[sk]=0;push(0,sk);
+  while(heap.length){const [,k]=pop();if(done[k])continue;done[k]=1;if(k===gk)break;const ci=k%NW,cj=(k/NW)|0;
+    for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++){if(!di&&!dj)continue;const i=ci+di,j=cj+dj;if(i<0||j<0||i>=NW||j>=NH)continue;const n=j*NW+i;if(!navOk[n]||done[n])continue;
+      if(di&&dj&&(!navOk[cj*NW+i]||!navOk[j*NW+ci]))continue;const ng=g[k]+(di&&dj?1.414:1);if(ng<g[n]){g[n]=ng;par[n]=k;push(ng+Math.hypot(i-b[0],j-b[1]),n);}}}
+  if(par[gk]<0&&sk!==gk)return [];
+  const pts=[];for(let k=gk;k>=0&&k!==sk;k=par[k])pts.push([(k%NW+.5)*NG,(((k/NW)|0)+.5)*NG]);pts.reverse();return pts;}
+function clearLine(ax,ay,bx,by){const d=Math.hypot(bx-ax,by-ay),n=Math.max(1,Math.ceil(d/.2));for(let k=1;k<=n;k++){const t=k/n;if(blockedAt(ax+(bx-ax)*t,ay+(by-ay)*t,.2))return false;}return true;}
+function steerTo(m,tx,ty){
+  if(clearLine(m.x,m.y,tx,ty)){m.path=null;return [tx-m.x,ty-m.y];}
+  const now=performance.now();
+  if(!m.path||!m.path.length||now-m.pathT>500||Math.hypot((m.pgx||0)-tx,(m.pgy||0)-ty)>1.2){m.path=navPath(m.x,m.y,tx,ty);m.pathT=now;m.pgx=tx;m.pgy=ty;}
+  while(m.path.length&&Math.hypot(m.path[0][0]-m.x,m.path[0][1]-m.y)<.28)m.path.shift();
+  const p=m.path[0];return p?[p[0]-m.x,p[1]-m.y]:[tx-m.x,ty-m.y];}
+function unstick(m){
+  m.path=null;m.wait=0;
+  if(blockedAt(m.x,m.y,.15)){const c=navNear(m.x,m.y);if(c){m.x=(c[0]+.5)*NG;m.y=(c[1]+.5)*NG;}}
+  m.jit=.7;m.ja=Math.random()*6.283;
 }
 function enemyHit(m,hd0){
   const hd=Math.hypot(hero.x-m.x,hero.y-m.y);
@@ -495,24 +522,32 @@ function update(dt,t){
       m.at=Math.max(0,m.at-dt);
       if(!m.atHit&&m.at<=T.adur*(1-m.hitF)){m.atHit=true;enemyHit(m,hd);}
     }else if(hd<(m.type==='boss'?7:3.6)&&hero.hp>0){
-      dx=hero.x-m.x;dy=hero.y-m.y;face();
+      {const g=steerTo(m,hero.x,hero.y);dx=g[0];dy=g[1];}face();
       if(m.type==='puff'){sp=hd<.9?T.ch:(hd>T.rng+.4?T.ch:0);if(hd<.9){dx=-dx;dy=-dy;}}
       else sp=hd>T.rng-.2?T.ch:0;
+      m.sdT=(m.sdT||0)-dt;if(m.sdT<=0){m.sd=Math.random()<.5?-1:1;m.sdT=1+Math.random()*1.5;}
+      if(sp===0&&m.cd>0&&hd<(m.type==='boss'?2.6:1.8)){const ex=hero.x-m.x,ey=hero.y-m.y;dx=-ey*m.sd;dy=ex*m.sd;sp=T.sp*.9;}
       if(hd<=T.rng&&m.cd<=0&&(m.type!=='puff'||los(m.x,m.y,hero.x,hero.y))){
         m.at=T.adur;m.atHit=false;m.cd=T.cd+T.adur;sp=0;
         const AK=m.type+'Atk'+(m.back?'B':'F');m.hitF=ENM[AK].hit/ENM[AK].n;}
     }else{
       m.wait-=dt;
-      if(m.wait<=0&&Math.hypot(m.tx-m.x,m.ty-m.y)<0.05){
-        const nx=m.x+(Math.random()-.5)*2.4, ny=m.y+(Math.random()-.5)*2.4;
-        const ci=Math.floor(nx),cj=Math.floor(ny);
-        if(nx>.5&&ny>.5&&nx<MW-.5&&ny<MH-.5&&!cellSolid(ci,cj)&&!blockedAt(nx,ny,.15)){m.tx=nx;m.ty=ny;}
-        m.wait=1+Math.random()*2;
+      if(m.wait<=0&&Math.hypot(m.tx-m.x,m.ty-m.y)<.2){
+        for(let q=0;q<8;q++){
+          const ang=Math.random()*6.283,r=1.5+Math.random()*2.2;let nx=m.x+Math.cos(ang)*r,ny=m.y+Math.sin(ang)*r;
+          if(Math.hypot(m.x-m.hx,m.y-m.hy)>6&&q<5){nx=m.hx+(Math.random()-.5)*5;ny=m.hy+(Math.random()-.5)*5;}
+          if(nx>.6&&ny>.6&&nx<MW-.6&&ny<MH-.6&&!cellSolid(Math.floor(nx),Math.floor(ny))&&!blockedAt(nx,ny,.3)){m.tx=nx;m.ty=ny;break;}
+        }
+        m.wait=.2+Math.random()*.8;
       }
-      dx=m.tx-m.x;dy=m.ty-m.y;sp=T.sp;
+      {const g=steerTo(m,m.tx,m.ty);dx=g[0];dy=g[1];}sp=T.sp*(Math.hypot(m.tx-m.x,m.ty-m.y)>.2?1.15:0);
       const sx=(dx-dy),sy2=(dx+dy);if(Math.abs(sx)>.01&&sp>0){m.face=sx>0?1:-1;m.back=sy2<0;}
     }
-    const d=Math.hypot(dx,dy);
+    // atasco: si quiere moverse y no avanza, destrabar
+    m.st=(m.st||0)+dt;
+    if(m.st>.6){const mvd=Math.hypot(m.x-(m.sx===undefined?m.x:m.sx),m.y-(m.sy===undefined?m.y:m.sy));if(m.want&&mvd<.1&&m.at<=0)unstick(m);m.sx=m.x;m.sy=m.y;m.st=0;}
+    if(m.jit>0){m.jit-=dt;dx=Math.cos(m.ja);dy=Math.sin(m.ja);sp=T.ch;}
+    const d=Math.hypot(dx,dy);m.want=d>0.03&&sp>0;
     if(d>0.03&&sp>0){
       const s=Math.min(d,sp*dt),nx=m.x+dx/d*s,ny=m.y+dy/d*s;
       let mv=false;

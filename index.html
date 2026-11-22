@@ -67,7 +67,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v53';
+const VER='iso-prueba v54';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -100,7 +100,7 @@ function mkE(t,x,y,k){const T=ET[t];return{type:t,x,y,hx:x,hy:y,tx:x,ty:y,wait:M
 const mushes=[mkE('champ',7.5,9.5,0),mkE('puff',12.5,10.5,1),mkE('champ',3.5,4.5,2),mkE('puff',16,9,3),mkE('champ',9,7,4),mkE('boss',BOSSHOME[0],BOSSHOME[1],5)];
 const CHOP=.86;
 const EM_IN=2.2,EM_N=30;
-function emFi(e){return e.ph===0?Math.min(EM_N-1,Math.floor(e.t/EM_IN*EM_N)):e.ph===1?EM_N-1:Math.max(0,Math.round(e.cur*(1-e.t/e.dur)));}
+function emFi(e){return e.ph===0?Math.min(EM_N-1,Math.floor(e.t/EM_IN*EM_N)):e.ph===1?(()=>{const i=Math.floor(e.t/.12)%18;return 20+(i<10?i:18-i);})():Math.max(0,Math.round(e.cur*(1-e.t/e.dur)));}
 function emStart(k){if(hero.hp<=0||hero.ult>0||hero.dash>0||hero.skill>0||hero.atkT>0||hero.chopT>0||hero.hurtT>0)return;
   if(hero.em){if(hero.em.k===k)emOut();return;}
   hero.em={k,t:0,ph:0,cur:0,dur:1};hero.idleT=0;hero.longT=0;}

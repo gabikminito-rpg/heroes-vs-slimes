@@ -112,7 +112,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v66';
+const VER='iso-prueba v67';
 const CKEY='hvs_iso_cfg_v1';const FX=Object.assign({water:1,tiles:1,fly:1,fire:1,light:1,rays:1},(()=>{try{return JSON.parse(localStorage.getItem('hvs_iso_cfg_v1')||'{}');}catch(e){return {};}})());
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
@@ -1044,7 +1044,7 @@ function loadGame(){let d=null;try{d=JSON.parse(localStorage.getItem(SKEY)||'nul
 setInterval(saveGame,4000);addEventListener('pagehide',saveGame);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveGame();});
 const mm=document.getElementById('mm'),mmx=mm.getContext('2d');let mmBase=null;
 const MMC={0:'#3f7a3a',1:'#b0905a',2:'#2f6aa8',3:'#4f8a4a',4:'#4f8a4a',5:'#4f8a4a',6:'#4f8a4a',7:'#4a5a3a',8:'#3d6f66',9:'#2b2638',10:'#4a3a3a',11:'#241d33',12:'#6a3fa0'};
-const MMS={px:0,py:0,t:0};
+const MMS={px:0,py:0,t:0,z:1};
 function mmDraw(){
   const BW=(MW+MH)*4,BH=(MW+MH)*2;
   if(!mmBase){mmBase=document.createElement('canvas');mmBase.width=BW;mmBase.height=BH;const b=mmBase.getContext('2d');
@@ -1052,17 +1052,23 @@ function mmDraw(){
     b.fillStyle='rgba(0,0,0,.28)';for(let i=0;i<MW;i++)if(zoneOf(i+.5)>=1){for(let j=0;j<MH;j++)b.fillRect((i-j+MH)*4-2,(i+j)*2,6,4);}
     b.fillStyle='#e8c850';{const px=(STAIRS[0]-STAIRS[1]+MH)*4,py=(STAIRS[0]+STAIRS[1])*2;b.fillRect(px-4,py-4,8,8);}}
   const P=(x,y)=>[(x-y+MH)*4,(x+y)*2],[hx,hy]=P(hero.x,hero.y);
-  if(!MMS.drag&&performance.now()-MMS.t>4000){MMS.px*=.9;MMS.py*=.9;if(Math.abs(MMS.px)<.5)MMS.px=0;if(Math.abs(MMS.py)<.5)MMS.py=0;}
+  if(!MMS.drag&&performance.now()-MMS.t>4000){MMS.px*=.9;MMS.py*=.9;if(Math.abs(MMS.px)<.5)MMS.px=0;if(Math.abs(MMS.py)<.5)MMS.py=0;MMS.z=1+(MMS.z-1)*.9;if(MMS.z<1.02)MMS.z=1;}
   MMS.peek=Math.hypot(MMS.px,MMS.py)>8;
   let cx=hx+MMS.px,cy=hy+MMS.py;{let wx=(cx/4-MH+cy/2)/2,wy=(cy/2-(cx/4-MH))/2;wx=Math.max(1,Math.min(MW-1,wx));wy=Math.max(1,Math.min(MH-1,wy));cx=(wx-wy+MH)*4;cy=(wx+wy)*2;}MMS.px=cx-hx;MMS.py=cy-hy;
-  const ox=Math.round(200-cx),oy=Math.round(100-cy);
-  mmx.clearRect(0,0,400,200);mmx.drawImage(mmBase,ox,oy);
-  if(!MMS.peek)for(const m of mushes){if(!m.alive)continue;if(Math.hypot(m.x-hero.x,m.y-hero.y)>11)continue;const [px,py]=P(m.x,m.y);mmx.fillStyle=m.boss?'#ffd24a':'#ff5a4a';const z=m.boss?8:4;mmx.fillRect(Math.round(px+ox-z/2),Math.round(py+oy-z/2),z,z);}
-  const X=Math.round(hx+ox),Y=Math.round(hy+oy);mmx.fillStyle='#000';mmx.fillRect(X-5,Y-5,10,10);mmx.fillStyle=Math.floor(performance.now()/300)%2?'#fff':'#9fe8ff';mmx.fillRect(X-3,Y-3,6,6);}
-{const mmc=document.getElementById('mm');let dr=null;
-  mmc.addEventListener('pointerdown',e=>{e.stopPropagation();dr={x:e.clientX,y:e.clientY};MMS.drag=true;try{mmc.setPointerCapture(e.pointerId);}catch(_){}});
-  mmc.addEventListener('pointermove',e=>{if(!dr)return;const k=400/mmc.clientWidth;MMS.px-=(e.clientX-dr.x)*k;MMS.py-=(e.clientY-dr.y)*k;dr.x=e.clientX;dr.y=e.clientY;MMS.t=performance.now();});
-  const up=()=>{dr=null;MMS.drag=false;MMS.t=performance.now();};mmc.addEventListener('pointerup',up);mmc.addEventListener('pointercancel',up);mmc.addEventListener('dblclick',()=>{MMS.px=MMS.py=0;});}
+  const ox=0,oy=0;
+  const Z=MMS.z;mmx.setTransform(1,0,0,1,0,0);mmx.clearRect(0,0,400,200);mmx.imageSmoothingEnabled=false;mmx.setTransform(Z,0,0,Z,200-cx*Z,100-cy*Z);mmx.drawImage(mmBase,0,0);
+  if(!MMS.peek)for(const m of mushes){if(!m.alive)continue;if(Math.hypot(m.x-hero.x,m.y-hero.y)>11)continue;const [px,py]=P(m.x,m.y);mmx.fillStyle=m.boss?'#ffd24a':'#ff5a4a';const z=(m.boss?8:4)/Math.sqrt(MMS.z);mmx.fillRect(Math.round(px-z/2),Math.round(py-z/2),z,z);}
+  const X=Math.round(hx),Y=Math.round(hy),q=5/Math.sqrt(Z);mmx.fillStyle='#000';mmx.fillRect(X-q,Y-q,q*2,q*2);mmx.fillStyle=Math.floor(performance.now()/300)%2?'#fff':'#9fe8ff';mmx.fillRect(X-q+2,Y-q+2,q*2-4,q*2-4);mmx.setTransform(1,0,0,1,0,0);}
+{const mmc=document.getElementById('mm'),pts=new Map();let pd=0;
+  const dist=()=>{const a=[...pts.values()];return a.length>1?Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y):0;};
+  const zoomBy=f=>{MMS.z=Math.max(1,Math.min(4,MMS.z*f));MMS.t=performance.now();};
+  mmc.addEventListener('pointerdown',e=>{e.stopPropagation();pts.set(e.pointerId,{x:e.clientX,y:e.clientY});MMS.drag=true;pd=dist();try{mmc.setPointerCapture(e.pointerId);}catch(_){}});
+  mmc.addEventListener('pointermove',e=>{const o=pts.get(e.pointerId);if(!o)return;const k=400/mmc.clientWidth;
+    if(pts.size>=2){o.x=e.clientX;o.y=e.clientY;const d=dist();if(pd>0&&d>0)zoomBy(d/pd);pd=d;MMS.t=performance.now();return;}
+    MMS.px-=(e.clientX-o.x)*k/MMS.z;MMS.py-=(e.clientY-o.y)*k/MMS.z;o.x=e.clientX;o.y=e.clientY;MMS.t=performance.now();});
+  const up=e=>{pts.delete(e.pointerId);pd=dist();if(!pts.size)MMS.drag=false;MMS.t=performance.now();};mmc.addEventListener('pointerup',up);mmc.addEventListener('pointercancel',up);
+  mmc.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();zoomBy(Math.exp(-e.deltaY*.0025));},{passive:false});
+  mmc.addEventListener('dblclick',()=>{MMS.px=MMS.py=0;MMS.z=1;});}
 function packSheets(){for(const key of Object.keys(ENM)){const M=ENM[key],im=IMG['enemies/'+key];if(!im||im.width<=4096||M.cols)continue;
   const cols=Math.max(1,Math.floor(4096/M.fw)),rows=Math.ceil(M.n/cols),c=document.createElement('canvas');c.width=cols*M.fw;c.height=rows*M.fh;const x=c.getContext('2d');
   for(let i=0;i<M.n;i++)x.drawImage(im,i*M.fw,0,M.fw,M.fh,(i%cols)*M.fw,Math.floor(i/cols)*M.fh,M.fw,M.fh);

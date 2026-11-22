@@ -69,7 +69,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v60';
+const VER='iso-prueba v61';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -265,7 +265,7 @@ function groundTile(i,j,cx,cy){
   if(g===1){ctx.drawImage(IMG.path_a,cx-58,cy-HH);return;}
   let im;
   if(g===2){const A=ANIM.waterA;ctx.drawImage(alt?rot('waterA'):IMG.waterA,(alt?A.n-1-WFI:WFI)*A.fw,0,A.fw,A.fh,cx-HW,cy-HH,A.fw,A.fh);return;}
-  if(g===7||g===8){const nm=g===7?'swgndA':'swwaterA',A=ANIM[nm],o=((i*7+j*3)+WFR)%A.n,k=alt?A.n-1-o:o;ctx.drawImage(alt?rot(nm):IMG[nm],k*A.fw,0,A.fw,A.fh,cx-HW,cy-HH,A.fw,A.fh);return;}
+  if(g===7||g===8){const nm=g===7?'swgndA':'swwaterA',A=ANIM[nm],T=g===7?200:140,h=((i*73856093)^(j*19349663))>>>0,t=(WFR+(i*7+j*4)*3+h%24)%T,W2=2*(A.n-1),o=t<W2?(t<A.n?t:W2-t):0,k=alt?A.n-1-o:o;ctx.drawImage(alt?rot(nm):IMG[nm],k*A.fw,0,A.fw,A.fh,cx-HW,cy-HH,A.fw,A.fh);return;}
   if(0)im=null;else if(g===3)im=IMG.bankA;else if(g===4)im=rot('bankA');else if(g===5)im=IMG.bankB;else if(g===6)im=rot('bankB');
   else if(g===7)im=alt?rot('swgnd'):IMG.swgnd;else if(g===8)im=alt?rot('swwater'):IMG.swwater;
   else im=IMG['grass_'+'abcd'[(i*7+j*13+((i*j)%5))%4]];

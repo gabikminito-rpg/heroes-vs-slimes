@@ -57,7 +57,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v42';
+const VER='iso-prueba v43';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -385,7 +385,7 @@ function dashStrike(){
   let hit=0;
   for(const m of mushes){if(!m.alive)continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;
     if(d<1.7&&los(hero.x,hero.y,m.x,m.y)&&(dx/d*hero.fx+dy/d*hero.fy)>-.1){const dmg=dm('atk',20+Math.floor(Math.random()*6));m.hp-=dmg;m.flash=.14;m.kx=dx/d*5.5;m.ky=dy/d*5.5;addFloat(m.x,m.y,'-'+dmg,'#9fe8ff');spark(m.x,m.y,12);hit++;if(m.hp<=0)killMush(m);}}
-  slashes.push({x:hero.x,y:hero.y,dx:hero.fx,dy:hero.fy,t:0,n:WV[(hero.fx+hero.fy)<0?'slashB':'slashF'].n});
+  {const px=hero.x+hero.fx*.9,py=hero.y+hero.fy*.9;ring(px,py);spark(px,py,10,4);dust(px,py,4);}
   addShake(hit?3:2,.12);if(hit)hs=Math.max(hs,.09);}
 function strike(){
   const c2=hero.combo;let hit=0;

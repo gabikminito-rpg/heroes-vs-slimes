@@ -57,7 +57,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v39';
+const VER='iso-prueba v40';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -370,7 +370,7 @@ function treeUpdate(dt){
 function startChop(t){const dx=t[0]-hero.x,dy=t[1]-hero.y,d=Math.hypot(dx,dy)||1;hero.fx=dx/d;hero.fy=dy/d;hero.face=(dx-dy)>=0?1:-1;hero.back=(dx+dy)<0;
   hero.cd=CHOP;hero.chopT=CHOP;hero.chopHit=false;hero.chopTree=t;hero.atkT=0;hero.pend=false;hero.longT=0;spark(hero.x,hero.y,8,14);}
 function attack(){
-  {let tb=null,td=1.5;for(const t of trees){if(t.gone||t.fall>=0||t.terr)continue;const d=Math.hypot(t[0]-hero.x,t[1]-hero.y);if(d<td){td=d;tb=t;}}
+  {let tb=null,td=1.05;for(const t of trees){if(t.gone||t.fall>=0||t.terr)continue;const d=Math.hypot(t[0]-hero.x,t[1]-hero.y);if(d<td){td=d;tb=t;}}
    let mb=false;for(const m of mushes){if(m.alive&&Math.hypot(m.x-hero.x,m.y-hero.y)<1.9&&los(hero.x,hero.y,m.x,m.y)){mb=true;break;}}
    if(tb&&!mb){startChop(tb);return;}}
   hero.cd=.55;hero.atkT=.5;hero.pend=true;

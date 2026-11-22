@@ -96,7 +96,7 @@ function drawHero(){
   else if(hero.atkT>0){key='atk'+(hero.combo?'2':'')+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
   else if(hero.hurtT>0){key='hurt'+B;fi=Math.min(29,Math.floor((1-hero.hurtT/.5)*30));}
   else if(hero.longT>0&&!hero.moving){key='long'+B;fi=Math.min(95,Math.floor((1-hero.longT/8)*96));}
-  else if(hero.moving&&hero.run){key='run'+B;const n=B?19:18;fi=Math.floor(hero.walk*n/5.04)%n;}
+  else if(hero.moving&&hero.run){key='run'+B;const n=B?19:18;fi=Math.floor(hero.walk*n/3.36)%n;}
   else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
   else{key='idle'+B;{const n=B?15:16,P=2*n-2,k=Math.floor(performance.now()/(B?130:83))%P;fi=k<n?k:P-k;}}
   ctx.save(); ctx.translate(sx,sy); if(hero.face!==nat)ctx.scale(-1,1);

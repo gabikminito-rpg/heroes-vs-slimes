@@ -22,7 +22,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v10';
+const VER='iso-prueba v11';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -349,7 +349,7 @@ function lighting(S,ox,oy,t){
 }
 
 /* ---------- bucle ---------- */
-let last=performance.now(), fpsT=0, fpsN=0, fps=0;
+let camSp=5, last=performance.now(), fpsT=0, fpsN=0, fps=0;
 function frame(now){
   const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;
   let dtu=dt;if(hs>0){hs-=dt;dtu=0;}
@@ -359,7 +359,7 @@ function frame(now){
   const S=Math.max(1,Math.round(W/820)+zoomAdj), vw=W/S, vh=H/S;
   const [hx,hy]=S2(hero.x,hero.y);
   if(!cam)cam={x:hx,y:hy-20};
-  const cs=hero.dash>0?12:5;cam.x+=(hx-cam.x)*Math.min(1,dt*cs);cam.y+=(hy-20-cam.y)*Math.min(1,dt*cs);
+  camSp+=((hero.dash>0?1.6:5)-camSp)*Math.min(1,dt*6);const cs=camSp;cam.x+=(hx-cam.x)*Math.min(1,dt*cs);cam.y+=(hy-20-cam.y)*Math.min(1,dt*cs);
   const shx=shake.t>0?Math.round((Math.random()*2-1)*shake.m):0, shy=shake.t>0?Math.round((Math.random()*2-1)*shake.m):0;
   const ox=Math.round(vw/2-cam.x)+shx, oy=Math.round(vh/2-cam.y)+shy;
   ctx.setTransform(1,0,0,1,0,0);ctx.globalCompositeOperation='source-over';

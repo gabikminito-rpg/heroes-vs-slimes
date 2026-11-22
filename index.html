@@ -7,26 +7,28 @@ html,body{margin:0;height:100%;background:#070d0c;overflow:hidden;touch-action:n
 canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #hud{position:fixed;left:8px;top:max(6px,env(safe-area-inset-top));color:#cfe8d0;font:600 12px system-ui,sans-serif;opacity:.85;text-shadow:0 1px 2px #000;pointer-events:none;line-height:1.35}
 #zoom{position:fixed;right:8px;top:max(6px,env(safe-area-inset-top));display:flex;gap:6px}
+#ub{position:fixed;right:14px;bottom:max(18px,env(safe-area-inset-bottom));width:72px;height:72px;border-radius:50%;border:2px solid #7fd8ff;background:#0c2a3acc;color:#bfeaff;font:800 16px system-ui;touch-action:manipulation;z-index:5}#ub:disabled{opacity:.45}
 #zoom button{width:38px;height:38px;border-radius:10px;border:1px solid #4c6a52;background:#10201acc;color:#cfe8d0;font:700 20px system-ui;touch-action:manipulation}
 #msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#cfe8d0;font:600 16px system-ui,sans-serif;text-align:center;padding:20px}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="hud"></div>
+<button id="ub">ULT</button>
 <div id="zoom"><button id="zm">&minus;</button><button id="zp">+</button></div>
 <div id="msg">Cargando…</div>
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v4';
+const VER='iso-prueba v5';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','hero/atkF','hero/atkB'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','hero/atkF','hero/atkB','hero/ultF','hero/ultB'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=3';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=4';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -40,7 +42,7 @@ const trees=[[1.5,1.5],[3.5,0.8],[0.8,4.5],[2.6,12.5],[5.4,13.5],[8.5,14.2],[12.
  [11.5,3.4],[13.6,3.2],[14.5,5.4],[10.8,5.6],[12.6,4.6]];
 const STUMP=[7.5,5.5];
 const mushes=[[7.5,9.5],[12.5,10.5],[3.5,4.5],[14.5,13.5]].map((p,k)=>({x:p[0],y:p[1],tx:p[0],ty:p[1],wait:Math.random()*2,face:-1,ph:k*1.7,hp:20,cd:0,flash:0,kx:0,ky:0,alive:true,resp:0}));
-const hero={x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,hp:100,cd:0,inv:0,swing:0,dead:0,back:false,atkT:0};
+const hero={x:6.5,y:7.8,z:0,face:1,walk:0,moving:false,hp:100,cd:0,inv:0,swing:0,dead:0,back:false,atkT:0,ult:0,ultCd:0,ultHit:false};
 const bag={esp:0,somb:0};
 const R=0.17;
 {const q=new URLSearchParams(location.search);if(q.get('x'))hero.x=+q.get('x');if(q.get('y'))hero.y=+q.get('y');}
@@ -70,13 +72,14 @@ function drawHero(){
   pixShadow(sx,sy,8,3,0.3);
   const B=hero.back?'B':'F', nat=hero.back?1:-1;
   let key,fi;
-  if(hero.atkT>0){key='atk'+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
+  if(hero.ult>0){key='ult'+B;fi=Math.min(29,Math.floor((1-hero.ult/1.7)*30));}
+  else if(hero.atkT>0){key='atk'+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
   else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
   else{key='idle'+B;fi=Math.floor(performance.now()/130)%15;}
   const bob=0;
   ctx.save(); ctx.translate(sx,sy-bob); if(hero.face!==nat)ctx.scale(-1,1);
   if(hero.hp<=0)ctx.globalAlpha=.3; else if(hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
-  ctx.drawImage(IMG['hero/'+key],fi*79,0,79,47,-33,-44,79,47);
+  ctx.drawImage(IMG['hero/'+key],fi*79,0,79,52,-33,-49,79,52);
   ctx.restore();
 }
 const WH={};
@@ -146,7 +149,9 @@ let zoomAdj=0, cam=null;
 document.getElementById('zm').onclick=()=>{zoomAdj--;};
 document.getElementById('zp').onclick=()=>{zoomAdj++;};
 const keys={};
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=1;});
+addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=1;if(e.key===' ')castUlt();});
+function castUlt(){if(hero.hp<=0||hero.ult>0||hero.ultCd>0)return;hero.ult=1.7;hero.ultCd=6;hero.ultHit=false;}
+const ub=document.getElementById('ub');ub.onclick=castUlt;
 addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0;});
 let joy=null;
 cv.addEventListener('pointerdown',e=>{if(joy)return;joy={id:e.pointerId,ox:e.clientX,oy:e.clientY,x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);});
@@ -182,7 +187,10 @@ function respawn(m){
   m.resp=2;
 }
 function combat(dt){
-  hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);hero.atkT=Math.max(0,hero.atkT-dt);
+  hero.cd=Math.max(0,hero.cd-dt);hero.inv=Math.max(0,hero.inv-dt);hero.swing=Math.max(0,hero.swing-dt);hero.atkT=Math.max(0,hero.atkT-dt);hero.ultCd=Math.max(0,hero.ultCd-dt);
+  if(hero.ult>0){hero.ult=Math.max(0,hero.ult-dt);hero.inv=Math.max(hero.inv,.1);
+    if(!hero.ultHit&&hero.ult<=0.85){hero.ultHit=true;for(const m of mushes){if(!m.alive)continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;if(d<2.6){m.hp-=30;m.flash=.15;m.kx=dx/d*5;m.ky=dy/d*5;addFloat(m.x,m.y,'-30','#9fe8ff');if(m.hp<=0)killMush(m);}}}
+    return;}
   if(hero.hp<=0){hero.dead-=dt;if(hero.dead<=0){hero.hp=100;hero.x=6.5;hero.y=7.8;hero.inv=1.5;}return;}
   let best=null,bd=1.45;
   for(const m of mushes){if(!m.alive)continue;const d=Math.hypot(m.x-hero.x,m.y-hero.y);if(d<bd){bd=d;best=m;}}
@@ -208,7 +216,7 @@ for(let k=0;k<26;k++)flies.push({x:Math.random()*MW,y:Math.random()*MH,ph:Math.r
 let emberT=0;
 
 function update(dt,t){
-  const [ux0,uy0]=inputVec(), dead=hero.hp<=0, ux=dead?0:ux0, uy=dead?0:uy0;
+  const [ux0,uy0]=inputVec(), dead=hero.hp<=0||hero.ult>0, ux=dead?0:ux0, uy=dead?0:uy0;
   hero.moving=(ux||uy)?true:false;
   if(hero.moving){
     const sp=95; // px de pantalla por segundo
@@ -331,7 +339,7 @@ function frame(now){
     const dx=joy.x-joy.ox,dy=joy.y-joy.oy,d=Math.min(50,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);
     ctx.fillStyle='rgba(220,255,220,.4)';ctx.beginPath();ctx.arc((joy.ox+Math.cos(a)*d)*k,(joy.oy+Math.sin(a)*d)*k,22*k,0,6.283);ctx.fill();}
   fpsN++;fpsT+=dt;if(fpsT>=.5){fps=Math.round(fpsN/fpsT);fpsN=0;fpsT=0;}
-  hud.textContent=VER+' · zoom x'+S+' · '+fps+' fps\nToca y arrastra para moverte (o WASD)';
+  document.getElementById('ub').textContent=hero.ultCd>0?Math.ceil(hero.ultCd):'ULT';hud.textContent=VER+' · zoom x'+S+' · '+fps+' fps\nArrastra para moverte (WASD) · ULT (espacio)';
   hud.style.whiteSpace='pre';
   requestAnimationFrame(frame);
 }

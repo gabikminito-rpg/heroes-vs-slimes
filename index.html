@@ -22,7 +22,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v12';
+const VER='iso-prueba v13';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -359,7 +359,7 @@ function frame(now){
   const S=Math.max(1,Math.round(W/820)+zoomAdj), vw=W/S, vh=H/S;
   const [hx,hy]=S2(hero.x,hero.y);
   if(!cam)cam={x:hx,y:hy-20};
-  const cs=5;if(hero.dash<=0)cam.x+=(hx-cam.x)*Math.min(1,dt*cs);
+  if(hero.dash>0)camSp=0;else camSp=Math.min(5,camSp+dt*3);const cs=camSp;if(hero.dash<=0)cam.x+=(hx-cam.x)*Math.min(1,dt*cs);
   if(hero.dash<=0)cam.y+=(hy-20-cam.y)*Math.min(1,dt*cs);
   const shx=shake.t>0?Math.round((Math.random()*2-1)*shake.m):0, shy=shake.t>0?Math.round((Math.random()*2-1)*shake.m):0;
   const ox=Math.round(vw/2-cam.x)+shx, oy=Math.round(vh/2-cam.y)+shy;

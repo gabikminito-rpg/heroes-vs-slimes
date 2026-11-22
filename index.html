@@ -67,16 +67,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v54';
+const VER='iso-prueba v55';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB','enemies/bossAt2F','enemies/bossAt2B'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=23';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=24';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -91,10 +91,10 @@ const trees=[[1.5,1.5],[3.5,0.8],[0.8,4.5],[2.6,12.5],[5.4,13.5],[8.5,14.2],[12.
 trees.push([2.5,9.0],[4.2,2.2],[12.3,8.1],[14.2,11.6],[10.2,12.8],[2.2,3.2],[6.0,12.0],[11.6,9.9],[7.4,12.8]);
 trees.forEach(t=>{t.hp=4;t.sh=0;t.fall=-1;t.gone=false;t.dir=1;t.terr=(t[0]>=10&&t[0]<16&&t[1]>=2&&t[1]<7);});
 const STUMP=[7.5,5.5];
-const ENM={"champWalkF":{"fw":29,"fh":33,"n":17,"ax":14,"ay":32},"champWalkB":{"fw":30,"fh":33,"n":28,"ax":15,"ay":32},"champAtkF":{"fw":62,"fh":33,"n":18,"ax":41,"ay":32,"hit":12},"champAtkB":{"fw":51,"fh":32,"n":20,"ax":21,"ay":32,"hit":12},"puffWalkF":{"fw":32,"fh":45,"n":33,"ax":16,"ay":45},"puffWalkB":{"fw":33,"fh":45,"n":33,"ax":16,"ay":45},"puffAtkF":{"fw":106,"fh":68,"n":28,"ax":88,"ay":40,"hit":12},"puffAtkB":{"fw":103,"fh":65,"n":26,"ax":21,"ay":65,"hit":10},"bossWalkF":{"fw":68,"fh":81,"n":44,"ax":34,"ay":80},"bossWalkB":{"fw":63,"fh":81,"n":40,"ax":31,"ay":80},"bossAtkF":{"fw":116,"fh":85,"n":35,"ax":79,"ay":79,"hit":11},"bossAtkB":{"fw":120,"fh":87,"n":41,"ax":40,"ay":81,"hit":18}};
+const ENM={"champWalkF":{"fw":29,"fh":33,"n":17,"ax":14,"ay":32},"champWalkB":{"fw":30,"fh":33,"n":28,"ax":15,"ay":32},"champAtkF":{"fw":62,"fh":33,"n":18,"ax":41,"ay":32,"hit":12},"champAtkB":{"fw":51,"fh":32,"n":20,"ax":21,"ay":32,"hit":12},"puffWalkF":{"fw":32,"fh":45,"n":33,"ax":16,"ay":45},"puffWalkB":{"fw":33,"fh":45,"n":33,"ax":16,"ay":45},"puffAtkF":{"fw":106,"fh":68,"n":28,"ax":88,"ay":40,"hit":12},"puffAtkB":{"fw":103,"fh":65,"n":26,"ax":21,"ay":65,"hit":10},"bossWalkF":{"fw":68,"fh":81,"n":44,"ax":34,"ay":80},"bossWalkB":{"fw":63,"fh":81,"n":40,"ax":31,"ay":80},"bossAtkF":{"fw":116,"fh":85,"n":35,"ax":79,"ay":79,"hit":11},"bossAtkB":{"fw":120,"fh":87,"n":41,"ax":40,"ay":81,"hit":18},"bossAt2F":{"fw":130,"fh":87,"n":33,"ax":66,"ay":80,"hit":13},"bossAt2B":{"fw":133,"fh":89,"n":30,"ax":66,"ay":82,"hit":15}};
 const ET={champ:{hp:20,sp:.55,ch:.95,rng:.8,cd:1.1,xp:10,resp:8,adur:1.0,sh:[9,3],kbr:1,rr:0},
  puff:{hp:26,sp:.5,ch:.8,rng:1.3,cd:2.6,xp:15,resp:10,adur:1.6,sh:[8,3],kbr:1,rr:0},
- boss:{hp:260,sp:.45,ch:.6,rng:2.0,cd:3.0,xp:150,resp:90,adur:2.0,sh:[26,7],kbr:.2,rr:.6}};
+ boss:{hp:260,sp:.45,ch:.6,rng:2.0,cd:3.0,xp:150,resp:90,adur:2.0,sh:[26,7],kbr:.2,rr:.6,adur2:2.2}};
 const BOSSHOME=[15,13.5];
 function mkE(t,x,y,k){const T=ET[t];return{type:t,x,y,hx:x,hy:y,tx:x,ty:y,wait:Math.random()*2,face:-1,back:false,ph:k*1.7,hp:T.hp,mhp:T.hp,rr:T.rr,cd:0,flash:0,kx:0,ky:0,alive:true,resp:0,at:0,atHit:true,hitF:.5,mv:false};}
 const mushes=[mkE('champ',7.5,9.5,0),mkE('puff',12.5,10.5,1),mkE('champ',3.5,4.5,2),mkE('puff',16,9,3),mkE('champ',9,7,4),mkE('boss',BOSSHOME[0],BOSSHOME[1],5)];
@@ -197,8 +197,8 @@ const WH={};
 function whiteOf(img){const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const x=c.getContext('2d');x.drawImage(img,0,0);x.globalCompositeOperation='source-in';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);return c;}
 function drawMush(m){
   const T=ET[m.type],[sx,sy]=S2(m.x,m.y),now=performance.now(),B=m.back?'B':'F',sc=m.type;
-  const key=m.at>0?sc+'Atk'+B:sc+'Walk'+B,M=ENM[key];let fi;
-  if(m.at>0)fi=Math.min(M.n-1,Math.floor((1-m.at/T.adur)*M.n));else fi=m.mv?Math.floor(now/83)%M.n:0;
+  const key=m.at>0?sc+(m.a2?'At2':'Atk')+B:sc+'Walk'+B,M=ENM[key];let fi;
+  if(m.at>0)fi=Math.min(M.n-1,Math.floor((1-m.at/(m.a2?T.adur2:T.adur))*M.n));else fi=m.mv?Math.floor(now/83)%M.n:0;
   const b=m.mv||m.at>0?0:Math.round(Math.sin(now/260+m.ph)*(m.type==='boss'?.6:1.2));
   pixShadow(sx,sy,T.sh[0],T.sh[1],0.3);
   const img=m.flash>0?(WH[key]||(WH[key]=whiteOf(IMG['enemies/'+key]))):IMG['enemies/'+key];
@@ -330,6 +330,7 @@ function enemyHit(m,hd0){
   const hd=Math.hypot(hero.x-m.x,hero.y-m.y);
   if(m.type==='champ'){if(hd<1.1&&los(m.x,m.y,hero.x,hero.y))hurtHero(6);}
   else if(m.type==='puff'){const px=m.x+(hero.x-m.x)/(hd||1)*.8,py=m.y+(hero.y-m.y)/(hd||1)*.8;spark(px,py,6,3);if(hd<1.7&&los(m.x,m.y,hero.x,hero.y))hurtHero(5);}
+  else if(m.a2){addShake(5,.4);ring(m.x,m.y);spark(m.x,m.y,10,3);if(hd<3.4)hurtHero(14);}
   else{addShake(4,.3);ring(m.x,m.y);dust(m.x,m.y,6);if(hd<2.7&&los(m.x,m.y,hero.x,hero.y))hurtHero(18);}
 }
 function respawn(m){
@@ -536,7 +537,7 @@ function update(dt,t){
     const face=()=>{const ex=hero.x-m.x,ey=hero.y-m.y;m.back=(ex+ey)<0;m.face=(ex-ey)>=0?1:-1;};
     if(m.at>0){
       m.at=Math.max(0,m.at-dt);
-      if(!m.atHit&&m.at<=T.adur*(1-m.hitF)){m.atHit=true;enemyHit(m,hd);}
+      if(!m.atHit&&m.at<=(m.a2?T.adur2:T.adur)*(1-m.hitF)){m.atHit=true;enemyHit(m,hd);}
     }else if(hd<(m.type==='boss'?7:3.6)&&hero.hp>0){
       {const g=steerTo(m,hero.x,hero.y);dx=g[0];dy=g[1];}face();
       if(m.type==='puff'){sp=hd<.9?T.ch:(hd>T.rng+.4?T.ch:0);if(hd<.9){dx=-dx;dy=-dy;}}
@@ -544,8 +545,8 @@ function update(dt,t){
       m.sdT=(m.sdT||0)-dt;if(m.sdT<=0){m.sd=Math.random()<.5?-1:1;m.sdT=1+Math.random()*1.5;}
       if(sp===0&&m.cd>0&&hd<(m.type==='boss'?2.6:1.8)){const ex=hero.x-m.x,ey=hero.y-m.y;dx=-ey*m.sd;dy=ex*m.sd;sp=T.sp*.9;}
       if(hd<=T.rng&&m.cd<=0&&(m.type!=='puff'||los(m.x,m.y,hero.x,hero.y))){
-        m.at=T.adur;m.atHit=false;m.cd=T.cd+T.adur;sp=0;
-        const AK=m.type+'Atk'+(m.back?'B':'F');m.hitF=ENM[AK].hit/ENM[AK].n;}
+        m.a2=m.type==='boss'&&Math.random()<.5;const ad=m.a2?T.adur2:T.adur;m.at=ad;m.atHit=false;m.cd=T.cd+ad;sp=0;
+        const AK=m.type+(m.a2?'At2':'Atk')+(m.back?'B':'F');m.hitF=ENM[AK].hit/ENM[AK].n;}
     }else{
       m.wait-=dt;
       if(m.wait<=0&&Math.hypot(m.tx-m.x,m.ty-m.y)<.2){

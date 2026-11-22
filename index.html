@@ -57,7 +57,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v43';
+const VER='iso-prueba v44';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -378,13 +378,14 @@ function attack(){
   let best=null,bd=1.9;
   for(const m of mushes){if(!m.alive)continue;const d=Math.hypot(m.x-hero.x,m.y-hero.y);if(d<bd&&los(hero.x,hero.y,m.x,m.y)){bd=d;best=m;}}
   if(best){const dx=best.x-hero.x,dy=best.y-hero.y,d=Math.hypot(dx,dy)||1;hero.fx=dx/d;hero.fy=dy/d;hero.face=(dx-dy)>=0?1:-1;hero.back=(dx+dy)<0;}
-  if(hero.cmb===2&&!hero.dash){hero.dash=.32;hero.dp=0;hero.dashAtk=true;hero.dashHit=false;hero.atkT=0;hero.pend=false;hero.skill=0;hero.longT=0;hero.cd=.6;dust(hero.x,hero.y,6);
+  if(hero.cmb===2&&!hero.dash){hero.dash=.32;hero.dp=0;hero.dashAtk=true;hero.dashHit=false;hero.dashSet=new Set();hero.atkT=0;hero.pend=false;hero.skill=0;hero.longT=0;hero.cd=.6;dust(hero.x,hero.y,6);
     hero.back=(hero.fx+hero.fy)<0;hero.face=(hero.fx-hero.fy)>=0?1:-1;}
 }
-function dashStrike(){
+function dashStrike(R,fin){
   let hit=0;
-  for(const m of mushes){if(!m.alive)continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;
-    if(d<1.7&&los(hero.x,hero.y,m.x,m.y)&&(dx/d*hero.fx+dy/d*hero.fy)>-.1){const dmg=dm('atk',20+Math.floor(Math.random()*6));m.hp-=dmg;m.flash=.14;m.kx=dx/d*5.5;m.ky=dy/d*5.5;addFloat(m.x,m.y,'-'+dmg,'#9fe8ff');spark(m.x,m.y,12);hit++;if(m.hp<=0)killMush(m);}}
+  for(const m of mushes){if(!m.alive||hero.dashSet.has(m))continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;
+    if(d<R&&los(hero.x,hero.y,m.x,m.y)&&(fin||(dx/d*hero.fx+dy/d*hero.fy)>-.2)){hero.dashSet.add(m);const dmg=dm('atk',20+Math.floor(Math.random()*6));m.hp-=dmg;m.flash=.14;m.kx=dx/d*5.5;m.ky=dy/d*5.5;addFloat(m.x,m.y,'-'+dmg,'#9fe8ff');spark(m.x,m.y,12);hit++;if(m.hp<=0)killMush(m);}}
+  if(!fin){if(hit){addShake(2,.08);hs=Math.max(hs,.05);}return;}
   {const px=hero.x+hero.fx*.9,py=hero.y+hero.fy*.9;ring(px,py);spark(px,py,10,4);dust(px,py,4);}
   addShake(hit?3:2,.12);if(hit)hs=Math.max(hs,.09);}
 function strike(){
@@ -442,7 +443,7 @@ function update(dt,t){
   }
   if(hero.dash>0){const p=1-hero.dash/.32,E=q=>{const u=Math.min(1,Math.max(0,(q-.15)/.6));return u*u*(3-2*u);};const d=(E(p)-E(hero.dp||0))*1.28;hero.dp=p;
     if(d>0){if(Math.random()<dt*22)dust(hero.x,hero.y,1);if(Math.random()<dt*30)leaf(hero.x,hero.y);const wx=hero.fx*d,wy=hero.fy*d;if(!blockedAt(hero.x+wx,hero.y,R))hero.x+=wx;if(!blockedAt(hero.x,hero.y+wy,R))hero.y+=wy;}}
-  if(hero.dash>0&&hero.dashAtk&&!hero.dashHit&&hero.dash<=.32*.4){hero.dashHit=true;dashStrike();}
+  if(hero.dash>0&&hero.dashAtk){if(hero.dash<=.32*.4&&!hero.dashHit){hero.dashHit=true;dashStrike(2.0,true);}else if(!hero.dashHit)dashStrike(1.0,false);}
   combat(dt);
   for(let k=floats.length-1;k>=0;k--){floats[k].t+=dt;if(floats[k].t>.9)floats.splice(k,1);}
   for(const m of mushes){

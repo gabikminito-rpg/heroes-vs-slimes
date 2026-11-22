@@ -23,7 +23,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v28';
+const VER='iso-prueba v29';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -32,7 +32,7 @@ const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=14';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=15';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -278,7 +278,7 @@ function waveUpdate(dt){
         m.hp-=dmg;m.flash=.12;m.kx=w.dx*4;m.ky=w.dy*4;addFloat(m.x,m.y,'-'+dmg,'#9fe8ff');spark(m.x,m.y,10);hs=.05;addShake(1,.08);
         if(m.hp<=0)killMush(m);}}}
 }
-const WV={waveF:{fw:110,fh:34,n:6,ax:50,ay:18},waveB:{fw:63,fh:34,n:8,ax:34,ay:17},slashF:{fw:73,fh:39,n:10,ax:25,ay:20},slashB:{fw:60,fh:44,n:12,ax:33,ay:20}};
+const WV={waveF:{fw:114,fh:38,n:6,ax:52,ay:20},waveB:{fw:67,fh:38,n:8,ax:36,ay:19},slashF:{fw:77,fh:43,n:10,ax:27,ay:22},slashB:{fw:64,fh:48,n:12,ax:35,ay:22}};
 function drawFx(name,wx,wy,dx,dy,fi,up){
   const m=WV[name],[sx,sy]=S2(wx,wy),px=dx-dy,py=dx+dy;
   ctx.save();ctx.translate(sx,sy-(up||14));

@@ -22,7 +22,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v17';
+const VER='iso-prueba v18';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -96,7 +96,7 @@ function drawHero(){
   else{key='idle'+B;fi=Math.floor(performance.now()/130)%15;}
   ctx.save(); ctx.translate(sx,sy); if(hero.face!==nat)ctx.scale(-1,1);
   if(hero.hp>0&&hero.ult<=0&&hero.dash<=0&&hero.hurtT<=0&&hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
-  const D_={ultF:[75,72,38,63],ultB:[98,78,56,67],dashF:[100,42,44,40],dashB:[98,50,53,47],hurtF:[64,46,26,42],hurtB:[72,49,47,47],deadF:[79,49,52,42],deadB:[82,54,29,47]}[key]||[92,57,40,48];
+  const D_={ultF:[75,72,32,63],ultB:[98,78,41,66],dashF:[100,42,38,41],dashB:[98,50,39,46],hurtF:[64,46,21,42],hurtB:[72,49,32,46],deadF:[79,49,47,43],deadB:[82,54,20,46]}[key]||[92,57,40,48];
   const flip=hero.face!==nat, W_=D_[0], H_=D_[1], xo=DASHDX[key]?-DASHDX[key][fi]:0;
   if(hc.width<W_||hc.height<H_){hc.width=Math.max(hc.width,W_);hc.height=Math.max(hc.height,H_);}
   hx.globalCompositeOperation='source-over';hx.clearRect(0,0,hc.width,hc.height);

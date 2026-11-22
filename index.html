@@ -23,7 +23,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v26';
+const VER='iso-prueba v27';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -273,7 +273,7 @@ function waveUpdate(dt){
     w.x=nx;w.y=ny;
     if(Math.random()<dt*40){const [sx,sy]=S2(w.x,w.y);parts.push({x:sx+(Math.random()*8-4),y:sy-14+(Math.random()*8-4),vx:0,vy:-6,g:0,t:0,life:.25,c:'150,230,255',s:2,add:1});}
     for(const m of mushes){if(!m.alive||w.hit.has(m))continue;
-      if(Math.hypot(m.x-w.x,m.y-w.y)<.8){w.hit.add(m);const dmg=14+Math.floor(Math.random()*4);
+      if(Math.hypot(m.x-w.x,m.y-w.y)<.8&&los(w.x,w.y,m.x,m.y)){w.hit.add(m);const dmg=14+Math.floor(Math.random()*4);
         m.hp-=dmg;m.flash=.12;m.kx=w.dx*4;m.ky=w.dy*4;addFloat(m.x,m.y,'-'+dmg,'#9fe8ff');spark(m.x,m.y,10);hs=.05;addShake(1,.08);
         if(m.hp<=0)killMush(m);}}}
 }
@@ -286,18 +286,19 @@ function drawWave(w){
   ctx.drawImage(IMG['hero/wave'],fi*128,0,128,81,-cc[0],-cc[1],128,81);
   ctx.restore();
 }
+function los(ax,ay,bx,by){const d=Math.hypot(bx-ax,by-ay),n=Math.max(1,Math.ceil(d/.12));for(let k=1;k<n;k++){const t=k/n;if(blockedAt(ax+(bx-ax)*t,ay+(by-ay)*t,.04))return false;}return true;}
 function attack(){
   hero.cd=.55;hero.atkT=.5;hero.pend=true;
   const now=performance.now();hero.combo=(now-hero.lastAtk<1100)?!hero.combo:false;hero.lastAtk=now;
-  let best=null,bd=2.2;
-  for(const m of mushes){if(!m.alive)continue;const d=Math.hypot(m.x-hero.x,m.y-hero.y);if(d<bd){bd=d;best=m;}}
+  let best=null,bd=1.9;
+  for(const m of mushes){if(!m.alive)continue;const d=Math.hypot(m.x-hero.x,m.y-hero.y);if(d<bd&&los(hero.x,hero.y,m.x,m.y)){bd=d;best=m;}}
   if(best){const dx=best.x-hero.x,dy=best.y-hero.y,d=Math.hypot(dx,dy)||1;hero.fx=dx/d;hero.fy=dy/d;hero.face=(dx-dy)>=0?1:-1;hero.back=(dx+dy)<0;}
 }
 function strike(){
   const c2=hero.combo;let hit=0;
   for(const m of mushes){if(!m.alive)continue;
     const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;
-    if(d<(c2?1.9:1.7)&&(dx/d*hero.fx+dy/d*hero.fy)>(c2?-.1:.15)){
+    if(d<(c2?1.6:1.4)&&los(hero.x,hero.y,m.x,m.y)&&(dx/d*hero.fx+dy/d*hero.fy)>(c2?-.1:.15)){
       const dmg=(c2?9:7)+Math.floor(Math.random()*(c2?5:4));
       m.hp-=dmg;m.flash=.1;m.kx=dx/d*(c2?4.2:3.2);m.ky=dy/d*(c2?4.2:3.2);
       addFloat(m.x,m.y,'-'+dmg,'#ffffff');spark(m.x,m.y,c2?12:8);hit++;
@@ -315,7 +316,7 @@ function combat(dt){
     if(act){hero.idleT=0;hero.longT=0;}else{if(hero.longT>0){hero.longT=Math.max(0,hero.longT-dt);hero.idleT=0;}else{hero.idleT+=dt;if(hero.idleT>4.5){hero.longT=8;hero.idleT=0;}}} }hero.ultCd=Math.max(0,hero.ultCd-dt);hero.dashCd=Math.max(0,hero.dashCd-dt);
   if(hero.dash>0){hero.dash=Math.max(0,hero.dash-dt);hero.inv=Math.max(hero.inv,.1);}
   if(hero.ult>0){hero.ult=Math.max(0,hero.ult-dt);hero.inv=Math.max(hero.inv,.1);
-    if(!hero.ultHit&&hero.ult<=0.5){hero.ultHit=true;ring(hero.x,hero.y);addShake(4,.3);hs=.1;for(const m of mushes){if(!m.alive)continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;if(d<2.6){m.hp-=30;m.flash=.15;m.kx=dx/d*5;m.ky=dy/d*5;addFloat(m.x,m.y,'-30','#9fe8ff');if(m.hp<=0)killMush(m);}}}
+    if(!hero.ultHit&&hero.ult<=0.5){hero.ultHit=true;ring(hero.x,hero.y);addShake(4,.3);hs=.1;for(const m of mushes){if(!m.alive)continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;if(d<2.6&&los(hero.x,hero.y,m.x,m.y)){m.hp-=30;m.flash=.15;m.kx=dx/d*5;m.ky=dy/d*5;addFloat(m.x,m.y,'-30','#9fe8ff');if(m.hp<=0)killMush(m);}}}
     return;}
   if(hero.hp<=0){hero.dead-=dt;if(hero.dead<=0){hero.hp=100;hero.x=6.5;hero.y=7.8;hero.inv=1.5;hero.hurtT=0;}return;}
   if(hero.pend&&hero.atkT<=(hero.combo?.30:.35)){hero.pend=false;strike();}

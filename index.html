@@ -23,7 +23,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v24';
+const VER='iso-prueba v25';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -96,7 +96,7 @@ function drawHero(){
   else if(hero.hurtT>0){key='hurt'+B;fi=Math.min(29,Math.floor((1-hero.hurtT/.5)*30));}
   else if(hero.longT>0&&!hero.moving){key='long'+B;fi=Math.min(95,Math.floor((1-hero.longT/8)*96));}
   else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
-  else{key='idle'+B;fi=Math.floor(performance.now()/83)%(B?19:17);}
+  else{key='idle'+B;{const n=B?19:17,P=2*n-2,k=Math.floor(performance.now()/83)%P;fi=k<n?k:P-k;}}
   ctx.save(); ctx.translate(sx,sy); if(hero.face!==nat)ctx.scale(-1,1);
   if(hero.hp>0&&hero.ult<=0&&hero.dash<=0&&hero.hurtT<=0&&hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
   const D_={ultF:[75,72,32,63],ultB:[98,78,41,66],dashF:[100,42,38,41],dashB:[98,50,39,46],hurtF:[64,46,21,42],hurtB:[72,49,32,46],deadF:[79,49,47,43],deadB:[82,54,20,46],skillB:[85,49,25,48],skillF:[95,53,58,43],longB:[48,47,15,44],longF:[47,42,19,42],idleB:[48,47,15,44],idleF:[47,42,19,42]}[key]||[92,57,40,48];
@@ -312,7 +312,7 @@ function combat(dt){
   if(hero.skill>0){hero.skill=Math.max(0,hero.skill-dt);if(!hero.skillFired&&hero.skill<=.75*(1-12/30)){hero.skillFired=true;waves.push({x:hero.x,y:hero.y,dx:hero.fx,dy:hero.fy,t:0,hit:new Set()});addShake(1,.08);}}
   waveUpdate(dt);
   { const act=hero.moving||hero.atkT>0||hero.dash>0||hero.ult>0||hero.skill>0||hero.hurtT>0||hero.hp<=0||hero.held;
-    if(act){hero.idleT=0;hero.longT=0;}else{hero.idleT+=dt;if(hero.longT>0)hero.longT=Math.max(0,hero.longT-dt);else if(hero.idleT>4.5){hero.longT=8;hero.idleT=0;}} }hero.ultCd=Math.max(0,hero.ultCd-dt);hero.dashCd=Math.max(0,hero.dashCd-dt);
+    if(act){hero.idleT=0;hero.longT=0;}else{if(hero.longT>0){hero.longT=Math.max(0,hero.longT-dt);hero.idleT=0;}else{hero.idleT+=dt;if(hero.idleT>4.5){hero.longT=8;hero.idleT=0;}}} }hero.ultCd=Math.max(0,hero.ultCd-dt);hero.dashCd=Math.max(0,hero.dashCd-dt);
   if(hero.dash>0){hero.dash=Math.max(0,hero.dash-dt);hero.inv=Math.max(hero.inv,.1);}
   if(hero.ult>0){hero.ult=Math.max(0,hero.ult-dt);hero.inv=Math.max(hero.inv,.1);
     if(!hero.ultHit&&hero.ult<=0.5){hero.ultHit=true;ring(hero.x,hero.y);addShake(4,.3);hs=.1;for(const m of mushes){if(!m.alive)continue;const dx=m.x-hero.x,dy=m.y-hero.y,d=Math.hypot(dx,dy)||1;if(d<2.6){m.hp-=30;m.flash=.15;m.kx=dx/d*5;m.ky=dy/d*5;addFloat(m.x,m.y,'-30','#9fe8ff');if(m.hp<=0)killMush(m);}}}

@@ -57,16 +57,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v40';
+const VER='iso-prueba v41';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=19';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=20';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -579,8 +579,8 @@ function invOpen(v,mode){INV.open=v;INV.mode=v?mode:null;const e=document.getEle
   if(v){invLoop.sig=null;mode==='pj'?pjRender():invRender();invLoop();}}
 function invLoop(){if(!INV.open)return;
   const pj=INV.mode==='pj',c=document.getElementById(pj?'pjc':'invc'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.imageSmoothingEnabled=false;
-  const n=16,P=2*n-2,k=Math.floor(performance.now()/83)%P,fi=k<n?k:P-k,im=IMG['hero/idleF'],Z=3;
-  x.drawImage(im,fi*47,0,47,42,Math.round(c.width/2-19*Z),c.height-42*Z-6,47*Z,42*Z);
+  const n=72,P=2*n-2,k=Math.floor(performance.now()/41.7)%P,fi=k<n?k:P-k,im=IMG['hero/panelF'],Z=3;
+  x.drawImage(im,fi*47,0,47,41,Math.round(c.width/2-21*Z),c.height-41*Z-6,47*Z,41*Z);
   const sig=bag.mad+','+bag.esp+','+bag.somb;if(sig!==invLoop.sig){invLoop.sig=sig;pj?pjRender():invRender();}
   requestAnimationFrame(invLoop);}
 document.getElementById('bp').onclick=()=>invOpen(!(INV.open&&INV.mode==='inv'),'inv');

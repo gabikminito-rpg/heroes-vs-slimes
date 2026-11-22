@@ -17,7 +17,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v3';
+const VER='iso-prueba v4';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
@@ -26,7 +26,7 @@ const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=2';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=3';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -73,7 +73,7 @@ function drawHero(){
   if(hero.atkT>0){key='atk'+B;fi=Math.min(14,Math.floor((1-hero.atkT/.5)*15));}
   else if(hero.moving){key='walk'+B;fi=Math.floor(hero.walk*3)%15;}
   else{key='idle'+B;fi=Math.floor(performance.now()/130)%15;}
-  const bob=(hero.moving&&hero.atkT<=0&&Math.floor(hero.walk*2)%2)?1:0;
+  const bob=0;
   ctx.save(); ctx.translate(sx,sy-bob); if(hero.face!==nat)ctx.scale(-1,1);
   if(hero.hp<=0)ctx.globalAlpha=.3; else if(hero.inv>0&&Math.floor(performance.now()/80)%2)ctx.globalAlpha=.4;
   ctx.drawImage(IMG['hero/'+key],fi*79,0,79,47,-33,-44,79,47);

@@ -69,16 +69,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v56';
+const VER='iso-prueba v57';
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
 const hud=document.getElementById('hud'), msg=document.getElementById('msg');
-const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB','enemies/bossAt2F','enemies/bossAt2B','water','swwater','swgnd','bankA','bankB','mushG','swtree','stairs','reeds','flowers','rock','log'];
+const names=['grass_a','grass_b','grass_c','grass_d','path_a','cliff_l','cliff_r','block','tree','stump','mush','hero/idleF','hero/walkF','hero/idleB','hero/walkB','tree_stump','hero/chopF','hero/chopB','hero/panelF','hero/runF','hero/runB','hero/atkF','hero/atkB','hero/ultF','hero/ultB','hero/dashF','hero/dashB','hero/atk2F','hero/atk2B','hero/hurtF','hero/hurtB','hero/deadF','hero/deadB','hero/skillF','hero/skillB','hero/longF','hero/longB','swordA','swordB','hero/waveF','hero/waveB','hero/slashF','hero/slashB','hero/sitF','hero/sitB','hero/lieF','hero/lieB','enemies/champWalkF','enemies/champWalkB','enemies/champAtkF','enemies/champAtkB','enemies/puffWalkF','enemies/puffWalkB','enemies/puffAtkF','enemies/puffAtkB','enemies/bossWalkF','enemies/bossWalkB','enemies/bossAtkF','enemies/bossAtkB','enemies/bossAt2F','enemies/bossAt2B','water','swwater','swgnd','bankA','bankB','mushG','swtree','stairs','reeds','flowers','rock','log','wil','oakB','oakT'];
 const IMG={}; let loaded=0, failed=null;
 names.forEach(n=>{const im=new Image();
   im.onload=()=>{if(++loaded===names.length&&!failed){msg.remove();bakeMap();requestAnimationFrame(frame);}};
   im.onerror=()=>{failed=n;msg.textContent='No cargó la imagen: '+n;};
-  im.src='assets/iso/'+n+'.png?v=25';IMG[n]=im;});
+  im.src='assets/iso/'+n+'.png?v=26';IMG[n]=im;});
 
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
@@ -87,7 +87,7 @@ const terrace=()=>false;
 const blocks=[[4,9],[5,9],[4,10]];
 const blockSet=new Set(blocks.map(b=>b.join(',')));
 const STUMP=[7.5,5.5], START=[6.5,7.8];
-const MAPM={"mushG":{"w":58,"h":53,"ax":27,"ay":53},"swtree":{"w":74,"h":87,"ax":26,"ay":87},"stairs":{"w":86,"h":97,"ax":25,"ay":97},"rock":{"w":32,"h":27,"ax":15,"ay":27},"log":{"w":36,"h":27,"ax":8,"ay":27},"flowers":{"w":35,"h":20,"ax":18,"ay":20},"reeds":{"w":24,"h":32,"ax":11,"ay":32},"water":{"w":110,"h":57},"swwater":{"w":110,"h":57},"swgnd":{"w":110,"h":57},"bankA":{"w":110,"h":57},"bankB":{"w":110,"h":57}};
+const MAPM={"mushG":{"w":58,"h":53,"ax":27,"ay":53},"swtree":{"w":74,"h":87,"ax":26,"ay":87},"stairs":{"w":86,"h":97,"ax":25,"ay":97},"wil":{"w":95,"h":72,"ax":48,"ay":72},"oakB":{"w":100,"h":64,"ax":49,"ay":64},"oakT":{"w":71,"h":77,"ax":39,"ay":77},"rock":{"w":32,"h":27,"ax":15,"ay":27},"log":{"w":36,"h":27,"ax":8,"ay":27},"flowers":{"w":35,"h":20,"ax":18,"ay":20},"reeds":{"w":24,"h":32,"ax":11,"ay":32},"water":{"w":110,"h":57},"swwater":{"w":110,"h":57},"swgnd":{"w":110,"h":57},"bankA":{"w":110,"h":57},"bankB":{"w":110,"h":57}};
 /* tipos de suelo GT: 0 pasto,1 camino,2 agua río,3/4 orilla clara (agua a +i / -i),5/6 orilla oscura,7 tierra de pantano,8 agua de pantano */
 const RIV=[[10,11],[20,21]];
 const BRG=[{i0:10,i1:11,j:7},{i0:20,i1:21,j:11}];
@@ -118,17 +118,19 @@ function okSpot(x,y,md,shore){
   for(const q of placed)if(Math.hypot(x-q[0],y-q[1])<md)return false;
   return true;}
 function scatter(n,z,md,fn,shore){const R=ZR[z];let c=0,tr=0;while(c<n&&tr<900){tr++;const x=R[0]+rnd()*(R[1]-R[0]),y=1+rnd()*(MH-2);if(!okSpot(x,y,md,shore))continue;fn(x,y);placed.push([x,y]);c++;}}
-const addTree=k=>(x,y)=>{const t=[x,y];t.hp=4;t.sh=0;t.fall=-1;t.gone=false;t.dir=1;t.terr=false;t.k=k;trees.push(t);};
+const addTree=k=>(x,y)=>{const t=[x,y];t.hp=(k==='big'||k==='wil')?7:4;t.sh=0;t.fall=-1;t.gone=false;t.dir=1;t.terr=false;t.k=k;trees.push(t);};
 const addProp=(n,r)=>(x,y)=>props.push({x,y,n,r:r||0});
 let SOLP=[];
 function populate(){
-scatter(24,0,1.5,addTree('tree'));scatter(3,0,1.6,addProp('rock',.5));scatter(2,0,1.8,addProp('log',.5));scatter(9,0,.9,addProp('flowers'),false);
-scatter(14,1,1.6,addProp('mushG',.55));scatter(6,1,1.6,addTree('tree'));scatter(3,1,1.8,addProp('rock',.5));scatter(2,1,1.8,addProp('log',.5));scatter(7,1,.9,addProp('flowers'),false);
+for(const x0 of [8.1,13.8])for(const y0 of [2.6,5,12.6,15.2,17.6]){const x=x0+rnd()*.3,y=y0+rnd()*.5;if(okSpot(x,y,2.0,false)){addTree('wil')(x,y);placed.push([x,y]);}}
+scatter(3,0,3.2,addTree('big'));scatter(2,1,3.2,addTree('big'));
+scatter(12,0,1.5,addTree('tree'));scatter(10,0,1.5,addTree('oak'));scatter(3,0,1.6,addProp('rock',.5));scatter(2,0,1.8,addProp('log',.5));scatter(9,0,.9,addProp('flowers'),false);
+scatter(14,1,1.6,addProp('mushG',.55));scatter(3,1,1.6,addTree('tree'));scatter(3,1,1.6,addTree('oak'));scatter(3,1,1.8,addProp('rock',.5));scatter(2,1,1.8,addProp('log',.5));scatter(7,1,.9,addProp('flowers'),false);
 scatter(14,2,1.25,addTree('sw'));scatter(2,2,1.8,addProp('rock',.5));scatter(2,2,1.8,addProp('log',.5));
 for(const q of POOLS)for(let k=0;k<5;k++){const a=k*1.25+rnd()*.8,x=q[0]+Math.cos(a)*q[2]*1.25,y=q[1]+Math.sin(a)*q[3]*1.25,ci=Math.floor(x),cj=Math.floor(y);
   if(ci>=23&&ci<MW-1&&cj>=1&&cj<MH-1&&GT[cj*MW+ci]===7&&Math.hypot(x-STAIRS[0],y-STAIRS[1])>2.6&&Math.hypot(x-BOSSHOME[0],y-BOSSHOME[1])>2.4)props.push({x,y,n:'reeds',r:0});}
 props.push({x:STAIRS[0],y:STAIRS[1],n:'stairs',r:1.3});
-SOLP=props.filter(q=>q.r);
+  SOLP=props.filter(q=>q.r);
 }
 const ENM={"champWalkF":{"fw":29,"fh":33,"n":17,"ax":14,"ay":32},"champWalkB":{"fw":30,"fh":33,"n":28,"ax":15,"ay":32},"champAtkF":{"fw":62,"fh":33,"n":18,"ax":41,"ay":32,"hit":12},"champAtkB":{"fw":51,"fh":32,"n":20,"ax":21,"ay":32,"hit":12},"puffWalkF":{"fw":32,"fh":45,"n":33,"ax":16,"ay":45},"puffWalkB":{"fw":33,"fh":45,"n":33,"ax":16,"ay":45},"puffAtkF":{"fw":106,"fh":68,"n":28,"ax":88,"ay":40,"hit":12},"puffAtkB":{"fw":103,"fh":65,"n":26,"ax":21,"ay":65,"hit":10},"bossWalkF":{"fw":68,"fh":81,"n":44,"ax":34,"ay":80},"bossWalkB":{"fw":63,"fh":81,"n":40,"ax":31,"ay":80},"bossAtkF":{"fw":116,"fh":85,"n":35,"ax":79,"ay":79,"hit":11},"bossAtkB":{"fw":120,"fh":87,"n":41,"ax":40,"ay":81,"hit":18},"bossAt2F":{"fw":130,"fh":87,"n":33,"ax":66,"ay":80,"hit":13},"bossAt2B":{"fw":133,"fh":89,"n":30,"ax":66,"ay":82,"hit":15}};
 const ET={champ:{hp:20,sp:.55,ch:.95,rng:.8,cd:1.1,xp:10,resp:8,adur:1.0,sh:[9,3],kbr:1,rr:0},
@@ -494,9 +496,9 @@ function drawFx(name,wx,wy,dx,dy,fi,up,al){
 function drawWave(w){const v=(w.dx+w.dy)<0?'B':'F',n=WV['wave'+v].n;drawFx('wave'+v,w.x,w.y,w.dx,w.dy,Math.floor(w.t*14)%n,14,Math.min(w.t/.08,1)*Math.max(0,Math.min(1,1-(w.t-.3)/.42)));}
 function drawSlash(c){const v=(c.dx+c.dy)<0?'B':'F',n=WV['slash'+v].n;drawFx('slash'+v,c.x+c.dx*.5,c.y+c.dy*.5,c.dx,c.dy,Math.min(n-1,Math.floor(c.t/.05)),16,Math.max(0,Math.min(1,(c.n*.05-c.t)/(c.n*.05*.45))));}
 function los(ax,ay,bx,by){const d=Math.hypot(bx-ax,by-ay),n=Math.max(1,Math.ceil(d/.12));for(let k=1;k<n;k++){const t=k/n;if(blockedAt(ax+(bx-ax)*t,ay+(by-ay)*t,.04))return false;}return true;}
-function drawTree(t){const z=0,[sx,sy]=S2(t[0],t[1]);const TI=t.k==='sw'?IMG.swtree:IMG.tree,TW=t.k==='sw'?MAPM.swtree.w:70,TH=t.k==='sw'?MAPM.swtree.h:82;
+function drawTree(t){const z=0,[sx,sy]=S2(t[0],t[1]);const TK={sw:'swtree',wil:'wil',big:'oakB',oak:'oakT'}[t.k],TI=TK?IMG[TK]:IMG.tree,TW=TK?MAPM[TK].w:70,TH=TK?MAPM[TK].h:82;
   if(t.gone){pixShadow(sx,sy,5,2,.25);ctx.drawImage(IMG.tree_stump,sx-9,sy-9);return;}
-  pixShadow(sx,sy-z,15,5,.28);
+  pixShadow(sx,sy-z,Math.round(TW*.21),5,.28);
   if(t.fall>=0){const a=Math.min(1,t.fall/.7);ctx.save();ctx.translate(sx,sy-z);ctx.rotate(t.dir*a*a*1.45);ctx.globalAlpha=t.fall>.8?Math.max(0,1-(t.fall-.8)/.2):1;ctx.imageSmoothingEnabled=false;ctx.drawImage(TI,-(TW>>1),-(TH-1));ctx.restore();return;}
   const o=t.sh>0?Math.round(Math.sin(t.sh*70)*2*Math.min(1,t.sh/.15)):0;
   const beh=(hero.x+hero.y<t[0]+t[1])&&Math.abs((hero.x-hero.y)-(t[0]-t[1]))<1.3&&Math.hypot(hero.x-t[0],hero.y-t[1])<2.2;

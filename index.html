@@ -114,7 +114,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v90b';
+const VER='iso-prueba v91';
 const CKEY='hvs_iso_cfg_v1';const FX=Object.assign({water:1,tiles:1,fly:1,fire:1,light:1,rays:1},(()=>{try{return JSON.parse(localStorage.getItem('hvs_iso_cfg_v1')||'{}');}catch(e){return {};}})());
 const cv=document.getElementById('c'); let ctx=cv.getContext('2d'); const ctxMain=ctx;
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
@@ -130,7 +130,8 @@ names.forEach(n=>{const im=new Image();
 /* ---------- mapa ---------- */
 const HW=55, HH=28, LH=34;          // medio ancho / medio alto de la casilla, alto de un piso
 const MW=72, MH=60;
-const terrace=(i,j)=>i>=10&&i<=15&&j>=2&&j<=6;
+const TERR={on:true};
+const terrace=(i,j)=>TERR.on&&i>=10&&i<=15&&j>=2&&j<=6;
 const blocks=[[4,9],[5,9],[4,10]];
 const blockSet=new Set(blocks.map(b=>b.join(',')));
 const STUMP=[7.5,5.5], START=[6.5,7.8];
@@ -515,19 +516,22 @@ function drawHud(k){
 
 /* ---------- lista estática (ordenada por profundidad) ---------- */
 const stat=[];
+function pushBase(){
 for(let i=0;i<MW;i++)for(let j=0;j<MH;j++){
   const [cx,cy]=S2(i+.5,j+.5);
   if(terrace(i,j)){
-    stat.push({k:i+j,f:()=>ctx.drawImage(IMG['grass_'+'abcd'[(i*7+j*13)%4]],cx-HW,cy-LH-HH)});
-    if(!terrace(i,j+1)) stat.push({k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_l,cx-HW,cy-LH)});
-    if(!terrace(i+1,j)) stat.push({k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_r,cx+HW-59,cy-LH)});
+    stat.push({tp:1,k:i+j,f:()=>ctx.drawImage(IMG['grass_'+'abcd'[(i*7+j*13)%4]],cx-HW,cy-LH-HH)});
+    if(!terrace(i,j+1)) stat.push({tp:1,k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_l,cx-HW,cy-LH)});
+    if(!terrace(i+1,j)) stat.push({tp:1,k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_r,cx+HW-59,cy-LH)});
   }else{
-    if(j===MH-1) stat.push({k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_l,cx-HW,cy)});
-    if(i===MW-1) stat.push({k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_r,cx+HW-59,cy)});
+    if(j===MH-1) stat.push({tp:1,k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_l,cx-HW,cy)});
+    if(i===MW-1) stat.push({tp:1,k:i+j+.99,f:()=>ctx.drawImage(IMG.cliff_r,cx+HW-59,cy)});
   }
 }
-for(const [i,j] of blocks){const [cx,cy]=S2(i+.5,j+.5);stat.push({k:i+j+.6,f:()=>ctx.drawImage(IMG.block,cx-58,cy+HH-104)});}
+for(const [i,j] of blocks){const [cx,cy]=S2(i+.5,j+.5);stat.push({tp:1,k:i+j+.6,f:()=>ctx.drawImage(IMG.block,cx-58,cy+HH-104)});}
+}
 function pushTP(){
+  pushBase();
 for(const t of trees){
   stat.push({tp:1,k:t[0]+t[1],f:()=>drawTree(t)});
 }
@@ -1690,80 +1694,118 @@ function villageCheck(){return VLAYOUT.bfs;}
    Pinta suelo, árboles, props, objetos de pueblo/interiores y bloqueos con el arte del propio juego.
    Se guarda como DIFERENCIAS contra el mapa generado (localStorage 'hvs_iso_edit_v1'). */
 const EKEY='hvs_iso_edit_v1';
-const GT0=GT.slice(),WSOL0=WSOL.slice(),TREES0=trees.slice(),PROPS0=props.slice(),SC0={},EPD={};
-for(const id in TSC){const s=TSC[id];s.flo=s.flo||{};SC0[id]={props:s.props.slice(),sol:s.sol.slice()};for(const p of s.props)if(!EPD[p.img])EPD[p.img]={sc:p.sc,floor:p.floor,dy:p.dy,flip:p.flip,sol:p.sol?1:0};}
+const BL0=blocks.map(b=>b.slice()),GT0=GT.slice(),WSOL0=WSOL.slice(),TREES0=trees.slice(),PROPS0=props.slice(),SC0={},EPD={};
+for(const id in TSC){const s=TSC[id];s.flo=s.flo||{};SC0[id]={props:s.props.slice(),sol:s.sol.slice(),w:s.w,h:s.h,boxes:s.boxes.slice(),doors:s.doors.slice()};for(const p of s.props)if(!EPD[p.img])EPD[p.img]={sc:p.sc,floor:p.floor,dy:p.dy,flip:p.flip,sol:p.sol?1:0};}
 const near=(a,b,x,y)=>Math.abs(a-x)<1e-4&&Math.abs(b-y)<1e-4;
 function edRefresh(bake){for(let n=stat.length-1;n>=0;n--)if(stat[n].tp)stat.splice(n,1);pushTP();mkTufts();mmBase=null;
   pathSet.clear();for(let j=0;j<MH;j++)for(let i=0;i<MW;i++)if(GT[j*MW+i]===1)pathSet.add(i+','+j);if(bake)bakeMap();}
-function edSave(){const d={gt:[],ws:[],dt:[],dp:[],at:[],ap:[]},o={v:1,dg:d,sc:{}};
+function edSave(){const d={gt:[],ws:[],dt:[],dp:[],at:[],ap:[],db:[],nt:!TERR.on?1:0},o={v:1,dg:d,sc:{}};
   for(let n=0;n<GT.length;n++){if(GT[n]!==GT0[n])d.gt.push([n,GT[n]]);if(WSOL[n]!==WSOL0[n])d.ws.push([n,WSOL[n]]);}
   const T0=new Set(TREES0),P0=new Set(PROPS0),T1=new Set(trees),P1=new Set(props);
   for(const t of TREES0)if(!T1.has(t))d.dt.push([t[0],t[1]]);for(const t of trees)if(!T0.has(t))d.at.push([t[0],t[1],t.k]);
   for(const q of PROPS0)if(!P1.has(q))d.dp.push([q.x,q.y]);for(const q of props)if(!P0.has(q))d.ap.push([q.x,q.y,q.n,q.r||0]);
-  let any=d.gt.length+d.ws.length+d.dt.length+d.dp.length+d.at.length+d.ap.length;
-  for(const id in TSC){const s=TSC[id],b=SC0[id],B=new Set(b.props),C=new Set(s.props),q={flo:s.flo,add:[],del:[],sol:[]};
+  for(const b of BL0)if(!blockSet.has(b.join(',')))d.db.push(b);
+  let any=d.gt.length+d.ws.length+d.dt.length+d.dp.length+d.at.length+d.ap.length+d.db.length+d.nt;
+  for(const id in TSC){const s=TSC[id],b=SC0[id],B=new Set(b.props),C=new Set(s.props),BB=new Set(b.boxes),CB=new Set(s.boxes),BD=new Set(b.doors),CD=new Set(s.doors),
+      q={flo:s.flo,add:[],del:[],sol:[],bx:[],dr:[],w:s.w,h:s.h};
     for(const p of b.props)if(!C.has(p))q.del.push({img:p.img,x:p.x,y:p.y});for(const p of s.props)if(!B.has(p))q.add.push(Object.assign({},p));
-    for(let n=0;n<s.sol.length;n++)if(s.sol[n]!==b.sol[n])q.sol.push([n,s.sol[n]]);
-    if(Object.keys(q.flo).length||q.add.length||q.del.length||q.sol.length){o.sc[id]=q;any++;}}
+    for(const x of b.boxes)if(!CB.has(x))q.bx.push([x.x,x.y]);for(const x of b.doors)if(!CD.has(x))q.dr.push([x.x0,x.y0]);
+    for(let j=0;j<s.h;j++)for(let i=0;i<s.w;i++){const cur=s.sol[j*s.w+i],base=(i<b.w&&j<b.h)?b.sol[j*b.w+i]:0;if(cur!==base)q.sol.push([i,j,cur]);}
+    if(Object.keys(q.flo).length||q.add.length||q.del.length||q.sol.length||q.bx.length||q.dr.length||q.w!==b.w||q.h!==b.h){o.sc[id]=q;any++;}}
   try{if(any)localStorage.setItem(EKEY,JSON.stringify(o));else localStorage.removeItem(EKEY);}catch(e){}}
+function edResize(s,nw,nh){const ow=s.w,oh=s.h,ns=new Uint8Array(nw*nh);
+  for(let j=0;j<oh;j++)for(let i=0;i<ow;i++){let v=s.sol[j*ow+i];if(nw>ow&&i===ow-1)v=0;if(nh>oh&&j===oh-1)v=0;ns[j*nw+i]=v;}
+  for(let i=0;i<nw;i++)ns[(nh-1)*nw+i]=1;for(let j=0;j<nh;j++)ns[j*nw+nw-1]=1;s.sol=ns;s.w=nw;s.h=nh;}
+function edDelBlock(i,j){const k=blocks.findIndex(b=>b[0]===i&&b[1]===j);if(k<0)return false;blocks.splice(k,1);blockSet.delete(i+','+j);return true;}
 function edLoad(){let o=null;try{o=JSON.parse(localStorage.getItem(EKEY)||'null');}catch(e){}if(!o||o.v!==1)return;
   const d=o.dg||{};for(const [n,g] of d.gt||[])GT[n]=g;for(const [n,v] of d.ws||[])WSOL[n]=v;
   for(const [x,y] of d.dt||[]){const k=trees.findIndex(t=>near(t[0],t[1],x,y));if(k>=0)trees.splice(k,1);}
   for(const [x,y] of d.dp||[]){const k=props.findIndex(q=>near(q.x,q.y,x,y));if(k>=0)props.splice(k,1);}
+  if(d.nt)TERR.on=false;for(const b of d.db||[])edDelBlock(b[0],b[1]);
   for(const [x,y,k] of d.at||[])addTree(k)(x,y);for(const [x,y,n,r] of d.ap||[])props.push({x,y,n,r:r||0});
-  for(const id in o.sc||{}){const s=TSC[id],q=o.sc[id];if(!s)continue;s.flo=Object.assign({},q.flo);
+  for(const id in o.sc||{}){const s=TSC[id],q=o.sc[id];if(!s)continue;s.flo=Object.assign({},q.flo);if(q.w&&q.h&&(q.w!==s.w||q.h!==s.h))edResize(s,q.w,q.h);
+    for(const [x,y] of q.bx||[]){const k=s.boxes.findIndex(b=>b.x===x&&b.y===y);if(k>=0)s.boxes.splice(k,1);}
+    for(const [x,y] of q.dr||[]){const k=s.doors.findIndex(b=>near(b.x0,b.y0,x,y));if(k>=0)s.doors.splice(k,1);}
     for(const dd of q.del||[]){const k=s.props.findIndex(p=>p.img===dd.img&&near(p.x,p.y,dd.x,dd.y));if(k>=0)s.props.splice(k,1);}
-    for(const p of q.add||[])s.props.push(p);for(const [n,v] of q.sol||[])s.sol[n]=v;}
+    for(const p of q.add||[])s.props.push(p);for(const [i,j,v] of q.sol||[])if(i<s.w&&j<s.h)s.sol[j*s.w+i]=v;}
   edRefresh(false);}
-function edSnap(){const o={GT:GT.slice(),WS:WSOL.slice(),T:trees.slice(),P:props.slice(),S:{}};for(const id in TSC){const s=TSC[id];o.S[id]={flo:Object.assign({},s.flo),props:s.props.slice(),sol:s.sol.slice()};}return o;}
-function edRestore(o){GT.set(o.GT);WSOL.set(o.WS);trees.length=0;trees.push(...o.T);props.length=0;props.push(...o.P);
-  for(const id in o.S){const s=TSC[id],q=o.S[id];s.flo=Object.assign({},q.flo);s.props.length=0;s.props.push(...q.props);s.sol.set(q.sol);}edRefresh(true);edSave();}
+function edSnap(){const o={GT:GT.slice(),WS:WSOL.slice(),T:trees.slice(),P:props.slice(),TR:TERR.on,BK:blocks.map(b=>b.slice()),S:{}};for(const id in TSC){const s=TSC[id];o.S[id]={w:s.w,h:s.h,flo:Object.assign({},s.flo),props:s.props.slice(),sol:s.sol.slice(),boxes:s.boxes.slice(),doors:s.doors.slice()};}return o;}
+function edRestore(o){GT.set(o.GT);WSOL.set(o.WS);trees.length=0;trees.push(...o.T);props.length=0;props.push(...o.P);TERR.on=o.TR;
+  blocks.length=0;blockSet.clear();for(const b of o.BK){blocks.push(b.slice());blockSet.add(b.join(','));}
+  for(const id in o.S){const s=TSC[id],q=o.S[id];s.w=q.w;s.h=q.h;s.flo=Object.assign({},q.flo);s.props.length=0;s.props.push(...q.props);s.sol=q.sol.slice();s.boxes.length=0;s.boxes.push(...q.boxes);s.doors.length=0;s.doors.push(...q.doors);}edRefresh(true);edSave();}
 /* ---- datos de paleta ---- */
 const EG=[[0,'Pasto'],[1,'Camino piedra'],[13,'Camino tierra'],[2,'Río'],[3,'Orilla A↖'],[4,'Orilla A↘'],[5,'Orilla B↖'],[6,'Orilla B↘'],[7,'Pantano'],[8,'Agua pantano'],[9,'Bosque negro'],[10,'Camino negro'],[11,'Suelo morado'],[12,'Camino morado']];
 const ETR=[['tree','Árbol'],['oak','Roble'],['big','Roble grande'],['wil','Sauce'],['sw','Árbol pantano'],['blk','Árbol negro'],['nth','Árbol morado']];
 const ETK={tree:'tree',oak:'oakT',big:'oakB',wil:'wil',sw:'swtree',blk:'blktree',nth:'nthtree'};
 const EPR=[['rock','Roca',.5],['log','Tronco',.5],['flowers','Flores',0],['mushG','Hongo',.55],['reeds','Juncos',0]];
 const EFL=['t_piso_de_plaza','t_piso_de_plaza_2','t_camino_de_tierra','t_pasto_del_pueblo','t_pasto','i_piso_de_madera','i_piso_de_madera_2'];
-const edDeco=()=>Object.keys(TOWN_META).filter(k=>TWN.sc==='town'?k.startsWith('d_'):(k.startsWith('i_')&&!/^i_(pared|esquina|piso)/.test(k)));
+const edDeco=()=>Object.keys(TOWN_META).filter(k=>TWN.sc==='town'?(k.startsWith('d_')||k.startsWith('b_')):(k.startsWith('i_')&&!/^i_(pared|esquina|piso)/.test(k)));
 const edCid=()=>SC==='dg'?'dg':TWN.sc;
 const EDN={dg:'Mazmorra',town:'Pueblo',guild:'Gremio',shop:'Tienda',tavern:'Taberna'};
 function edGroundImg(g){const A=ANIM;if(g===2)return [IMG.waterA,0,0,A.waterA.fw,A.waterA.fh];if(g===8)return [IMG.swwaterA,0,0,A.swwaterA.fw,A.swwaterA.fh];if(g===7)return [IMG.swgndA,0,0,A.swgndA.fw,A.swgndA.fh];
   const m={0:IMG.grass_a,1:IMG.path_a,3:IMG.bankA,4:rot('bankA'),5:IMG.bankB,6:rot('bankB'),9:IMG.blkgnd,10:IMG.blkpath,11:IMG.nthgnd,12:IMG.nthpath,13:IMG['town/t_camino_de_tierra']}[g];return m?[m]:null;}
 /* ---- acciones ---- */
 function edTilesAt(i,j){const B=ED.br,off=Math.floor((B-1)/2),o=[];for(let a=0;a<B;a++)for(let b=0;b<B;b++)o.push([i-off+a,j-off+b]);return o;}
+function edDirty(){ED.dirtyT=true;}
 function edDelNear(x0,y0,x1,y1){let ch=false;for(let k=trees.length-1;k>=0;k--){const t=trees[k];if(t[0]>=x0&&t[0]<x1&&t[1]>=y0&&t[1]<y1){trees.splice(k,1);ch=true;}}
   for(let k=props.length-1;k>=0;k--){const q=props[k];if(q.n==='stairs')continue;if(q.x>=x0&&q.x<x1&&q.y>=y0&&q.y<y1){props.splice(k,1);ch=true;}}return ch;}
-function edClearSol(s,p){if(p.sol===1)s.sol[Math.floor(p.y)*s.w+Math.floor(p.x)]=0;else if(Array.isArray(p.sol))for(const [i,j] of p.sol)s.sol[j*s.w+i]=0;}
+function edClearSol(s,p){if(p.sol===1)s.sol[Math.floor(p.y)*s.w+Math.floor(p.x)]=0;else if(Array.isArray(p.sol))for(const [i,j] of p.sol)if(i>=0&&j>=0&&i<s.w&&j<s.h)s.sol[j*s.w+i]=0;}
+function edPropHit(p,i,j){if(Math.floor(p.x)===i&&Math.floor(p.y)===j)return true;if(Array.isArray(p.sol)&&p.sol.some(c=>c[0]===i&&c[1]===j))return true;return Math.hypot(p.x-(i+.5),p.y-(j+.5))<.8;}
+function edFloorAt(s,i,j){const k=i+','+j;if(s.flo[k])return s.flo[k];if(s.id==='town')return VLAYOUT.plaza.has(k)?'t_piso_de_plaza':VLAYOUT.road.has(k)?'t_camino_de_tierra':'t_pasto_del_pueblo';return 'i_piso_de_madera_2';}
 function edAt(i,j){const id=edCid(),t=ED.tool;let ch=false;
   if(id==='dg'){if(i<1||j<1||i>=MW-1||j>=MH-1)return false;const n=j*MW+i;
     if(t==='ground'){const g=EG[ED.sel][0],old=GT[n];if(old!==g){GT[n]=g;if(g===2||g===8)WSOL[n]=1;else if(old===2||old===8)WSOL[n]=0;ch=true;}}
-    else if(t==='tree'){const k=ETR[ED.sel][0];edDelNear(i+.1,j+.1,i+.9,j+.9);addTree(k)(i+.5,j+.5);ch=true;edRefresh(false);}
-    else if(t==='prop'){const [nm,,r]=EPR[ED.sel];edDelNear(i+.1,j+.1,i+.9,j+.9);props.push({x:i+.5,y:j+.5,n:nm,r});ch=true;edRefresh(false);}
-    else if(t==='erase'){if(edDelNear(i,j,i+1,j+1)){ch=true;edRefresh(false);}else if(GT[n]!==0){GT[n]=0;if(WSOL[n]&&(GT0[n]===2||GT0[n]===8))WSOL[n]=0;ch=true;}}
+    else if(t==='tree'){const k=ETR[ED.sel][0];edDelNear(i+.1,j+.1,i+.9,j+.9);addTree(k)(i+.5,j+.5);ch=true;edDirty();}
+    else if(t==='prop'){const [nm,,r]=EPR[ED.sel];edDelNear(i+.1,j+.1,i+.9,j+.9);props.push({x:i+.5,y:j+.5,n:nm,r});ch=true;edDirty();}
+    else if(t==='block'){if(!blockSet.has(i+','+j)&&!terrace(i,j)){blocks.push([i,j]);blockSet.add(i+','+j);ch=true;edDirty();}}
+    else if(t==='erase'){if(edDelNear(i,j,i+1,j+1)){ch=true;edDirty();}else if(blockSet.has(i+','+j)){edDelBlock(i,j);ch=true;edDirty();}else if(terrace(i,j)){TERR.on=false;ch=true;edDirty();}else if(GT[n]!==0){GT[n]=0;if(WSOL[n]&&(GT0[n]===2||GT0[n]===8))WSOL[n]=0;ch=true;}}
     else if(t==='solid'){const v=ED.sel?0:1;if(WSOL[n]!==v){WSOL[n]=v;ch=true;}}
   }else{const s=TSC[id];if(!s||i<0||j<0||i>=s.w||j>=s.h)return false;const n=j*s.w+i;
-    if(t==='floor'){const nm=EFL[ED.sel],k=i+','+j;if(s.flo[k]!==nm){s.flo[k]=nm;ch=true;}}
+    if(t==='floor'){const nm=EFL[ED.sel],k=i+','+j;if(edFloorAt(s,i,j)!==nm||s.flo[k]!==nm){s.flo[k]=nm;ch=true;}}
     else if(t==='deco'){const L=edDeco(),img=L[ED.sel];if(!img)return false;const d=EPD[img]||{sc:.45,sol:0};
       for(let k=s.props.length-1;k>=0;k--){const p=s.props[k];if(p.img===img&&Math.floor(p.x)===i&&Math.floor(p.y)===j){edClearSol(s,p);s.props.splice(k,1);}}
       const p={img,x:i+.5,y:j+.5};if(d.sc)p.sc=d.sc;if(d.floor)p.floor=d.floor;if(d.dy)p.dy=d.dy;if(d.flip)p.flip=d.flip;if(d.sol){p.sol=1;s.sol[n]=1;}s.props.push(p);ch=true;}
-    else if(t==='erase'){for(let k=s.props.length-1;k>=0;k--){const p=s.props[k];if(Math.floor(p.x)===i&&Math.floor(p.y)===j){edClearSol(s,p);s.props.splice(k,1);ch=true;}}if(!ch&&s.flo[i+','+j]){delete s.flo[i+','+j];ch=true;}}
+    else if(t==='erase'){
+      for(let k=s.props.length-1;k>=0;k--){const p=s.props[k];if(edPropHit(p,i,j)){edClearSol(s,p);s.props.splice(k,1);ch=true;}}
+      for(let k=s.boxes.length-1;k>=0;k--){const b=s.boxes[k];if(i>=b.x&&i<b.x+b.w&&j>=b.y&&j<b.y+b.d){for(let y=b.y;y<b.y+b.d;y++)for(let x=b.x;x<b.x+b.w;x++)if(x>0&&y>0&&x<s.w-1&&y<s.h-1)s.sol[y*s.w+x]=0;s.boxes.splice(k,1);ch=true;}}
+      if(!ch){for(let k=s.doors.length-1;k>=0;k--){const d=s.doors[k];if(i+.5>=d.x0&&i+.5<=d.x1&&j+.5>=d.y0&&j+.5<=d.y1){s.doors.splice(k,1);ch=true;}}}
+      if(!ch&&s.flo[i+','+j]){delete s.flo[i+','+j];ch=true;}}
     else if(t==='solid'){const v=ED.sel?0:1;if(s.sol[n]!==v){s.sol[n]=v;ch=true;}}}
   return ch;}
 function edPick(e){const V=ED.view;if(!V)return null;const sx=e.clientX*V.dpr/V.S-V.ox,sy=e.clientY*V.dpr/V.S-V.oy;const wx=(sx/HW+sy/HH)/2,wy=(sy/HH-sx/HW)/2;return[Math.floor(wx),Math.floor(wy)];}
 function edDoStroke(h){if(!h)return false;let ch=false;for(const [i,j] of edTilesAt(h[0],h[1]))if(edAt(i,j))ch=true;return ch;}
+function edRect(a,b){let ch=false;for(let j=Math.min(a[1],b[1]);j<=Math.max(a[1],b[1]);j++)for(let i=Math.min(a[0],b[0]);i<=Math.max(a[0],b[0]);i++)if(edAt(i,j))ch=true;return ch;}
+function edTypeAt(i,j){const id=edCid();if(id==='dg')return GT[j*MW+i];return edFloorAt(TSC[id],i,j);}
+function edFlood(h){if(!h)return false;const id=edCid();if(!(ED.tool==='ground'||ED.tool==='floor')){edToast('La cubeta solo funciona con suelo/piso');return false;}
+  const W=id==='dg'?MW:TSC[id].w,H=id==='dg'?MH:TSC[id].h,lo=id==='dg'?1:0,hiW=id==='dg'?W-1:W,hiH=id==='dg'?H-1:H;
+  if(h[0]<lo||h[1]<lo||h[0]>=hiW||h[1]>=hiH)return false;const src=edTypeAt(h[0],h[1]),seen=new Set([h[0]+','+h[1]]),q=[h];let ch=false;
+  while(q.length){const [i,j]=q.pop();if(edAt(i,j))ch=true;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const x=i+a,y=j+b,k=x+','+y;if(x<lo||y<lo||x>=hiW||y>=hiH||seen.has(k))continue;seen.add(k);
+    const t=id==='dg'?GT0chk(x,y):edTypeAt(x,y);if(t===src)q.push([x,y]);}}return ch;}
+function GT0chk(x,y){return edTypeAt(x,y);}
 function edFill(){const id=edCid();if(!(ED.tool==='ground'||ED.tool==='floor')){edToast('Elige la pestaña de suelo para rellenar');return;}
   if(!confirm('¿Rellenar TODO el mapa con este suelo? (puedes deshacer con ↩️)'))return;ED.undo.push(edSnap());
   if(id==='dg'){const g=EG[ED.sel][0];for(let j=1;j<MH-1;j++)for(let i=1;i<MW-1;i++){const n=j*MW+i,old=GT[n];GT[n]=g;if(g===2||g===8)WSOL[n]=1;else if(old===2||old===8)WSOL[n]=0;}}
   else{const s=TSC[id],nm=EFL[ED.sel];for(let j=0;j<s.h;j++)for(let i=0;i<s.w;i++)s.flo[i+','+j]=nm;}
   edRefresh(true);edSave();}
+function edClear(){const id=edCid();if(!confirm('¿LIMPIAR TODO en '+EDN[id]+'? Quita árboles, props, edificios, vallas, bloqueos y deja el suelo liso. Puedes deshacer con ↩️.'))return;ED.undo.push(edSnap());
+  if(id==='dg'){trees.length=0;for(let k=props.length-1;k>=0;k--)if(props[k].n!=='stairs')props.splice(k,1);blocks.length=0;blockSet.clear();TERR.on=false;
+    for(let j=1;j<MH-1;j++)for(let i=1;i<MW-1;i++){GT[j*MW+i]=0;WSOL[j*MW+i]=0;}}
+  else{const s=TSC[id];s.props.length=0;s.boxes.length=0;const base=id==='town'?'t_pasto_del_pueblo':'i_piso_de_madera_2';s.flo={};
+    for(let j=0;j<s.h;j++)for(let i=0;i<s.w;i++){s.flo[i+','+j]=base;if(i>0&&j>0&&i<s.w-1&&j<s.h-1)s.sol[j*s.w+i]=0;}}
+  edRefresh(true);edSave();edToast('Escena limpia');}
+function edGrow(){const id=edCid();if(id==='dg'){edToast('El mapa de la mazmorra tiene tamaño fijo por ahora');return;}const s=TSC[id];if(s.w>=56||s.h>=56){edToast('Ya está en el tamaño máximo');return;}
+  ED.undo.push(edSnap());edResize(s,Math.min(56,s.w+4),Math.min(56,s.h+4));edSave();edFit();edToast('Escena más grande: '+s.w+'×'+s.h);}
 /* ---- dibujo sobre el mapa ---- */
-function edDraw(S,ox,oy){const c=ctx,id=edCid();c.setTransform(S,0,0,S,ox*S,oy*S);c.globalCompositeOperation='source-over';c.imageSmoothingEnabled=false;
+function edDraw(S,ox,oy){if(ED.dirtyT&&performance.now()-(ED.lastR||0)>150){ED.dirtyT=false;ED.lastR=performance.now();edRefresh(false);}
+  const c=ctx,id=edCid();c.setTransform(S,0,0,S,ox*S,oy*S);c.globalCompositeOperation='source-over';c.imageSmoothingEnabled=false;
   const W=id==='dg'?MW:TSC[id].w,H=id==='dg'?MH:TSC[id].h,V=ED.view,vw=cv.width/S,vh=cv.height/S;
   const dia=(i,j)=>{const a=S2(i,j),b=S2(i+1,j),d=S2(i+1,j+1),e=S2(i,j+1);c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.lineTo(d[0],d[1]);c.lineTo(e[0],e[1]);c.closePath();};
   const vis=(i,j)=>{const p=S2(i+.5,j+.5);const x=p[0]+ox,y=p[1]+oy;return x>-HW&&x<vw+HW&&y>-HH&&y<vh+HH;};
   if(ED.zf>=.5){c.beginPath();for(let j=0;j<H;j++)for(let i=0;i<W;i++)if(vis(i,j))dia(i,j);c.strokeStyle='rgba(255,255,255,.14)';c.lineWidth=1/S*Math.max(1,S);c.stroke();}
   if(ED.tool==='solid'){c.beginPath();const sol=id==='dg'?WSOL:TSC[id].sol;for(let j=0;j<H;j++)for(let i=0;i<W;i++)if(sol[j*W+i]&&vis(i,j))dia(i,j);c.fillStyle='rgba(255,60,60,.38)';c.fill();}
-  if(ED.hover&&ED.mode==='paint'){c.beginPath();for(const [i,j] of edTilesAt(ED.hover[0],ED.hover[1]))if(i>=0&&j>=0&&i<W&&j<H)dia(i,j);c.fillStyle='rgba(255,210,74,.22)';c.fill();c.strokeStyle='#ffd24a';c.lineWidth=2;c.stroke();}
+  if(id!=='dg'){c.beginPath();for(const d of TSC[id].doors){const a=S2(d.x0,d.y0),b=S2(d.x1,d.y0),e=S2(d.x1,d.y1),f=S2(d.x0,d.y1);c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.lineTo(e[0],e[1]);c.lineTo(f[0],f[1]);c.closePath();}c.fillStyle='rgba(60,255,120,.35)';c.fill();}
+  if(ED.r0&&ED.hover){c.beginPath();for(let j=Math.min(ED.r0[1],ED.hover[1]);j<=Math.max(ED.r0[1],ED.hover[1]);j++)for(let i=Math.min(ED.r0[0],ED.hover[0]);i<=Math.max(ED.r0[0],ED.hover[0]);i++)if(i>=0&&j>=0&&i<W&&j<H)dia(i,j);c.fillStyle='rgba(255,210,74,.25)';c.fill();c.strokeStyle='#ffd24a';c.lineWidth=2;c.stroke();}
+  else if(ED.hover&&ED.mode==='paint'){c.beginPath();for(const [i,j] of edTilesAt(ED.hover[0],ED.hover[1]))if(i>=0&&j>=0&&i<W&&j<H)dia(i,j);c.fillStyle='rgba(255,210,74,.22)';c.fill();c.strokeStyle='#ffd24a';c.lineWidth=2;c.stroke();}
   c.setTransform(1,0,0,1,0,0);}
 /* ---- interfaz ---- */
 const EDCSS=document.createElement('style');EDCSS.textContent='#edbar{position:fixed;left:6px;top:6px;z-index:30;display:none;gap:5px;flex-wrap:wrap;max-width:calc(100vw - 60px)}#edbar button,#edbar select,#edpal button,#edpal select{background:#0d1730dd;color:#fff;border:2px solid #5f86c4;border-radius:8px;padding:6px 8px;font:700 13px system-ui}#edbar button.on,#edpal button.on{background:#2d5fb8;border-color:#7fb0ff}#edpal{position:fixed;left:0;right:0;bottom:0;z-index:30;display:none;background:#08122ae6;border-top:2px solid #5f86c4;padding:6px;font:600 12px system-ui;color:#dfe8ff}#edpal .row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px}#edcells{display:flex;gap:5px;overflow-x:auto;padding-bottom:3px}#edcells div{flex:none;border:2px solid #2d4678;border-radius:6px;background:#13224a;padding:3px;text-align:center;min-width:54px}#edcells div.on{border-color:#ffd24a;background:#2a3a6a}#edcells canvas{position:static;inset:auto;display:block;margin:0 auto;width:auto;height:auto;image-rendering:pixelated;max-height:54px;max-width:96px}#edtoast{position:fixed;left:50%;top:60px;transform:translateX(-50%);background:#000c;color:#fff;padding:7px 12px;border-radius:8px;font:700 13px system-ui;z-index:31;display:none}';document.head.appendChild(EDCSS);
@@ -1781,15 +1823,16 @@ function edUI(){const id=edCid();edBar.innerHTML='';edPalEl.innerHTML='';
   const sel=document.createElement('select');for(const k in EDN){const o=document.createElement('option');o.value=k;o.textContent=EDN[k];sel.appendChild(o);}sel.value=id;sel.onchange=()=>edGoto(sel.value);edBar.appendChild(sel);
   edBar.appendChild(eBtn(ED.mode==='paint'?'🖌️ Pintar':'✋ Mover',()=>{ED.mode=ED.mode==='paint'?'move':'paint';edUI();},ED.mode==='paint'));
   edBar.appendChild(eBtn('Pincel '+ED.br+'×'+ED.br,()=>{ED.br=ED.br%3+1;edUI();}));
+  edBar.appendChild(eBtn({free:'✏️ Libre',rect:'▭ Rectángulo',bucket:'🪣 Cubeta'}[ED.shape||'free'],()=>{ED.shape={free:'rect',rect:'bucket',bucket:'free'}[ED.shape||'free'];edUI();}));
   edBar.appendChild(eBtn('↩️',()=>{const o=ED.undo.pop();if(o)edRestore(o);}));
   edBar.appendChild(eBtn('−',()=>{const i=ZF.findIndex(v=>v>=ED.zf-1e-6);ED.zf=ZF[Math.max(0,(i<0?ZF.length:i)-1)];}));
   edBar.appendChild(eBtn('＋',()=>{const i=ZF.findIndex(v=>v>ED.zf+1e-6);ED.zf=i<0?1:ZF[i];}));
-  edBar.appendChild(eBtn('🔭',edFit));edBar.appendChild(eBtn('🪄 Rellenar',edFill));
+  edBar.appendChild(eBtn('🔭',edFit));edBar.appendChild(eBtn('🪄 Rellenar',edFill));edBar.appendChild(eBtn('🧹 Limpiar',edClear));edBar.appendChild(eBtn('➕ Agrandar',edGrow));
   edBar.appendChild(eBtn('💾',()=>{edSave();const b=new Blob([localStorage.getItem(EKEY)||'{"v":1,"dg":{},"sc":{}}'],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mapa_editado_hvs.json';a.click();edToast('Ediciones exportadas');}));
   edBar.appendChild(eBtn('📂',()=>{const f=document.createElement('input');f.type='file';f.accept='.json';f.onchange=()=>f.files[0].text().then(t=>{try{const o=JSON.parse(t);if(o.v!==1)throw 0;localStorage.setItem(EKEY,t);location.reload();}catch(e){edToast('Archivo no válido');}});f.click();}));
   edBar.appendChild(eBtn('♻️',()=>{if(confirm('¿Borrar TODAS tus ediciones y volver al mapa original?')){localStorage.removeItem(EKEY);location.reload();}}));
   edBar.appendChild(eBtn('✖ Salir',()=>edToggle(false)));
-  const T=id==='dg'?[['ground','🟩 Suelo'],['tree','🌲 Árboles'],['prop','🪨 Props'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']]:[['floor','🟫 Piso'],['deco','🪑 Objetos'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']];
+  const T=id==='dg'?[['ground','🟩 Suelo'],['tree','🌲 Árboles'],['prop','🪨 Props'],['block','🧱 Bloque'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']]:[['floor','🟫 Piso'],['deco','🪑 Objetos'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']];
   if(!T.some(x=>x[0]===ED.tool)){ED.tool=T[0][0];ED.sel=0;}
   const row=document.createElement('div');row.className='row';for(const [k,l] of T)row.appendChild(eBtn(l,()=>{ED.tool=k;ED.sel=0;edUI();},ED.tool===k));edPalEl.appendChild(row);
   const cells=document.createElement('div');cells.id='edcells';edPalEl.appendChild(cells);
@@ -1801,17 +1844,20 @@ function edUI(){const id=edCid();edBar.innerHTML='';edPalEl.innerHTML='';
   if(t==='prop')EPR.forEach(([k,n],i)=>add(i,n,(c,g)=>{const im=IMG[k];c.width=im.width;c.height=im.height;g.drawImage(im,0,0);}));
   if(t==='floor')EFL.forEach((k,i)=>add(i,k.replace(/^[a-z]_/,'').replace(/_/g,' '),(c,g)=>{const im=IMG['town/'+k];c.width=im.width;c.height=im.height;g.drawImage(im,0,0);}));
   if(t==='deco')edDeco().forEach((k,i)=>add(i,k.replace(/^[a-z]_/,'').replace(/_/g,' '),(c,g)=>{const im=IMG['town/'+k];c.width=im.width;c.height=im.height;g.drawImage(im,0,0);}));
+  if(t==='block')add(0,'Bloque',(c,g)=>{const im=IMG.block;c.width=im.width;c.height=im.height;g.drawImage(im,0,0);});
   if(t==='solid')[['Bloquear',0],['Liberar',1]].forEach(([n],i)=>add(i,n,(c,g)=>{c.width=40;c.height=24;g.fillStyle=i?'#2a6a3a':'#a03030';g.fillRect(0,0,40,24);}));
-  if(t==='erase'){const d=document.createElement('div');d.style.cssText='padding:6px 4px;font-size:12px';d.textContent='Toca un tile: borra lo que haya encima; si no hay nada, borra el suelo editado.';cells.appendChild(d);}}
+  if(t==='erase'){const d=document.createElement('div');d.style.cssText='padding:6px 4px;font-size:12px';d.textContent='Toca un tile y borra lo que haya: casas, fuente, vallas, árboles, bloques, terraza, puertas (verdes). Si no hay nada, borra el suelo editado.';cells.appendChild(d);}}
 function edToggle(v){if(v===ED.on)return;ED.on=v;if(v){if(SC!=='dg'&&!TSC[TWN.sc])return;ED.mode='paint';ED.undo=[];ED.zf=1;edBar.style.display='flex';edPalEl.style.display='block';edUI();setTimeout(edFit,50);
     for(const id of ['ab','db','sb','ub','mm'])document.getElementById(id).style.display='none';}
   else{edSave();edBar.style.display='none';edPalEl.style.display='none';ED.hover=null;ED.zf=1;tSetUI();document.getElementById('ab').style.display='';}}
 document.getElementById('edb').onclick=()=>edToggle(!ED.on);
 cv.addEventListener('pointerdown',e=>{if(!ED.on)return;e.preventDefault();cv.setPointerCapture(e.pointerId);ED.drag={x:e.clientX,y:e.clientY};
-  if(ED.mode==='paint'){ED.undo.push(edSnap());if(ED.undo.length>40)ED.undo.shift();ED.painting=true;ED.hover=edPick(e);ED.changed=edDoStroke(ED.hover);}});
-cv.addEventListener('pointermove',e=>{if(!ED.on)return;if(ED.mode==='paint'){ED.hover=edPick(e);if(ED.painting&&edDoStroke(ED.hover))ED.changed=true;}
+  if(ED.mode==='paint'){ED.undo.push(edSnap());if(ED.undo.length>40)ED.undo.shift();ED.painting=true;ED.hover=edPick(e);ED.changed=false;
+    const sh=ED.shape||'free';if(sh==='rect')ED.r0=ED.hover;else if(sh==='bucket'){ED.changed=edFlood(ED.hover);}else ED.changed=edDoStroke(ED.hover);}});
+cv.addEventListener('pointermove',e=>{if(!ED.on)return;if(ED.mode==='paint'){ED.hover=edPick(e);if(ED.painting&&!ED.r0&&(ED.shape||'free')==='free'&&edDoStroke(ED.hover))ED.changed=true;}
   else if(ED.drag){const k=(window.devicePixelRatio||1)/ED.view.S,c=SC==='dg'?ED.camD:ED.camT;if(c){c.x-=(e.clientX-ED.drag.x)*k;c.y-=(e.clientY-ED.drag.y)*k;}ED.drag={x:e.clientX,y:e.clientY};}});
-const edEnd=()=>{if(!ED.on)return;ED.drag=null;if(ED.painting){ED.painting=false;if(!ED.changed)ED.undo.pop();else{edRefresh(true);edSave();}ED.changed=false;}};
+const edEnd=()=>{if(!ED.on)return;ED.drag=null;if(ED.painting){ED.painting=false;if(ED.r0&&ED.hover){if(edRect(ED.r0,ED.hover))ED.changed=true;}ED.r0=null;
+  if(!ED.changed)ED.undo.pop();else{ED.dirtyT=false;edRefresh(true);edSave();}ED.changed=false;}};
 cv.addEventListener('pointerup',edEnd);cv.addEventListener('pointercancel',edEnd);
 cv.addEventListener('wheel',e=>{if(!ED.on)return;e.preventDefault();const i=ZF.findIndex(v=>v>=ED.zf-1e-6);ED.zf=e.deltaY<0?(ZF[Math.min(ZF.length-1,(i<0?ZF.length-1:i)+1)]):ZF[Math.max(0,(i<0?1:i)-1)];},{passive:false});
 addEventListener('keydown',e=>{if(!ED.on)return;if((e.ctrlKey||e.metaKey)&&e.key==='z'){const o=ED.undo.pop();if(o)edRestore(o);}const k=e.key,c=SC==='dg'?ED.camD:ED.camT,st=40/ED.zf;if(c){if(k==='ArrowLeft')c.x-=st;if(k==='ArrowRight')c.x+=st;if(k==='ArrowUp')c.y-=st;if(k==='ArrowDown')c.y+=st;}});

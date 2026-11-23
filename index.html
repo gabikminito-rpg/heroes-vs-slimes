@@ -114,7 +114,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v85';
+const VER='iso-prueba v86';
 const CKEY='hvs_iso_cfg_v1';const FX=Object.assign({water:1,tiles:1,fly:1,fire:1,light:1,rays:1},(()=>{try{return JSON.parse(localStorage.getItem('hvs_iso_cfg_v1')||'{}');}catch(e){return {};}})());
 const cv=document.getElementById('c'); let ctx=cv.getContext('2d'); const ctxMain=ctx;
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
@@ -1178,80 +1178,209 @@ const QUESTS=[
 const TOMES=[{id:'t1',n:'Tomo de Fuego',p:500,u:'u_tomo_fuego'},{id:'t2',n:'Tomo de Hielo',p:600,u:'u_tomo_hielo'},{id:'t3',n:'Tomo de Rayo',p:800,u:'u_tomo_rayo'}];
 function questKill(m){for(const q of QUESTS[GLD.rank]||[])if(q.k==='kill'&&GLD.acc[q.id]&&!GLD.claimed[q.id]&&q.ty.includes(m.type))GLD.prog[q.id]=Math.min(q.n,(GLD.prog[q.id]|0)+1);}
 function questCross(){for(const q of QUESTS[GLD.rank]||[])if(q.k==='cross'&&GLD.acc[q.id]&&!GLD.claimed[q.id])GLD.prog[q.id]=1;}
-const TWN={x:13,y:19.6,face:1,back:false,moving:false,sc:'town',bub:null,mt:0};
+const TWN={x:14,y:10.6,face:1,back:false,moving:false,sc:'town',bub:null,mt:0};
 const TOWN_META={"t_piso_de_plaza":{"w":110,"h":57},"t_piso_de_plaza_2":{"w":110,"h":57},"t_camino_de_tierra":{"w":110,"h":57},"t_pasto_del_pueblo":{"w":110,"h":57},"t_pasto":{"w":110,"h":57},"t_borde_de_plaza":{"w":220,"h":83,"ax":110,"ay":83},"b_gremio_de_aventureros":{"w":385,"h":497,"ax":212,"ay":497},"b_tienda":{"w":385,"h":504,"ax":215,"ay":504},"b_taberna":{"w":385,"h":502,"ax":212,"ay":502},"b_casa_a":{"w":330,"h":423,"ax":181,"ay":423},"b_casa_b":{"w":330,"h":427,"ax":170,"ay":427},"b_casa_c":{"w":330,"h":431,"ax":165,"ay":431},"b_entrada_de_la_mazmorra_del_bosque":{"w":330,"h":434,"ax":256,"ay":434},"d_fuente_de_la_plaza":{"w":220,"h":187,"ax":110,"ay":187},"d_pozo":{"w":73,"h":90,"ax":37,"ay":90},"d_farol_de_calle":{"w":21,"h":75,"ax":14,"ay":75},"d_cerca_de_madera":{"w":110,"h":107,"ax":12,"ay":107},"d_cerca_de_madera_2":{"w":110,"h":107,"ax":97,"ay":107},"d_letrero_de_madera":{"w":55,"h":80,"ax":26,"ay":80},"d_puesto_de_mercado":{"w":112,"h":150,"ax":51,"ay":150},"d_barriles_y_cajas":{"w":56,"h":70,"ax":42,"ay":70},"d_arbusto_con_flores":{"w":52,"h":55,"ax":26,"ay":55},"d_arbol_del_pueblo":{"w":115,"h":140,"ax":54,"ay":140},"d_banca_de_plaza":{"w":58,"h":60,"ax":37,"ay":60},"d_tablon_de_anuncios":{"w":74,"h":110,"ax":65,"ay":110},"d_carreta_con_heno":{"w":112,"h":110,"ax":55,"ay":110},"i_piso_de_madera":{"w":110,"h":57},"i_piso_de_madera_2":{"w":110,"h":57},"i_pared_trasera_izquierda":{"w":70,"h":122,"topSlope":0.49582691840207443,"topY0":-4.844123922966803,"ax":61,"ay":122,"seg":61},"i_pared_trasera_derecha":{"w":130,"h":153,"topSlope":-0.4851730547933084,"topY0":58.53725177775815,"ax":129,"ay":90,"seg":124},"i_pared_con_ventana":{"w":64,"h":116,"ax":0,"ay":116,"topSlope":-0.5281376518218621,"topY0":26.885087719298237},"i_esquina_de_pared":{"w":141,"h":122,"topSlope":-0.007107421281765532,"topY0":11.255870540987473,"ax":70,"ay":95,"seamTopY":0},"i_alfombra_de_entrada":{"w":165,"h":94,"ax":46,"ay":94},"i_mostrador_del_gremio":{"w":275,"h":207,"ax":222,"ay":207},"i_tablero_de_pergaminos":{"w":165,"h":242,"ax":82,"ay":242},"i_pergamino_cerrado":{"w":57,"h":40,"ax":28,"ay":40},"i_banca_larga":{"w":165,"h":123,"ax":124,"ay":123},"i_mostrador_de_la_tienda":{"w":330,"h":275,"ax":260,"ay":275},"i_estante_con_mercancia":{"w":165,"h":234,"ax":82,"ay":234},"i_barra_de_la_taberna":{"w":330,"h":259,"ax":212,"ay":259},"i_mesa_redonda_de_taberna":{"w":216,"h":205,"ax":108,"ay":205},"i_taburete":{"w":32,"h":35,"ax":16,"ay":35},"i_chimenea":{"w":102,"h":120,"ax":48,"ay":120},"i_barril_grande":{"w":49,"h":70,"ax":24,"ay":70},"i_farol_colgante":{"w":41,"h":90,"ax":20,"ay":90},"i_escalera_puerta_de_salida":{"w":137,"h":150,"ax":68,"ay":150},"n_beto_base_b":{"w":32,"h":50,"ax":19,"ay":45,"fw":32,"n":1},"n_beto_base_f":{"w":32,"h":50,"ax":16,"ay":45,"fw":32,"n":1},"n_beto_caminar_b":{"w":312,"h":50,"ax":19,"ay":45,"fw":39,"n":8},"n_beto_caminar_f":{"w":288,"h":50,"ax":17,"ay":45,"fw":36,"n":8},"n_beto_idle_b":{"w":210,"h":50,"ax":21,"ay":45,"fw":35,"n":6},"n_beto_idle_f":{"w":192,"h":50,"ax":16,"ay":45,"fw":32,"n":6},"n_cantinero_base_b":{"w":30,"h":50,"ax":19,"ay":45,"fw":30,"n":1},"n_cantinero_base_f":{"w":30,"h":50,"ax":18,"ay":45,"fw":30,"n":1},"n_cantinero_caminar_b":{"w":304,"h":50,"ax":19,"ay":45,"fw":38,"n":8},"n_cantinero_caminar_f":{"w":288,"h":50,"ax":17,"ay":45,"fw":36,"n":8},"n_cantinero_idle_b":{"w":150,"h":50,"ax":17,"ay":45,"fw":30,"n":5},"n_cantinero_idle_f":{"w":150,"h":50,"ax":15,"ay":45,"fw":30,"n":5},"n_chuy_base_b":{"w":33,"h":50,"ax":17,"ay":45,"fw":33,"n":1},"n_chuy_base_f":{"w":33,"h":50,"ax":16,"ay":45,"fw":33,"n":1},"n_chuy_caminar_b":{"w":296,"h":50,"ax":17,"ay":45,"fw":37,"n":8},"n_chuy_caminar_f":{"w":328,"h":50,"ax":18,"ay":45,"fw":41,"n":8},"n_chuy_idle_b":{"w":198,"h":50,"ax":17,"ay":45,"fw":33,"n":6},"n_chuy_idle_f":{"w":198,"h":50,"ax":16,"ay":45,"fw":33,"n":6},"n_juglar_base_b":{"w":35,"h":50,"ax":17,"ay":45,"fw":35,"n":1},"n_juglar_base_f":{"w":36,"h":50,"ax":15,"ay":45,"fw":36,"n":1},"n_juglar_caminar_b":{"w":344,"h":50,"ax":25,"ay":45,"fw":43,"n":8},"n_juglar_caminar_f":{"w":344,"h":50,"ax":19,"ay":45,"fw":43,"n":8},"n_juglar_idle_b":{"w":175,"h":50,"ax":18,"ay":45,"fw":35,"n":5},"n_juglar_idle_f":{"w":222,"h":50,"ax":15,"ay":45,"fw":37,"n":6},"n_lupe_base_b":{"w":31,"h":50,"ax":17,"ay":45,"fw":31,"n":1},"n_lupe_base_f":{"w":31,"h":50,"ax":14,"ay":45,"fw":31,"n":1},"n_lupe_caminar_b":{"w":312,"h":50,"ax":17,"ay":45,"fw":39,"n":8},"n_lupe_caminar_f":{"w":304,"h":50,"ax":16,"ay":45,"fw":38,"n":8},"n_lupe_idle_b":{"w":155,"h":50,"ax":17,"ay":45,"fw":31,"n":5},"n_lupe_idle_f":{"w":155,"h":50,"ax":14,"ay":45,"fw":31,"n":5},"n_marta_base_b":{"w":31,"h":50,"ax":16,"ay":45,"fw":31,"n":1},"n_marta_base_f":{"w":32,"h":50,"ax":15,"ay":45,"fw":32,"n":1},"n_marta_caminar_b":{"w":280,"h":50,"ax":16,"ay":45,"fw":35,"n":8},"n_marta_caminar_f":{"w":336,"h":50,"ax":17,"ay":45,"fw":42,"n":8},"n_marta_idle_b":{"w":204,"h":50,"ax":18,"ay":45,"fw":34,"n":6},"n_marta_idle_f":{"w":210,"h":50,"ax":16,"ay":45,"fw":35,"n":6},"n_nina_base_b":{"w":32,"h":50,"ax":19,"ay":45,"fw":32,"n":1},"n_nina_base_f":{"w":33,"h":50,"ax":15,"ay":45,"fw":33,"n":1},"n_nina_caminar_b":{"w":304,"h":50,"ax":19,"ay":45,"fw":38,"n":8},"n_nina_caminar_f":{"w":288,"h":50,"ax":16,"ay":45,"fw":36,"n":8},"n_nina_idle_b":{"w":204,"h":50,"ax":21,"ay":45,"fw":34,"n":6},"n_nina_idle_f":{"w":198,"h":50,"ax":15,"ay":45,"fw":33,"n":6},"n_recepcionista_base_b":{"w":31,"h":50,"ax":19,"ay":45,"fw":31,"n":1},"n_recepcionista_base_f":{"w":30,"h":50,"ax":14,"ay":45,"fw":30,"n":1},"n_recepcionista_caminar_b":{"w":304,"h":50,"ax":17,"ay":45,"fw":38,"n":8},"n_recepcionista_caminar_f":{"w":304,"h":50,"ax":17,"ay":45,"fw":38,"n":8},"n_recepcionista_idle_b":{"w":198,"h":50,"ax":19,"ay":45,"fw":33,"n":6},"n_recepcionista_idle_f":{"w":180,"h":50,"ax":14,"ay":45,"fw":30,"n":6},"n_tendero_base_b":{"w":30,"h":50,"ax":19,"ay":45,"fw":30,"n":1},"n_tendero_base_f":{"w":30,"h":50,"ax":14,"ay":45,"fw":30,"n":1},"n_tendero_caminar_b":{"w":304,"h":50,"ax":19,"ay":45,"fw":38,"n":8},"n_tendero_caminar_f":{"w":288,"h":50,"ax":17,"ay":45,"fw":36,"n":8},"n_tendero_idle_b":{"w":180,"h":50,"ax":19,"ay":45,"fw":30,"n":6},"n_tendero_idle_f":{"w":150,"h":50,"ax":14,"ay":45,"fw":30,"n":5},"n_viajero_base_b":{"w":37,"h":50,"ax":20,"ay":45,"fw":37,"n":1},"n_viajero_base_f":{"w":38,"h":50,"ax":23,"ay":45,"fw":38,"n":1},"n_viajero_caminar_b":{"w":352,"h":50,"ax":21,"ay":45,"fw":44,"n":8},"n_viajero_caminar_f":{"w":368,"h":50,"ax":24,"ay":45,"fw":46,"n":8},"n_viajero_idle_b":{"w":234,"h":50,"ax":21,"ay":45,"fw":39,"n":6},"n_viajero_idle_f":{"w":240,"h":50,"ax":20,"ay":45,"fw":40,"n":6},"u_rango_e":{"w":47,"h":49,"ax":23,"ay":24},"u_rango_d":{"w":44,"h":43,"ax":22,"ay":21},"u_rango_c":{"w":47,"h":47,"ax":23,"ay":23},"u_rango_b":{"w":40,"h":42,"ax":20,"ay":21},"u_rango_a":{"w":34,"h":34,"ax":17,"ay":17},"u_rango_s":{"w":40,"h":45,"ax":20,"ay":22},"u_moneda":{"w":37,"h":37,"ax":18,"ay":18},"u_bolsa":{"w":39,"h":41,"ax":19,"ay":20},"u_tomo_fuego":{"w":38,"h":35,"ax":19,"ay":17},"u_tomo_hielo":{"w":39,"h":38,"ax":19,"ay":19},"u_tomo_rayo":{"w":38,"h":35,"ax":19,"ay":17},"u_mision":{"w":49,"h":49,"ax":24,"ay":24},"u_burbuja":{"w":31,"h":23,"ax":15,"ay":11,"frameH":19,"tail":[7,19,11,23],"slice":2}};
 const TSC={};
 function tMk(id,w,h,name){const s={id,w,h,name,sol:new Uint8Array(w*h),boxes:[],objs:[],npcs:[],doors:[],props:[],wall:id!=='town'};for(let i=0;i<w;i++){s.sol[i]=1;s.sol[(h-1)*w+i]=1;}for(let j=0;j<h;j++){s.sol[j*w]=1;s.sol[j*w+w-1]=1;}return s;}
 function tBox(s,x,y,w,d,h,col,roof,o){const b=Object.assign({x,y,w,d,h,col,roof},o||{});s.boxes.push(b);for(let j=y;j<y+d;j++)for(let i=x;i<x+w;i++)if(i>=0&&j>=0&&i<s.w&&j<s.h)s.sol[j*s.w+i]=1;return b;}
+/* ===== VILLAGE v84 — distribución inteligente del pueblo =====
+   Reglas aprendidas de 5 proyectos (ver
+   research_notes/village-distribution-research-20261123-0210/report.md):
+   - Cartographer (beaurancourt/cartographer): grafo primero + BFS desde la
+     entrada; cada puerta es un ancla sobre una casilla de calle real;
+     1-2 objetos por lote; checklist de iteración (nada flotando, nada
+     inalcanzable, composición no apelotonada en un cuadrante).
+   - Watabou TownGeneratorOS: barrios ponderados con rateLocation (tiendas al
+     centro, granjas al borde); calles como grafo; puertas como ancla.
+   - BlenderLevelArchitect: grafo de calles con 3 modos (rejilla/orgánico/
+     anillo), lotes junto a calles con retiro/hueco/skip_chance, semillas
+     derivadas por hijo, anclas, comprobación de caminabilidad, árbol de
+     expansión + anillo para conectar los puntos de interés.
+   - WorldSlate: receta + semilla ("no se entrega un mapa, se entrega el
+     algoritmo"); capa manual — los héroes fijados a mano sobreviven a cada
+     re-sorteo; dispersión Poisson; bordes ondulados con ruido.
+   - The Free Game (Godot): la plaza como atractor social (ahí se juntan los
+     NPCs); cadenas de producción (posada en el centro, aserradero junto al
+     bosque); orden de requisitos (lo básico primero).
+   NINGÚN mapa copiado: la síntesis es una combinación original de reglas.
+   Receta + semilla: la misma semilla da siempre el mismo pueblo.
+   Semilla derivada por hijo: hash(semilla, id) — cambiar un hijo no reordena
+   a los demás. Los héroes (plaza, gremio, tienda, taberna, mazmorra, fuente,
+   puerta sur) son capa manual: fijos en la receta, no se sortean.
+   La semilla por defecto (20261122) reproduce EXACTAMENTE la rejilla
+   PROPUESTA de notes/propuesta-mapas.md (ver work/verify_village.py). */
+function vHash(seed,id){let h=(2166136261^seed)>>>0;const s=String(id);for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function vBres(x0,y0,x1,y1){const c=[];let dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1,e=dx+dy,x=x0,y=y0;for(;;){c.push([x,y]);if(x===x1&&y===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x+=sx;}if(e2<=dx){e+=dx;y+=sy;}}return c;}
+/* Tallado de calle: polilínea + ancho. Ancho 2 = la casilla y su vecina al
+   sur (tramo horizontal) o al este (tramo vertical). */
+function vCarve(s1,s2,pts,w){for(let s=0;s<pts.length-1;s++){const a=pts[s],b=pts[s+1];const hz=Math.abs(b[0]-a[0])>=Math.abs(b[1]-a[1]);for(const p of vBres(a[0],a[1],b[0],b[1])){const k=p[0]+','+p[1];if(w===2){s2.add(k);s2.add(hz?(p[0]+','+(p[1]+1)):((p[0]+1)+','+p[1]));}else s1.add(k);}}}
+/* Muestreo Poisson-disc (greedy sobre candidatos barajados con la semilla):
+   acepta un candidato solo si está a distancia >= r de los ya aceptados.
+   Espaciado parejo, sin grumos. */
+function vPoisson(rng,cands,r,maxN){const acc=[];const sh=cands.slice();for(let i=sh.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));const t=sh[i];sh[i]=sh[j];sh[j]=t;}for(const c of sh){let ok=true;for(const a of acc){const dx=c[0]-a[0],dy=c[1]-a[1];if(dx*dx+dy*dy<r*r){ok=false;break;}}if(ok){acc.push(c);if(acc.length>=maxN)break;}}return acc;}
+const VILLAGE_RECIPE={semilla:20261122,modo:'organic',densidad:1,skipChance:0.2,
+  arboleda:[[25,1],[22,2],[26,2],[24,3],[23,4]]};
+const V_REGION_ARBOLEDA=[];for(let y=1;y<=4;y++)for(let x=22;x<=26;x++)V_REGION_ARBOLEDA.push([x,y]);
+/* Héroes fijos (capa manual): no se mueven nunca. La fuente marca en la
+   rejilla solo su fila superior (gw:2,gd:1), como en el plano aprobado. */
+const V_HEROES=[
+ {id:'mazmorra',letra:'D',x:12,y:1,w:4,d:2,h:3.4,col:'#8a8a92',roof:'#6a6a74',o:{label:'Mazmorra del Bosque',arch:true,spr:'b_entrada_de_la_mazmorra_del_bosque'}},
+ {id:'gremio',letra:'G',x:4,y:5,w:4,d:3,h:2.4,col:'#b07a4a',roof:'#8a3a2a',o:{label:'Gremio',spr:'b_gremio_de_aventureros'}},
+ {id:'tienda',letra:'S',x:12,y:5,w:4,d:3,h:2.2,col:'#6a8ab0',roof:'#3a5a8a',o:{label:'Tienda',spr:'b_tienda'}},
+ {id:'taberna',letra:'T',x:4,y:12,w:4,d:3,h:2.2,col:'#a0643a',roof:'#5a3a2a',o:{label:'Taberna',spr:'b_taberna'}},
+ {id:'fuente',letra:'F',x:13,y:11,w:2,d:2,h:.8,col:'#9aa0a8',roof:'#6ab0d8',gw:2,gd:1,o:{fount:true,spr:'d_fuente_de_la_plaza'}},
+];
+/* Calles como grafo (vértices = polilíneas). La calle principal es ancho 2
+   con una curva suave: tramo recto (4,9)-(10,9) y desvío de 1 casilla al sur
+   hasta (16,10) — ondulación ±1, no recta perfecta. El anillo da la ruta
+   alternativa alrededor de la plaza (árbol de expansión + anillo). */
+const V_CALLES=[
+ {id:'principal',w:2,pts:[[4,9],[10,9]]},
+ {id:'principal-curva',w:1,pts:[[10,9],[16,10]]},
+ {id:'anillo',w:1,pts:[[10,9],[17,9],[17,14],[10,14],[10,9]]},
+ {id:'este',w:1,pts:[[17,11],[25,11]]},
+ {id:'ramal-a',w:1,pts:[[20,7],[20,8]]},
+ {id:'sur',w:1,pts:[[17,15],[23,15]]},
+ {id:'taberna',w:2,pts:[[5,9],[5,16]]},
+ {id:'mazmorra',w:2,pts:[[13,3],[13,10]]},
+ {id:'salida-sur',w:2,pts:[[13,14],[13,21]]},
+ /* La calle sur es continua j14-21 (texto de la propuesta y del encargo);
+    la rejilla trae un corte en j=17-18, pero es un desliz del diagrama:
+    no hay nada ahí que la interrumpa. Ver EXPECTED_DIFFS en
+    work/verify_village.py. */
+];
+/* Lotes: cada casa con su puerta ANCLADA a una casilla de calle (nunca
+   flotando). celdaPuerta = la casilla de la puerta dibujada sobre la casa
+   (casa A: su fila inferior (20,7) marca '=' en el plano). La casa D reusa
+   un sprite existente, elegido por semilla derivada (20261122 -> b_casa_c). */
+const V_LOTES=[
+ {id:'casaA',letra:'a',x:19,y:5,spr:'b_casa_a',col:'#c0a070',roof:'#7a4a3a',puerta:{x:20,y:8},celdaPuerta:{x:20,y:7}},
+ {id:'casaB',letra:'b',x:19,y:12,spr:'b_casa_b',col:'#b09080',roof:'#6a4a5a',puerta:{x:20,y:15}},
+ {id:'casaC',letra:'c',x:23,y:8,spr:'b_casa_c',col:'#a8a078',roof:'#7a5a3a',puerta:{x:24,y:11}},
+ {id:'casaD',letra:'d',x:21,y:16,spr:null,col:'#b89a6a',roof:'#5a4a3a',puerta:{x:22,y:15}},
+];
+/* Decoración: props del juego + letra en el plano (g:null = el plano no la
+   marca: está sobre una calle, dentro de un edificio o en el interior de la
+   plaza). El farol (5,13) del plano cae DENTRO de la taberna (4-7,12-14) y
+   quedaría tapado por el sprite: se coloca en (5,16), junto a la puerta de
+   la taberna, sobre el mismo camino. La puerta sur no tiene sprite propio:
+   dos cercas como postes + un letrero al lado; el camino sigue 2 casillas
+   más allá del borde (se dibujan en tFrame, fuera de la escena). */
+function vDecor(arboleda){
+  const D=[];
+  for(const t of arboleda)D.push({img:'d_arbol_del_pueblo',x:t[0],y:t[1],sol:1,g:'t'});
+  for(const t of [[2,3],[2,9],[2,18],[10,19],[20,19],[7,20]])D.push({img:'d_arbol_del_pueblo',x:t[0],y:t[1],sol:1,g:'t'});
+  /* El árbol (2,3) se conserva como dice el texto de la propuesta y el
+     encargo (3 árboles del borde oeste); la rejilla lo omite por desliz. */
+  D.push({img:'d_arbusto_con_flores',x:9,y:17,g:'u'},{img:'d_arbusto_con_flores',x:25,y:17,g:'u'});
+  D.push({img:'d_pozo',x:11,y:13,sol:1,g:'w'});
+  D.push({img:'d_farol_de_calle',x:7,y:8,g:'l'},{img:'d_farol_de_calle',x:22,y:12,g:'l'},{img:'d_farol_de_calle',x:17,y:12,g:null},{img:'d_farol_de_calle',x:12,y:16,g:'l'},{img:'d_farol_de_calle',x:12,y:19,g:'l'},{img:'d_farol_de_calle',x:5,y:16,g:null});
+  D.push({img:'d_cerca_de_madera',x:2,y:14,k:15,sol:[[2,12],[2,13]],g:'f'});
+  D.push({img:'d_cerca_de_madera',x:8,y:16,sol:1,g:'f'},{img:'d_cerca_de_madera',x:9,y:16,sol:1,g:'f'},{img:'d_cerca_de_madera',x:10,y:16,sol:1,g:'f'},{img:'d_cerca_de_madera_2',x:8,y:17,sol:1,g:'f'},{img:'d_cerca_de_madera_2',x:8,y:18,sol:1,g:'f'});
+  D.push({img:'d_banca_de_plaza',x:10,y:17,g:null});
+  D.push({img:'d_letrero_de_madera',x:12,y:8,g:'s'});
+  D.push({img:'d_puesto_de_mercado',x:11,y:11,sol:1,g:'m'},{img:'d_puesto_de_mercado',x:11,y:12,sol:1,g:'m'});
+  D.push({img:'d_barriles_y_cajas',x:8,y:6,g:'r'});
+  D.push({img:'d_banca_de_plaza',x:16,y:11,g:'n'},{img:'d_banca_de_plaza',x:15,y:13,g:null});
+  D.push({img:'d_tablon_de_anuncios',x:8,y:8,g:'o'});
+  D.push({img:'d_carreta_con_heno',x:25,y:15,sol:1,g:'h'});
+  D.push({img:'d_cerca_de_madera',x:12,y:21,g:null},{img:'d_cerca_de_madera_2',x:15,y:21,g:null},{img:'d_letrero_de_madera',x:11,y:21,g:null});
+  return D;
+}
+function vBFS(sol,W,H,sx,sy,targets){
+  const seen=new Uint8Array(W*H),q=[[sx,sy]];seen[sy*W+sx]=1;
+  while(q.length){const cur=q.shift(),x=cur[0],y=cur[1];
+    const nb=[[1,0],[-1,0],[0,1],[0,-1]];
+    for(let k=0;k<4;k++){const nx=x+nb[k][0],ny=y+nb[k][1];
+      if(nx<0||ny<0||nx>=W||ny>=H||seen[ny*W+nx]||sol[ny*W+nx])continue;
+      seen[ny*W+nx]=1;q.push([nx,ny]);}}
+  const out={};for(const t of targets)out[t.id]=!!seen[t.y*W+t.x];return out;
+}
+function villageLayout(semilla,rec){
+  rec=rec||VILLAGE_RECIPE;
+  const W=28,H=22;
+  const c1=new Set(),c2=new Set();
+  for(const r of V_CALLES)vCarve(c1,c2,r.pts,r.w);
+  const calles=new Set([...c1,...c2]);
+  const lotes=V_LOTES.map(L=>{const o=Object.assign({w:3,d:3},L);if(!o.spr)o.spr=['b_casa_a','b_casa_b','b_casa_c'][vHash(semilla,L.id)%3];return o;});
+  /* skip_chance hecho visible: el lote (8,16) se sortea; con la semilla por
+     defecto sale huerto (0.121 < 0.2), no casa. Con otra semilla puede salir
+     casa y el pueblo cambia sin tocar el resto. */
+  const huertoSkipped=mulberry32(vHash(semilla,'huerto-8-16'))()<rec.skipChance;
+  if(!huertoSkipped)lotes.push({id:'casaE',letra:'e',x:8,y:16,spr:['b_casa_a','b_casa_b','b_casa_c'][vHash(semilla,'casaE')%3],col:'#a89078',roof:'#6a5a4a',puerta:{x:9,y:19}});
+  /* Arboleda: la receta fija el bosquecillo diseñado (capa manual); sin
+     receta, muestreo Poisson sobre la región noreste. */
+  const arboleda=rec.arboleda?rec.arboleda.slice():vPoisson(mulberry32(vHash(semilla,'arboleda')),V_REGION_ARBOLEDA,1.4,5);
+  const decor=vDecor(arboleda);
+  const props=decor.map(p=>{const q=Object.assign({},p);delete q.g;return q;});
+  /* Rejilla de colisión (igual que la construye el juego: bordes + cajas +
+     props con sol) y comprobación BFS desde la puerta sur (14,20). */
+  const sol=new Uint8Array(W*H);
+  for(let i=0;i<W;i++){sol[i]=1;sol[(H-1)*W+i]=1;}
+  for(let j=0;j<H;j++){sol[j*W]=1;sol[j*W+W-1]=1;}
+  const boxes=V_HEROES.concat(lotes);
+  for(const b of boxes)for(let j=b.y;j<b.y+b.d;j++)for(let i=b.x;i<b.x+b.w;i++)if(i>=0&&j>=0&&i<W&&j<H)sol[j*W+i]=1;
+  for(const p of props){if(p.sol===1)sol[Math.floor(p.y)*W+Math.floor(p.x)]=1;else if(Array.isArray(p.sol))for(const c of p.sol)sol[c[1]*W+c[0]]=1;}
+  const targets=[{id:'gremio',x:6,y:9},{id:'tienda',x:14,y:9},{id:'taberna',x:6,y:16},{id:'mazmorra',x:14,y:4},{id:'plaza',x:15,y:12}];
+  for(const L of lotes)targets.push({id:L.id,x:L.puerta.x,y:L.puerta.y});
+  const bfs=vBFS(sol,W,H,14,20,targets);
+  /* Rejilla de plano (para verificar contra la propuesta aprobada).
+     Orden de pintado: pasto -> calles (= y luego #) -> puerta sur ->
+     plaza -> edificios -> celda de puerta -> decoración (solo sobre pasto
+     o plaza: nunca tapa una calle ni un edificio). */
+  const grid=[];for(let j=0;j<H;j++)grid.push(new Array(W).fill('.'));
+  for(const k of c1){const p=k.split(',');grid[+p[1]][+p[0]]='=';}
+  for(const k of c2){const p=k.split(',');grid[+p[1]][+p[0]]='#';}
+  /* El anillo es continuo en su borde inferior (10-17,14): en el plano el
+     anillo manda sobre la calle sur en ese cruce, mientras que arriba el
+     camino a la mazmorra interrumpe el anillo en (13-14,9). */
+  for(let i=10;i<=17;i++)grid[14][i]='=';
+  grid[21][13]='E';grid[21][14]='E';
+  for(let j=10;j<=13;j++)for(let i=11;i<=16;i++)grid[j][i]='P';
+  for(const b of boxes){const gw=b.gw||b.w,gd=b.gd||b.d;for(let j=b.y;j<b.y+gd;j++)for(let i=b.x;i<b.x+gw;i++)grid[j][i]=b.letra;}
+  for(const L of lotes)if(L.celdaPuerta)grid[L.celdaPuerta.y][L.celdaPuerta.x]='=';
+  for(const p of decor){if(!p.g)continue;const c=grid[p.y][p.x];if(c==='.'||c==='P')grid[p.y][p.x]=p.g;}
+  const puertas={};for(const L of lotes)puertas[L.id]=calles.has(L.puerta.x+','+L.puerta.y);
+  return {semilla,W,H,calles,heroes:V_HEROES,lotes,props,grid:grid.map(r=>r.join('')),bfs,puertas,arboleda,huertoSkipped};
+}
+const VLAYOUT=villageLayout(VILLAGE_RECIPE.semilla);
+
+
 function tNpc(s,x,y,col,name,lines,o){s.npcs.push(Object.assign({x,y,tx:x,ty:y,hx:x,hy:y,col,name,lines,wait:Math.random()*3,rad:0,bt:4+Math.random()*8,bub:null,hair:'#3a2a1a'},o||{}));}
 (function(){
-  let s=tMk('town',26,38,'Pueblo');TSC.town=s;
-  const B=(x,y,w,d,spr,sc,o)=>tBox(s,x,y,w,d,2,'#888','#666',Object.assign({spr,sprScale:sc},o||{}));
-  const hs=(i,j)=>((i*73856093)^(j*19349663))>>>0;
-  // edificios (pequeños, finos)
-  B(12,1,2,1,'b_entrada_de_la_mazmorra_del_bosque',.5,{label:'Mazmorra del Bosque',h:3,arch:true,pa:[13.25,2.75]});
-  B(7,15,2,2,'b_gremio_de_aventureros',.45,{label:'Gremio',h:2.4});
-  B(3,15,2,2,'b_taberna',.45,{label:'Taberna',h:2.4});
-  B(16,15,2,2,'b_tienda',.45,{label:'Tienda',h:2.4});
-  B(20,15,2,1,'b_casa_a',.4);
-  B(4,23,2,1,'b_casa_b',.4);
-  B(20,23,2,1,'b_casa_c',.4);
-  B(12,22,2,2,'d_fuente_de_la_plaza',.8,{fount:true,h:.8});
-  // decoración con colisión
-  B(17,21,1,1,'d_puesto_de_mercado',.7);B(18,21,1,1,'d_barriles_y_cajas',.7);
-  B(6,21,1,1,'d_pozo',.8);B(15,19,1,1,'d_tablon_de_anuncios',.7);
-  B(22,28,2,1,'d_carreta_con_heno',.7);
-  const solids=s.boxes.slice();
-  const near=(i,j)=>solids.some(b=>i>=b.x-1&&i<b.x+b.w+1&&j>=b.y-2&&j<b.y+b.d+1);
-  const road=(i,j)=>(i>=12&&i<=13&&j>=3&&j<=26)||(j>=17&&j<=18&&i>=4&&i<=21)||(j>=25&&j<=26&&((i>=3&&i<=8)||(i>=17&&i<=22)));
-  const plaza=(i,j)=>i>=9&&i<=16&&j>=20&&j<=26;
-  // bosque: camino largo hacia la mazmorra y borde del pueblo
-  for(let j=1;j<s.h-1;j++)for(let i=1;i<s.w-1;i++){
-    if(road(i,j)||plaza(i,j)||near(i,j))continue;
-    const h=hs(i,j)%100;let p=0;
-    if(j<=2||i<=1||i>=s.w-2)p=95;else if(j<=13&&(i<11||i>14))p=62;else if(j<=13)p=0;else if(i<=2||i>=s.w-3||j>=s.h-3)p=55;else if(j<=15&&(i<11||i>14))p=20;
-    if(i===12||i===13)continue;
-    if(h<p)B(i,j,1,1,'d_arbol_del_pueblo',.85);else if(h<p+(p?6:0))s.props.push({img:'d_arbusto_con_flores',x:i+.5,y:j+.8,sc:.8});}
-  s.props.push(
-    {img:'d_farol_de_calle',x:11.3,y:17.9,sol:1,sc:.8},{img:'d_farol_de_calle',x:14.7,y:17.9,sol:1,sc:.8},
-    {img:'d_farol_de_calle',x:9.3,y:20.4,sol:1,sc:.8},{img:'d_farol_de_calle',x:16.4,y:20.4,sol:1,sc:.8},
-    {img:'d_banca_de_plaza',x:10.6,y:24.5,sol:1,sc:.8},{img:'d_banca_de_plaza',x:15.2,y:24.5,sol:1,sc:.8},
-    {img:'d_letrero_de_madera',x:11.4,y:8,sol:1,sc:.8},
-    {img:'d_cerca_de_madera',x:3,y:21,k:21,sc:.8},{img:'d_cerca_de_madera_2',x:23,y:21,k:21,sc:.8});
-  s.doors.push({x0:12.2,y0:2.1,x1:13.8,y1:3,to:'dg'},
-    {x0:7.3,y0:17,x1:8.7,y1:17.9,to:'guild',sx:1.8,sy:3.4},
-    {x0:3.3,y0:17,x1:4.7,y1:17.9,to:'tavern',sx:1.8,sy:3.4},
-    {x0:16.3,y0:17,x1:17.7,y1:17.9,to:'shop',sx:1.8,sy:3.4});
-  tNpc(s,11,21,'#d05a5a','Marta',['¡Buen día!','Dicen que la mazmorra tiene un rey champiñón.','Visita el gremio si buscas trabajo.'],{rad:2,hx:11,hy:21});
-  tNpc(s,15,18.4,'#5a8ad0','Beto',['Las espadas rojas se ven geniales.','¿Ya pescaste algo hoy?','Compra un tomo cuando tengas oro.'],{rad:2.5,hx:15,hy:18.4});
-  tNpc(s,10,19.2,'#5ab070','Lupe',['El pueblo está tranquilo hoy.','Cuidado con los troncosos.','La taberna sirve el mejor caldo.'],{rad:2,hx:10,hy:19.2});
-  tNpc(s,15,27,'#d0b05a','Chuy',['Yo vendo leña... bueno, la compro.','Mi abuelo fue aventurero.','¿Qué rango tienes?'],{rad:2.5,hx:15,hy:27});
-  tNpc(s,10,27,'#a05ad0','Nina',['Busco a mi gato.','Dicen que el pantano brilla de noche.'],{rad:2,hx:10,hy:27});
-  s.road=road;s.plaza=plaza;
-  // ---- interiores (pequeños; puerta pegada a la pared izquierda) ----
-  const door=(yc)=>({img:'i_escalera_puerta_de_salida',x:.04,y:yc,sc:.42});
-  s=tMk('guild',7,5,'Gremio');TSC.guild=s;
-  tBox(s,2,1,2,1,.9,'#8a5a3a','#a0703a',{label:'Mostrador',spr:'i_mostrador_del_gremio',sprScale:.4});
-  tBox(s,5,0,1,1,1.6,'#c9b27a','#e8d49a',{label:'Pergaminos',board:true,spr:'i_tablero_de_pergaminos',sprScale:.4,flip:1,pa:[5.5,.06]});
-  tBox(s,4,3,2,1,.7,'#7a4a2a','#9a6a3a',{spr:'i_banca_larga',sprScale:.38});
-  s.props=[{img:'i_alfombra_de_entrada',x:2.6,y:3.4,floor:1,sc:.4,flip:1},door(3.4),{img:'i_farol_colgante',x:3.5,y:2.6,dy:-70,sc:.5}];s.winJ=1;
-  s.doors.push({x0:1,y0:2.8,x1:1.8,y1:4,to:'town',sx:8,sy:18.2});
-  tNpc(s,3,.7,'#e0a0a0','Recepcionista',['Bienvenido al gremio de aventureros.'],{hair:'#7a3a2a',fixed:true,recep:true});
-  s=tMk('shop',7,5,'Tienda');TSC.shop=s;
-  tBox(s,2,1,2,1,.9,'#8a5a3a','#a0703a',{label:'Mostrador',shop:true,spr:'i_mostrador_de_la_tienda',sprScale:.38});
-  tBox(s,0,1,1,1,1.8,'#6a4a2a','#8a6a3a',{spr:'i_estante_con_mercancia',sprScale:.4,pa:[.06,2]});
-  tBox(s,5,0,1,1,1.8,'#6a4a2a','#8a6a3a',{spr:'i_estante_con_mercancia',sprScale:.4,flip:1,pa:[5.5,.06]});
-  s.props=[{img:'i_alfombra_de_entrada',x:2.6,y:3.4,floor:1,sc:.4,flip:1},door(3.4),{img:'i_farol_colgante',x:3.5,y:2.6,dy:-70,sc:.5}];s.winJ=1;
-  s.doors.push({x0:1,y0:2.8,x1:1.8,y1:4,to:'town',sx:17,sy:18.2});
-  tNpc(s,3,.7,'#8ac0e0','Tendero',['Tomos de habilidad, muy caros pero valen la pena.'],{hair:'#aaaaaa',fixed:true,shopk:true});
-  s=tMk('tavern',7,5,'Taberna');TSC.tavern=s;
-  tBox(s,2,1,2,1,.9,'#7a4a2a','#9a6a3a',{label:'Barra',spr:'i_barra_de_la_taberna',sprScale:.38});
-  tBox(s,3,3,1,1,.7,'#8a5a3a','#a0703a',{spr:'i_mesa_redonda_de_taberna',sprScale:.36});tBox(s,5,2,1,1,.7,'#8a5a3a','#a0703a',{spr:'i_mesa_redonda_de_taberna',sprScale:.36});
-  s.props=[{img:'i_alfombra_de_entrada',x:2.6,y:3.4,floor:1,sc:.4,flip:1},door(3.4),{img:'i_farol_colgante',x:3.5,y:2.6,dy:-70,sc:.5},{img:'i_taburete',x:2.4,y:3.5,sc:.7},{img:'i_taburete',x:4.7,y:2.6,sc:.7},{img:'i_chimenea',x:6.4,y:.9,sol:1,sc:.5,flip:1},{img:'i_barril_grande',x:1.7,y:1.6,sol:1,sc:.8}];s.winJ=1;
-  s.doors.push({x0:1,y0:2.8,x1:1.8,y1:4,to:'town',sx:4,sy:18.2});
-  tNpc(s,3,.7,'#e0b070','Cantinero',['¿Una sopa de champiñón?'],{hair:'#5a3a1a',fixed:true});
-  tNpc(s,6.2,3.8,'#7a9ad0','Viajero',['Vengo de muy lejos.','Dicen que hay más mazmorras al norte.'],{rad:.7,hx:6.2,hy:3.8});
-  tNpc(s,4.6,3.9,'#d07a9a','Juglar',['♪ la la la ♪','Canto de héroes y de champiñones.'],{rad:.8,hx:4.6,hy:3.9});
+  const VL=VLAYOUT;
+  let s=tMk('town',28,22,'Pueblo');TSC.town=s;
+  for(const hh of VL.heroes)tBox(s,hh.x,hh.y,hh.w,hh.d,hh.h,hh.col,hh.roof,hh.o);
+  for(const L of VL.lotes)tBox(s,L.x,L.y,3,3,2,L.col,L.roof,{spr:L.spr,sprScale:0.7});
+  s.props=VL.props.slice();
+  s.doors.push({x0:13.1,y0:3,x1:14.9,y1:3.9,to:'dg'},{x0:5.2,y0:8,x1:6.8,y1:8.9,to:'guild',sx:4.5,sy:4.4},{x0:13.2,y0:8,x1:14.8,y1:8.9,to:'shop',sx:4.5,sy:4.4},{x0:5.2,y0:15,x1:6.8,y1:15.9,to:'tavern',sx:5,sy:5.4});
+  tNpc(s,10,10,'#d05a5a','Marta',['¡Buen día!','Dicen que la mazmorra tiene un rey champiñón.','Visita el gremio si buscas trabajo.'],{rad:3,hx:10,hy:10});
+  tNpc(s,17,10,'#5a8ad0','Beto',['Las espadas rojas se ven geniales.','¿Ya pescaste algo hoy?','Compra un tomo cuando tengas oro.'],{rad:3,hx:17,hy:10});
+  tNpc(s,12,17,'#5ab070','Lupe',['El pueblo está tranquilo hoy.','Cuidado con los troncosos.','La taberna sirve el mejor caldo.'],{rad:3,hx:12,hy:17});
+  tNpc(s,23,11,'#d0b05a','Chuy',['Yo vendo leña... bueno, la compro.','Mi abuelo fue aventurero.','¿Qué rango tienes?'],{rad:3,hx:23,hy:11});
+  tNpc(s,3,10,'#a05ad0','Nina',['Busco a mi gato.','Dicen que el pantano brilla de noche.'],{rad:1.5,hx:3,hy:10});
+  s=tMk('guild',9,7,'Gremio');TSC.guild=s;
+  tBox(s,2,1,4,1,.9,'#8a5a3a','#a0703a',{label:'Mostrador',spr:'i_mostrador_del_gremio',sprScale:0.7});
+  tBox(s,6,1,2,1,1.6,'#c9b27a','#e8d49a',{label:'Pergaminos',board:true,spr:'i_tablero_de_pergaminos',sprScale:0.7});
+  tBox(s,1,3,2,1,.7,'#7a4a2a','#9a6a3a',{spr:'i_banca_larga',sprScale:0.7});tBox(s,1,5,2,1,.7,'#7a4a2a','#9a6a3a',{spr:'i_banca_larga',sprScale:0.7});
+  s.props=[{img:'i_alfombra_de_entrada',x:4.5,y:5.5,floor:1},{img:'i_escalera_puerta_de_salida',x:4.5,y:6,sc:0.7},{img:'i_farol_colgante',x:4.5,y:3,dy:-110},{img:'i_pergamino_cerrado',x:7,y:2.5,floor:1}];s.winJ=3;
+  s.doors.push({x0:3.2,y0:5.3,x1:5.8,y1:6,to:'town',sx:6,sy:9.6});
+  tNpc(s,4,2.8,'#e0a0a0','Recepcionista',['Bienvenido al gremio de aventureros.'],{hair:'#7a3a2a',fixed:true,recep:true});
+  s=tMk('shop',9,7,'Tienda');TSC.shop=s;
+  tBox(s,2,2,5,1,.9,'#8a5a3a','#a0703a',{label:'Mostrador',shop:true,spr:'i_mostrador_de_la_tienda',sprScale:0.7});
+  tBox(s,1,1,1,2,1.8,'#6a4a2a','#8a6a3a',{spr:'i_estante_con_mercancia',sprScale:0.7});tBox(s,7,1,1,2,1.8,'#6a4a2a','#8a6a3a',{spr:'i_estante_con_mercancia',sprScale:0.7});
+  s.props=[{img:'i_alfombra_de_entrada',x:4.5,y:5.5,floor:1},{img:'i_escalera_puerta_de_salida',x:4.5,y:6,sc:0.7},{img:'i_farol_colgante',x:4.5,y:3,dy:-110}];s.winJ=3;
+  s.doors.push({x0:3.2,y0:5.3,x1:5.8,y1:6,to:'town',sx:14,sy:9.6});
+  tNpc(s,4.5,3.6,'#8ac0e0','Tendero',['Tomos de habilidad, muy caros pero valen la pena.'],{hair:'#aaaaaa',fixed:true,shopk:true});
+  s=tMk('tavern',10,8,'Taberna');TSC.tavern=s;
+  tBox(s,2,1,5,1,.9,'#7a4a2a','#9a6a3a',{label:'Barra',spr:'i_barra_de_la_taberna',sprScale:0.7});
+  tBox(s,2,4,2,2,.7,'#8a5a3a','#a0703a',{label:'Mesa',spr:'i_mesa_redonda_de_taberna',sprScale:0.7});tBox(s,6,4,2,2,.7,'#8a5a3a','#a0703a',{label:'Mesa',spr:'i_mesa_redonda_de_taberna',sprScale:0.7});
+  s.props=[{img:'i_alfombra_de_entrada',x:5,y:6.2,floor:1},{img:'i_escalera_puerta_de_salida',x:5,y:7,sc:0.7},{img:'i_farol_colgante',x:5,y:3.5,dy:-110},{img:'i_taburete',x:3,y:6.5},{img:'i_taburete',x:7,y:6.5},{img:'i_chimenea',x:8.5,y:1.2,sol:1},{img:'i_barril_grande',x:1,y:2.5,sol:1}];s.winJ=4;
+  s.doors.push({x0:3.7,y0:6.3,x1:6.3,y1:7,to:'town',sx:6,sy:16.6});
+  tNpc(s,4.5,2.6,'#e0b070','Cantinero',['¿Una sopa de champiñón?'],{hair:'#5a3a1a',fixed:true});
+  tNpc(s,8.5,3,'#7a9ad0','Viajero',['Vengo de muy lejos.','Dicen que hay más mazmorras al norte.'],{rad:.8,hx:8.5,hy:3});
+  tNpc(s,5,6.2,'#d07a9a','Juglar',['♪ la la la ♪','Canto de héroes y de champiñones.'],{rad:1,hx:5,hy:6.2});
   for(const sc of Object.values(TSC))for(const p of sc.props)if(p.sol===1)sc.sol[Math.floor(p.y)*sc.w+Math.floor(p.x)]=1;else if(Array.isArray(p.sol))for(const [i,j] of p.sol)sc.sol[j*sc.w+i]=1;
 })();
 function tSc(){return TSC[TWN.sc];}
@@ -1266,15 +1395,14 @@ function tSetUI(){const t=SC!=='dg';document.getElementById('zoom').classList.to
   let c=document.getElementById('tchat');if(!c){c=document.createElement('div');c.id='tchat';c.style.cssText='position:fixed;left:50%;top:44px;transform:translateX(-50%);z-index:20;display:flex;gap:4px';c.innerHTML='<input maxlength="40" placeholder="Escribe aquí..." style="width:46vw;max-width:260px;padding:5px 8px;border-radius:8px;border:2px solid #5f86c4;background:#0d1730;color:#fff;font:600 13px system-ui"><button style="padding:5px 10px;border-radius:8px;border:2px solid #7fb0ff;background:#2d5fb8;color:#fff;font:800 13px system-ui">💬</button>';document.body.appendChild(c);
     const inp=c.querySelector('input'),send=()=>{const v=inp.value.trim();if(v){tSay(TWN,v,5);inp.value='';}inp.blur();};c.querySelector('button').onclick=send;inp.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')send();});inp.addEventListener('keyup',e=>e.stopPropagation());}
   c.style.display=t?'flex':'none';}
-function tBackToTown(){if(SC==='dg'){SC='town';TWN.sc='town';TWN.x=13;TWN.y=3.6;document.getElementById('hud').textContent='';tSetUI();cfgOpen(false);saveGame();}}
+function tBackToTown(){if(SC==='dg'){SC='town';TWN.sc='town';TWN.x=14;TWN.y=4.6;document.getElementById('hud').textContent='';tSetUI();cfgOpen(false);saveGame();}}
 function uImg(n,px){return '<img src="assets/iso/town/'+n+'.png" alt="" style="width:'+px+'px;height:'+px+'px;image-rendering:pixelated;vertical-align:middle">';}
-let tAnim=0;(function(){const st=document.createElement('style');st.textContent='@keyframes hvsPop{0%{transform:scale(.25) rotate(-10deg);opacity:0}55%{transform:scale(1.05) rotate(3deg);opacity:1}80%{transform:scale(.98) rotate(-1deg)}100%{transform:scale(1) rotate(0)}}@keyframes hvsUnroll{0%{clip-path:inset(46% 0 46% 0)}100%{clip-path:inset(0 0 0 0)}}';document.head.appendChild(st);})();
 function tModal(title,fill){let m=document.getElementById('tmod');if(!m){m=document.createElement('div');m.id='tmod';m.style.cssText='position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:40;font-family:system-ui';document.body.appendChild(m);}
   m.innerHTML='';const p=document.createElement('div');p.style.cssText='background:#0d1730;border:3px solid #5f86c4;border-radius:10px;padding:10px;width:min(92vw,420px);max-height:90vh;overflow:auto;color:#dfe8ff;font:600 13px/1.35 system-ui';
-  const h=document.createElement('div');h.style.cssText='display:flex;justify-content:space-between;align-items:center;font:800 15px system-ui;margin-bottom:8px';h.innerHTML='<span>'+title+'</span>';const x=document.createElement('button');x.textContent='×';x.style.cssText='width:30px;height:30px;border-radius:8px;border:2px solid #5f86c4;background:#13224a;color:#cfe0ff;font:800 18px system-ui';x.onclick=()=>{m.style.display='none';};h.appendChild(x);p.appendChild(h);fill(p);m.appendChild(p);m.style.display='flex';if(tAnim){tAnim=0;p.style.animation='hvsPop .45s ease-out, hvsUnroll .45s ease-out';}}
+  const h=document.createElement('div');h.style.cssText='display:flex;justify-content:space-between;align-items:center;font:800 15px system-ui;margin-bottom:8px';h.innerHTML='<span>'+title+'</span>';const x=document.createElement('button');x.textContent='×';x.style.cssText='width:30px;height:30px;border-radius:8px;border:2px solid #5f86c4;background:#13224a;color:#cfe0ff;font:800 18px system-ui';x.onclick=()=>{m.style.display='none';};h.appendChild(x);p.appendChild(h);fill(p);m.appendChild(p);m.style.display='flex';}
 function tBtn(txt,on,en){const b=document.createElement('button');b.textContent=txt;b.disabled=!en;b.style.cssText='padding:6px 10px;border-radius:7px;border:2px solid '+(en?'#7fe08a':'#2d4678')+';background:'+(en?'#2a7a3a':'#13224a')+';color:#fff;font:800 12px system-ui';b.onclick=on;return b;}
 function tRow(p,html,btn){const r=document.createElement('div');r.style.cssText='display:flex;gap:8px;align-items:center;background:#101c3a;border:2px solid #2d4678;border-radius:8px;padding:6px 8px;margin-bottom:5px';const t=document.createElement('div');t.style.flex='1';t.innerHTML=html;r.appendChild(t);if(btn)r.appendChild(btn);p.appendChild(r);}
-function questUI(){tAnim=1;tModal(uImg('u_mision',26)+' Pergaminos · Rango '+RK[GLD.rank]+' '+uImg('u_rango_'+RK[GLD.rank].toLowerCase(),26),p=>{const list=QUESTS[GLD.rank]||[];
+function questUI(){tModal(uImg('u_mision',26)+' Pergaminos · Rango '+RK[GLD.rank]+' '+uImg('u_rango_'+RK[GLD.rank].toLowerCase(),26),p=>{const list=QUESTS[GLD.rank]||[];
   tRow(p,uImg('u_moneda',18)+' <b>Oro: '+GLD.gold+'</b><br><small>Completa todas las misiones del rango para subir al siguiente.</small>');
   if(!list.length)tRow(p,'Aún no hay misiones para este rango.');
   list.forEach(q=>{const pr=GLD.prog[q.id]|0,done=pr>=q.n,cl=GLD.claimed[q.id],ac=GLD.acc[q.id];
@@ -1327,9 +1455,9 @@ function tDrawBox(c,b){const x1=b.x+b.w,y1=b.y+b.d,A=(x,y,z)=>{const p=S2(x,y);r
   else if(b.label&&!b.board&&!b.shop&&b.label!=='Mostrador'&&b.label!=='Barra'&&b.label!=='Casa'&&b.label!=='Mesa'){const mx=b.x+b.w/2-.5;tPoly(c,[A(mx,y1,0),A(mx+1.2,y1,0),A(mx+1.2,y1,40),A(mx,y1,40)],'#3a2414','#000');}
   if(b.label&&b.h>1.5&&!b.board){const p=A(b.x+b.w/2,y1,b.h*34+14);c.font='700 9px system-ui';c.textAlign='center';c.fillStyle='#fff';c.strokeStyle='#000';c.lineWidth=3;c.strokeText(b.label,p[0],p[1]);c.fillText(b.label,p[0],p[1]);}
   if(b.board){const p=A(b.x+b.w/2,y1,40);c.font='700 8px system-ui';c.textAlign='center';c.fillStyle='#3a2a10';c.fillText('📜',p[0],p[1]);}}
-function tDrawSpr(c,b){const M=TOWN_META[b.spr],im=IMG['town/'+b.spr],p=b.pa?S2(b.pa[0],b.pa[1]):S2(b.x+b.w,b.y+b.d),sc=b.sprScale||1;if(b.flip){c.save();c.translate(p[0],p[1]);c.scale(-1,1);c.drawImage(im,-M.ax*sc,-M.ay*sc,M.w*sc,M.h*sc);c.restore();}else if(sc===1)c.drawImage(im,p[0]-M.ax,p[1]-M.ay);else c.drawImage(im,p[0]-M.ax*sc,p[1]-M.ay*sc,M.w*sc,M.h*sc);
+function tDrawSpr(c,b){const M=TOWN_META[b.spr],im=IMG['town/'+b.spr],p=S2(b.x+b.w,b.y+b.d),sc=b.sprScale||1;if(sc===1)c.drawImage(im,p[0]-M.ax,p[1]-M.ay);else c.drawImage(im,p[0]-M.ax*sc,p[1]-M.ay*sc,M.w*sc,M.h*sc);
   if(b.label&&b.h>1.5&&!b.board){const lx=p[0]-M.ax*sc+M.w*sc/2,ly=p[1]-M.ay*sc-8;c.font='700 9px system-ui';c.textAlign='center';c.fillStyle='#fff';c.strokeStyle='#000';c.lineWidth=3;c.strokeText(b.label,lx,ly);c.fillText(b.label,lx,ly);}}
-function tDrawProp(c,p){const M=TOWN_META[p.img],im=IMG['town/'+p.img],q=S2(p.x,p.y),sc=p.sc||1;if(p.flip){c.save();c.translate(q[0],q[1]+(p.dy||0));c.scale(-1,1);c.drawImage(im,-M.ax*sc,-M.ay*sc,M.w*sc,M.h*sc);c.restore();return;}if(sc===1)c.drawImage(im,q[0]-M.ax,q[1]-M.ay+(p.dy||0));else c.drawImage(im,q[0]-M.ax*sc,q[1]-M.ay*sc+(p.dy||0),M.w*sc,M.h*sc);}
+function tDrawProp(c,p){const M=TOWN_META[p.img],im=IMG['town/'+p.img],q=S2(p.x,p.y),sc=p.sc||1;if(sc===1)c.drawImage(im,q[0]-M.ax,q[1]-M.ay+(p.dy||0));else c.drawImage(im,q[0]-M.ax*sc,q[1]-M.ay*sc+(p.dy||0),M.w*sc,M.h*sc);}
 function tDrawWalls(c,s){
   const o=S2(0,0),SINK=5,L=TOWN_META.i_pared_trasera_izquierda,R=TOWN_META.i_pared_trasera_derecha,C=TOWN_META.i_esquina_de_pared;
   const wpx=s.w*55,hpx=s.h*55,rL=wpx%L.seg||L.seg,rR=hpx%R.seg||R.seg;
@@ -1359,10 +1487,10 @@ function tBubble9(c,bx,by,bw,bh){const M=TOWN_META.u_burbuja,im=IMG['town/u_burb
   for(let j=0;j<3;j++)for(let i=0;i<3;i++)c.drawImage(im,sx[i],sy[j],sw[i],sh[j],dx[i],dy[j],dw[i],dh[j]);
   c.drawImage(im,tl[0],tl[1],tw,th,Math.round(bx+bw/2-tw/2),by+bh,tw,th);
   return true;}
-function tBubble(c,sx,sy,txt){c.font='700 8px system-ui';c.textBaseline='top';const words=txt.split(' '),lines=[];let cur='';for(const wd of words){if(c.measureText(cur+' '+wd).width>104&&cur){lines.push(cur);cur=wd;}else cur=cur?cur+' '+wd:wd;}lines.push(cur);
-  const bw=Math.ceil(Math.max(...lines.map(l=>c.measureText(l).width)))+12,bh=lines.length*10+8,bx=Math.round(sx-bw/2),by=Math.round(sy-bh-6);
+function tBubble(c,sx,sy,txt){c.font='700 9px system-ui';const w=Math.min(150,c.measureText(txt).width+10),words=txt.split(' '),lines=[];let cur='';for(const wd of words){if(c.measureText(cur+' '+wd).width>140&&cur){lines.push(cur);cur=wd;}else cur=cur?cur+' '+wd:wd;}lines.push(cur);
+  const bw=Math.min(150,Math.max(...lines.map(l=>c.measureText(l).width))+10),bh=lines.length*11+6,bx=sx-bw/2,by=sy-bh-6;
   if(!tBubble9(c,bx,by,bw,bh)){c.fillStyle='#fff';c.strokeStyle='#222';c.lineWidth=1.5;c.beginPath();c.roundRect(bx,by,bw,bh,5);c.fill();c.stroke();c.beginPath();c.moveTo(sx-3,by+bh);c.lineTo(sx,by+bh+5);c.lineTo(sx+3,by+bh);c.fillStyle='#fff';c.fill();}
-  c.fillStyle='#111';c.textAlign='center';lines.forEach((l,i)=>c.fillText(l,Math.round(sx),by+4+i*10));c.textBaseline='alphabetic';}
+  c.fillStyle='#111';c.textAlign='center';lines.forEach((l,i)=>c.fillText(l,sx,by+10+i*11));}
 function tFrame(dt,t){tUpdate(dt);const s=tSc(),dpr=window.devicePixelRatio||1,W=Math.round(innerWidth*dpr),H=Math.round(innerHeight*dpr);
   if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}
   const Sc=Math.max(1,Math.round(W/820)+zoomAdj),vw=W/Sc,vh=H/Sc,[hx,hy]=S2(TWN.x,TWN.y);
@@ -1373,10 +1501,12 @@ function tFrame(dt,t){tUpdate(dt);const s=tSc(),dpr=window.devicePixelRatio||1,W
   c.setTransform(Sc,0,0,Sc,ox*Sc,oy*Sc);c.imageSmoothingEnabled=false;
   const town=!s.wall;
   for(let j=0;j<s.h;j++)for(let i=0;i<s.w;i++){const a=S2(i,j);if(a[0]+ox<-120||a[0]+ox>vw+120||a[1]+oy<-80||a[1]+oy>vh+120)continue;
-    let tn;if(town){const hh=((i*73856093)^(j*19349663))>>>0;
-      tn=s.plaza(i,j)?'t_piso_de_plaza':s.road(i,j)?'t_camino_de_tierra':(hh%9===0?'t_pasto':'t_pasto_del_pueblo');}
+    let tn;if(town){const path=VLAYOUT.calles.has(i+','+j);
+      const plaza=i>=11&&i<=16&&j>=10&&j<=13;
+      tn=plaza?'t_piso_de_plaza':path?'t_camino_de_tierra':'t_pasto_del_pueblo';}
     else tn='i_piso_de_madera_2';
     c.drawImage(IMG['town/'+tn],a[0]-55,a[1]);}
+  if(town){for(const ex of [13,14])for(const ey of [22,23]){const a=S2(ex,ey);c.drawImage(IMG['town/t_camino_de_tierra'],a[0]-55,a[1]);}}
   if(s.wall)tDrawWalls(c,s);
   for(const p of s.props)if(p.floor)tDrawProp(c,p);
   const list=[];for(const b of s.boxes)list.push({k:b.x+b.w/2+b.y+b.d/2,f:()=>b.spr?tDrawSpr(c,b):tDrawBox(c,b)});
@@ -1384,9 +1514,8 @@ function tFrame(dt,t){tUpdate(dt);const s=tSc(),dpr=window.devicePixelRatio||1,W
   list.push({k:TWN.x+TWN.y,f:()=>{const [sx,sy]=S2(TWN.x,TWN.y);c.fillStyle='rgba(0,0,0,.25)';c.beginPath();c.ellipse(sx,sy,9,3.5,0,0,6.283);c.fill();tHero(c,sx,sy);}});
   for(const p of s.props)if(!p.floor)list.push({k:p.k!==undefined?p.k:p.x+p.y,f:()=>tDrawProp(c,p)});
   list.sort((a,b)=>a.k-b.k);for(const o of list)o.f();
-  const bcl=x=>Math.max(-ox+66,Math.min(-ox+vw-66,x));
-  for(const n of s.npcs)if(n.bub){const [sx,sy]=S2(n.x,n.y);tBubble(c,bcl(sx),sy-30,n.bub.txt);}
-  if(TWN.bub){const [sx,sy]=S2(TWN.x,TWN.y);tBubble(c,bcl(sx),sy-52,TWN.bub.txt);}
+  for(const n of s.npcs)if(n.bub){const [sx,sy]=S2(n.x,n.y);tBubble(c,sx,sy-30,n.bub.txt);}
+  if(TWN.bub){const [sx,sy]=S2(TWN.x,TWN.y);tBubble(c,sx,sy-52,TWN.bub.txt);}
   c.setTransform(1,0,0,1,0,0);const k=dpr;c.font='700 '+(11*k)+'px system-ui';c.textAlign='left';c.textBaseline='top';c.fillStyle='rgba(0,0,0,.6)';c.fillRect(6*k,6*k,190*k,32*k);tIcon(c,'u_rango_'+RK[GLD.rank].toLowerCase(),10*k,8*k,18*k);c.fillStyle='#fff';c.fillText(s.name+' · Rango '+RK[GLD.rank],32*k,10*k);tIcon(c,'u_moneda',12*k,23*k,13*k);c.fillStyle='#ffe27a';c.fillText('Oro: '+GLD.gold,29*k,24*k);
   if(joy){const j2=joy;c.strokeStyle='rgba(220,255,220,.55)';c.lineWidth=2*k;c.beginPath();c.arc(j2.ox*k,j2.oy*k,50*k,0,6.283);c.stroke();const dx=j2.x-j2.ox,dy=j2.y-j2.oy,d=Math.min(50,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);c.fillStyle='rgba(220,255,220,.4)';c.beginPath();c.arc((j2.ox+Math.cos(a)*d)*k,(j2.oy+Math.sin(a)*d)*k,22*k,0,6.283);c.fill();}
   if(tFade>0){c.fillStyle='rgba(0,0,0,'+tFade+')';c.fillRect(0,0,W,H);}}
@@ -1450,7 +1579,8 @@ function frame(now){
   hud.style.whiteSpace='pre';
   requestAnimationFrame(frame);
 }
-window.__HVS={TWN,TSC,IMG,TOWN_META,GLD,RK,TOMES,tEnter,tBackToTown,tSay,questUI,shopUI,tInteract};
+function villageCheck(){const s=TSC.town;const T=[{id:'gremio',x:6,y:9},{id:'tienda',x:14,y:9},{id:'taberna',x:6,y:16},{id:'mazmorra',x:14,y:4},{id:'plaza',x:15,y:12},{id:'casaA',x:20,y:8},{id:'casaB',x:20,y:15},{id:'casaC',x:24,y:11},{id:'casaD',x:22,y:15}];return vBFS(s.sol,s.w,s.h,14,20,T);}
+window.__HVS={TWN,TSC,IMG,TOWN_META,GLD,RK,TOMES,tEnter,tBackToTown,tSay,questUI,shopUI,tInteract,VILLAGE:VLAYOUT,villageLayout,villageCheck};
 })();
 </script>
 </body></html>

@@ -114,7 +114,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v92';
+const VER='iso-prueba v93';
 const CKEY='hvs_iso_cfg_v1';const FX=Object.assign({water:1,tiles:1,fly:1,fire:1,light:1,rays:1},(()=>{try{return JSON.parse(localStorage.getItem('hvs_iso_cfg_v1')||'{}');}catch(e){return {};}})());
 const cv=document.getElementById('c'); let ctx=cv.getContext('2d'); const ctxMain=ctx;
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
@@ -1583,7 +1583,7 @@ function tDrawWalls(c,s){
   // esquina encima de ambas, ápice en S2(0,0)
   c.drawImage(IMG['town/i_esquina_de_pared'],o[0]-C.ax,o[1]-C.ay+SINK);
   // ventana sobre la pared derecha, centrada en los tiles winJ..winJ+1
-  if(s.winJ!==undefined){const Wn=TOWN_META.i_pared_con_ventana,cx=-(s.winJ+1)*55;
+  if(s.winJ!==undefined&&!s.nowin){const Wn=TOWN_META.i_pared_con_ventana,cx=-(s.winJ+1)*55;
     const topY=o[1]+(0-R.ay+SINK)+(R.topY0+R.topSlope*R.ax)+R.topSlope*cx;
     c.drawImage(IMG['town/i_pared_con_ventana'],o[0]+cx-Wn.w/2,topY-(Wn.topY0+Wn.topSlope*Wn.w/2));}}
 const NPCKEY={Marta:'marta',Beto:'beto',Lupe:'lupe',Chuy:'chuy',Nina:'nina',Recepcionista:'recepcionista',Tendero:'tendero',Cantinero:'cantinero',Viajero:'viajero',Juglar:'juglar'};
@@ -1618,7 +1618,7 @@ function tFrame(dt,t){tUpdate(dt);const s=tSc(),dpr=window.devicePixelRatio||1,W
     let tn;const kk=i+','+j;if(s.flo&&s.flo[kk])tn=s.flo[kk];else if(town){tn=VLAYOUT.plaza.has(kk)?'t_piso_de_plaza':VLAYOUT.road.has(kk)?'t_camino_de_tierra':'t_pasto_del_pueblo';}
     else tn='i_piso_de_madera_2';
     c.drawImage(IMG['town/'+tn],a[0]-55,a[1]);}
-  if(s.wall)tDrawWalls(c,s);
+  if(s.wall&&!s.nowall)tDrawWalls(c,s);
   for(const p of s.props)if(p.floor)tDrawProp(c,p);
   const list=[];for(const b of s.boxes)list.push({k:b.x+b.w/2+b.y+b.d/2,f:()=>b.spr?tDrawSpr(c,b):tDrawBox(c,b)});
   for(const n of s.npcs)list.push({k:n.x+n.y,f:()=>tDrawNpc(c,n)});
@@ -1698,27 +1698,28 @@ function villageCheck(){return VLAYOUT.bfs;}
    Pinta suelo, árboles, props, objetos de pueblo/interiores y bloqueos con el arte del propio juego.
    Se guarda como DIFERENCIAS contra el mapa generado (localStorage 'hvs_iso_edit_v1'). */
 const EKEY='hvs_iso_edit_v1';
-const BL0=blocks.map(b=>b.slice()),GT0=GT.slice(),WSOL0=WSOL.slice(),TREES0=trees.slice(),PROPS0=props.slice(),SC0={},EPD={};
-for(const id in TSC){const s=TSC[id];s.flo=s.flo||{};SC0[id]={props:s.props.slice(),sol:s.sol.slice(),w:s.w,h:s.h,boxes:s.boxes.slice(),doors:s.doors.slice()};for(const p of s.props)if(!EPD[p.img])EPD[p.img]={sc:p.sc,floor:p.floor,dy:p.dy,flip:p.flip,sol:p.sol?1:0};}
+const ST0=STUMP.slice(),BL0=blocks.map(b=>b.slice()),GT0=GT.slice(),WSOL0=WSOL.slice(),TREES0=trees.slice(),PROPS0=props.slice(),SC0={},EPD={};
+for(const id in TSC){const s=TSC[id];s.flo=s.flo||{};SC0[id]={props:s.props.slice(),sol:s.sol.slice(),w:s.w,h:s.h,boxes:s.boxes.slice(),doors:s.doors.slice(),npcs:s.npcs.slice()};for(const p of s.props)if(!EPD[p.img])EPD[p.img]={sc:p.sc,floor:p.floor,dy:p.dy,flip:p.flip,sol:p.sol?1:0};}
 const PB=new Map();for(const id in TSC){for(const p of TSC[id].props)PB.set(p,p.sc);for(const b of TSC[id].boxes)PB.set(b,b.sprScale);}
 const near=(a,b,x,y)=>Math.abs(a-x)<1e-4&&Math.abs(b-y)<1e-4;
 function edRefresh(bake){for(let n=stat.length-1;n>=0;n--)if(stat[n].tp)stat.splice(n,1);pushTP();mkTufts();mmBase=null;
   pathSet.clear();for(let j=0;j<MH;j++)for(let i=0;i<MW;i++)if(GT[j*MW+i]===1)pathSet.add(i+','+j);if(bake)bakeMap();}
-function edSave(){const d={gt:[],ws:[],dt:[],dp:[],at:[],ap:[],db:[],nt:!TERR.on?1:0},o={v:1,dg:d,sc:{}};
+function edSave(){const d={gt:[],ws:[],dt:[],dp:[],at:[],ap:[],db:[],nt:!TERR.on?1:0,st:(STUMP[0]!==ST0[0]||STUMP[1]!==ST0[1])?[STUMP[0],STUMP[1]]:null},o={v:1,dg:d,sc:{}};
   for(let n=0;n<GT.length;n++){if(GT[n]!==GT0[n])d.gt.push([n,GT[n]]);if(WSOL[n]!==WSOL0[n])d.ws.push([n,WSOL[n]]);}
   const T0=new Set(TREES0),P0=new Set(PROPS0),T1=new Set(trees),P1=new Set(props);
   for(const t of TREES0)if(!T1.has(t))d.dt.push([t[0],t[1]]);for(const t of trees)if(!T0.has(t))d.at.push([t[0],t[1],t.k]);
   for(const q of PROPS0)if(!P1.has(q))d.dp.push([q.x,q.y]);for(const q of props)if(!P0.has(q))d.ap.push([q.x,q.y,q.n,q.r||0]);
   for(const b of BL0)if(!blockSet.has(b.join(',')))d.db.push(b);
-  let any=d.gt.length+d.ws.length+d.dt.length+d.dp.length+d.at.length+d.ap.length+d.db.length+d.nt;
+  let any=d.gt.length+d.ws.length+d.dt.length+d.dp.length+d.at.length+d.ap.length+d.db.length+d.nt+(d.st?1:0);
   for(const id in TSC){const s=TSC[id],b=SC0[id],B=new Set(b.props),C=new Set(s.props),BB=new Set(b.boxes),CB=new Set(s.boxes),BD=new Set(b.doors),CD=new Set(s.doors),
-      q={flo:s.flo,add:[],del:[],sol:[],bx:[],dr:[],pm:[],bm:[],w:s.w,h:s.h};
+      q={flo:s.flo,add:[],del:[],sol:[],bx:[],dr:[],pm:[],bm:[],nd:[],nw:s.nowall?1:0,nn:s.nowin?1:0,w:s.w,h:s.h};
+    {const CN=new Set(s.npcs);for(const n of b.npcs)if(!CN.has(n))q.nd.push([n.hx,n.hy,n.name]);}
     for(const p of s.props)if(B.has(p)&&((p.rot||0)!==0||p.sc!==PB.get(p)))q.pm.push({img:p.img,x:p.x,y:p.y,rot:p.rot||0,sc:p.sc});
     for(const x of s.boxes)if(BB.has(x)&&x.spr&&((x.rot||0)!==0||x.sprScale!==PB.get(x)))q.bm.push({x:x.x,y:x.y,rot:x.rot||0,ss:x.sprScale});
     for(const p of b.props)if(!C.has(p))q.del.push({img:p.img,x:p.x,y:p.y});for(const p of s.props)if(!B.has(p))q.add.push(Object.assign({},p));
     for(const x of b.boxes)if(!CB.has(x))q.bx.push([x.x,x.y]);for(const x of b.doors)if(!CD.has(x))q.dr.push([x.x0,x.y0]);
     for(let j=0;j<s.h;j++)for(let i=0;i<s.w;i++){const cur=s.sol[j*s.w+i],base=(i<b.w&&j<b.h)?b.sol[j*b.w+i]:0;if(cur!==base)q.sol.push([i,j,cur]);}
-    if(Object.keys(q.flo).length||q.add.length||q.del.length||q.sol.length||q.bx.length||q.dr.length||q.pm.length||q.bm.length||q.w!==b.w||q.h!==b.h){o.sc[id]=q;any++;}}
+    if(Object.keys(q.flo).length||q.add.length||q.del.length||q.sol.length||q.bx.length||q.dr.length||q.pm.length||q.bm.length||q.nd.length||q.nw||q.nn||q.w!==b.w||q.h!==b.h){o.sc[id]=q;any++;}}
   try{if(any)localStorage.setItem(EKEY,JSON.stringify(o));else localStorage.removeItem(EKEY);}catch(e){}}
 function edResize(s,nw,nh){const ow=s.w,oh=s.h,ns=new Uint8Array(nw*nh);
   for(let j=0;j<oh;j++)for(let i=0;i<ow;i++){let v=s.sol[j*ow+i];if(nw>ow&&i===ow-1)v=0;if(nh>oh&&j===oh-1)v=0;ns[j*nw+i]=v;}
@@ -1728,21 +1729,22 @@ function edLoad(){let o=null;try{o=JSON.parse(localStorage.getItem(EKEY)||'null'
   const d=o.dg||{};for(const [n,g] of d.gt||[])GT[n]=g;for(const [n,v] of d.ws||[])WSOL[n]=v;
   for(const [x,y] of d.dt||[]){const k=trees.findIndex(t=>near(t[0],t[1],x,y));if(k>=0)trees.splice(k,1);}
   for(const [x,y] of d.dp||[]){const k=props.findIndex(q=>near(q.x,q.y,x,y));if(k>=0)props.splice(k,1);}
-  if(d.nt)TERR.on=false;for(const b of d.db||[])edDelBlock(b[0],b[1]);
+  if(d.st){STUMP[0]=d.st[0];STUMP[1]=d.st[1];}if(d.nt)TERR.on=false;for(const b of d.db||[])edDelBlock(b[0],b[1]);
   for(const [x,y,k] of d.at||[])addTree(k)(x,y);for(const [x,y,n,r] of d.ap||[])props.push({x,y,n,r:r||0});
   for(const id in o.sc||{}){const s=TSC[id],q=o.sc[id];if(!s)continue;s.flo=Object.assign({},q.flo);if(q.w&&q.h&&(q.w!==s.w||q.h!==s.h))edResize(s,q.w,q.h);
     for(const [x,y] of q.bx||[]){const k=s.boxes.findIndex(b=>b.x===x&&b.y===y);if(k>=0)s.boxes.splice(k,1);}
+    if(q.nw)s.nowall=true;if(q.nn)s.nowin=true;for(const [x,y,nm] of q.nd||[]){const k=s.npcs.findIndex(n=>n.name===nm&&near(n.hx,n.hy,x,y));if(k>=0)s.npcs.splice(k,1);}
     for(const [x,y] of q.dr||[]){const k=s.doors.findIndex(b=>near(b.x0,b.y0,x,y));if(k>=0)s.doors.splice(k,1);}
     for(const dd of q.del||[]){const k=s.props.findIndex(p=>p.img===dd.img&&near(p.x,p.y,dd.x,dd.y));if(k>=0)s.props.splice(k,1);}
     for(const m of q.pm||[]){const p=s.props.find(p=>p.img===m.img&&near(p.x,p.y,m.x,m.y));if(p){p.rot=m.rot;if(m.sc!==undefined)p.sc=m.sc;}}
     for(const m of q.bm||[]){const b=s.boxes.find(b=>b.x===m.x&&b.y===m.y);if(b){b.rot=m.rot;if(m.ss!==undefined)b.sprScale=m.ss;}}
     for(const p of q.add||[])s.props.push(p);for(const [i,j,v] of q.sol||[])if(i<s.w&&j<s.h)s.sol[j*s.w+i]=v;}
   edRefresh(false);}
-function edSnap(){const o={PM:[],GT:GT.slice(),WS:WSOL.slice(),T:trees.slice(),P:props.slice(),TR:TERR.on,BK:blocks.map(b=>b.slice()),S:{}};for(const id in TSC){const s=TSC[id];for(const p of s.props)o.PM.push([p,p.rot,p.sc,0]);for(const b of s.boxes)o.PM.push([b,b.rot,b.sprScale,1]);
-    o.S[id]={w:s.w,h:s.h,flo:Object.assign({},s.flo),props:s.props.slice(),sol:s.sol.slice(),boxes:s.boxes.slice(),doors:s.doors.slice()};}return o;}
-function edRestore(o){GT.set(o.GT);WSOL.set(o.WS);trees.length=0;trees.push(...o.T);props.length=0;props.push(...o.P);TERR.on=o.TR;
+function edSnap(){const o={ST:STUMP.slice(),PM:[],GT:GT.slice(),WS:WSOL.slice(),T:trees.slice(),P:props.slice(),TR:TERR.on,BK:blocks.map(b=>b.slice()),S:{}};for(const id in TSC){const s=TSC[id];for(const p of s.props)o.PM.push([p,p.rot,p.sc,0]);for(const b of s.boxes)o.PM.push([b,b.rot,b.sprScale,1]);
+    o.S[id]={nw:!!s.nowall,nn:!!s.nowin,npcs:s.npcs.slice(),w:s.w,h:s.h,flo:Object.assign({},s.flo),props:s.props.slice(),sol:s.sol.slice(),boxes:s.boxes.slice(),doors:s.doors.slice()};}return o;}
+function edRestore(o){STUMP[0]=o.ST[0];STUMP[1]=o.ST[1];GT.set(o.GT);WSOL.set(o.WS);trees.length=0;trees.push(...o.T);props.length=0;props.push(...o.P);TERR.on=o.TR;
   blocks.length=0;blockSet.clear();for(const b of o.BK){blocks.push(b.slice());blockSet.add(b.join(','));}
-  for(const id in o.S){const s=TSC[id],q=o.S[id];s.w=q.w;s.h=q.h;s.flo=Object.assign({},q.flo);s.props.length=0;s.props.push(...q.props);s.sol=q.sol.slice();s.boxes.length=0;s.boxes.push(...q.boxes);s.doors.length=0;s.doors.push(...q.doors);}
+  for(const id in o.S){const s=TSC[id],q=o.S[id];s.w=q.w;s.h=q.h;s.nowall=q.nw;s.nowin=q.nn;s.npcs.length=0;s.npcs.push(...q.npcs);s.flo=Object.assign({},q.flo);s.props.length=0;s.props.push(...q.props);s.sol=q.sol.slice();s.boxes.length=0;s.boxes.push(...q.boxes);s.doors.length=0;s.doors.push(...q.doors);}
   for(const [x,r,sc,isb] of o.PM||[]){x.rot=r;if(isb)x.sprScale=sc;else x.sc=sc;}edRefresh(true);edSave();}
 /* ---- datos de paleta ---- */
 const EG=[[0,'Pasto'],[1,'Camino piedra'],[13,'Camino tierra'],[2,'Río'],[3,'Orilla A↖'],[4,'Orilla A↘'],[5,'Orilla B↖'],[6,'Orilla B↘'],[7,'Pantano'],[8,'Agua pantano'],[9,'Bosque negro'],[10,'Camino negro'],[11,'Suelo morado'],[12,'Camino morado']];
@@ -1770,7 +1772,8 @@ function edAt(i,j){const id=edCid(),t=ED.tool;let ch=false;
     else if(t==='tree'){const k=ETR[ED.sel][0];edDelNear(i+.1,j+.1,i+.9,j+.9);addTree(k)(i+.5,j+.5);ch=true;edDirty();}
     else if(t==='prop'){const [nm,,r]=EPR[ED.sel];edDelNear(i+.1,j+.1,i+.9,j+.9);props.push({x:i+.5,y:j+.5,n:nm,r});ch=true;edDirty();}
     else if(t==='block'){if(!blockSet.has(i+','+j)&&!terrace(i,j)){blocks.push([i,j]);blockSet.add(i+','+j);ch=true;edDirty();}}
-    else if(t==='erase'){if(edDelNear(i,j,i+1,j+1)){ch=true;edDirty();}else if(blockSet.has(i+','+j)){edDelBlock(i,j);ch=true;edDirty();}else if(terrace(i,j)){TERR.on=false;ch=true;edDirty();}else if(GT[n]!==0){GT[n]=0;if(WSOL[n]&&(GT0[n]===2||GT0[n]===8))WSOL[n]=0;ch=true;}}
+    else if(t==='stump'){if(STUMP[0]!==i+.5||STUMP[1]!==j+.5){STUMP[0]=i+.5;STUMP[1]=j+.5;ch=true;edDirty();}}
+    else if(t==='erase'){if(Math.abs(STUMP[0]-i-.5)<1.1&&Math.abs(STUMP[1]-j-.5)<1.1){STUMP[0]=STUMP[1]=-60;ch=true;edDirty();}else if(edDelNear(i,j,i+1,j+1)){ch=true;edDirty();}else if(blockSet.has(i+','+j)){edDelBlock(i,j);ch=true;edDirty();}else if(terrace(i,j)){TERR.on=false;ch=true;edDirty();}else if(GT[n]!==0){GT[n]=0;if(WSOL[n]&&(GT0[n]===2||GT0[n]===8))WSOL[n]=0;ch=true;}}
     else if(t==='solid'){const v=ED.sel?0:1;if(WSOL[n]!==v){WSOL[n]=v;ch=true;}}
   }else{const s=TSC[id];if(!s||i<0||j<0||i>=s.w||j>=s.h)return false;const n=j*s.w+i;
     if(t==='floor'){const nm=EFL[ED.sel],k=i+','+j;if(edFloorAt(s,i,j)!==nm||s.flo[k]!==nm){s.flo[k]=nm;ch=true;}}
@@ -1779,6 +1782,7 @@ function edAt(i,j){const id=edCid(),t=ED.tool;let ch=false;
       const p={img,x:i+.5,y:j+.5};if(d.sc)p.sc=d.sc;if(d.floor)p.floor=d.floor;if(d.dy)p.dy=d.dy;if(d.flip)p.flip=d.flip;if(d.sol){p.sol=1;s.sol[n]=1;}s.props.push(p);ch=true;}
     else if(t==='erase'){
       for(let k=s.props.length-1;k>=0;k--){const p=s.props[k];if(edPropHit(p,i,j)){edClearSol(s,p);s.props.splice(k,1);ch=true;}}
+      for(let k=s.npcs.length-1;k>=0;k--){const n=s.npcs[k];if(Math.hypot(n.x-(i+.5),n.y-(j+.5))<.9||Math.hypot(n.hx-(i+.5),n.hy-(j+.5))<.9){s.npcs.splice(k,1);ch=true;}}
       for(let k=s.boxes.length-1;k>=0;k--){const b=s.boxes[k];if(i>=b.x&&i<b.x+b.w&&j>=b.y&&j<b.y+b.d){for(let y=b.y;y<b.y+b.d;y++)for(let x=b.x;x<b.x+b.w;x++)if(x>0&&y>0&&x<s.w-1&&y<s.h-1)s.sol[y*s.w+x]=0;s.boxes.splice(k,1);ch=true;}}
       if(!ch){for(let k=s.doors.length-1;k>=0;k--){const d=s.doors[k];if(i+.5>=d.x0&&i+.5<=d.x1&&j+.5>=d.y0&&j+.5<=d.y1){s.doors.splice(k,1);ch=true;}}}
       if(!ch&&s.flo[i+','+j]){delete s.flo[i+','+j];ch=true;}}
@@ -1845,11 +1849,12 @@ function edUI(){const id=edCid();edBar.innerHTML='';edPalEl.innerHTML='';
   edBar.appendChild(eBtn('−',()=>{const i=ZF.findIndex(v=>v>=ED.zf-1e-6);ED.zf=ZF[Math.max(0,(i<0?ZF.length:i)-1)];}));
   edBar.appendChild(eBtn('＋',()=>{const i=ZF.findIndex(v=>v>ED.zf+1e-6);ED.zf=i<0?1:ZF[i];}));
   edBar.appendChild(eBtn('🔭',edFit));edBar.appendChild(eBtn('🪄 Rellenar',edFill));edBar.appendChild(eBtn('🧹 Limpiar',edClear));edBar.appendChild(eBtn('➕ Agrandar',edGrow));
+  if(id!=='dg'&&TSC[id].wall){const S_=TSC[id];edBar.appendChild(eBtn(S_.nowall?'🧱 Paredes: NO':'🧱 Paredes: SÍ',()=>{ED.undo.push(edSnap());S_.nowall=!S_.nowall;edSave();edUI();}));edBar.appendChild(eBtn(S_.nowin?'🪟 Ventana: NO':'🪟 Ventana: SÍ',()=>{ED.undo.push(edSnap());S_.nowin=!S_.nowin;edSave();edUI();}));}
   edBar.appendChild(eBtn('💾',()=>{edSave();const b=new Blob([localStorage.getItem(EKEY)||'{"v":1,"dg":{},"sc":{}}'],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mapa_editado_hvs.json';a.click();edToast('Ediciones exportadas');}));
   edBar.appendChild(eBtn('📂',()=>{const f=document.createElement('input');f.type='file';f.accept='.json';f.onchange=()=>f.files[0].text().then(t=>{try{const o=JSON.parse(t);if(o.v!==1)throw 0;localStorage.setItem(EKEY,t);location.reload();}catch(e){edToast('Archivo no válido');}});f.click();}));
   edBar.appendChild(eBtn('♻️',()=>{if(confirm('¿Borrar TODAS tus ediciones y volver al mapa original?')){localStorage.removeItem(EKEY);location.reload();}}));
   edBar.appendChild(eBtn('✖ Salir',()=>edToggle(false)));
-  const T=id==='dg'?[['ground','🟩 Suelo'],['tree','🌲 Árboles'],['prop','🪨 Props'],['block','🧱 Bloque'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']]:[['floor','🟫 Piso'],['deco','🪑 Objetos'],['rot','🔄 Girar'],['size','🔍 Tamaño'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']];
+  const T=id==='dg'?[['ground','🟩 Suelo'],['tree','🌲 Árboles'],['prop','🪨 Props'],['block','🧱 Bloque'],['stump','🔥 Tronco'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']]:[['floor','🟫 Piso'],['deco','🪑 Objetos'],['rot','🔄 Girar'],['size','🔍 Tamaño'],['solid','🚧 Bloqueo'],['erase','🗑️ Borrar']];
   if(!T.some(x=>x[0]===ED.tool)){ED.tool=T[0][0];ED.sel=0;}
   const row=document.createElement('div');row.className='row';for(const [k,l] of T)row.appendChild(eBtn(l,()=>{ED.tool=k;ED.sel=0;edUI();},ED.tool===k));edPalEl.appendChild(row);
   const cells=document.createElement('div');cells.id='edcells';edPalEl.appendChild(cells);
@@ -1863,6 +1868,7 @@ function edUI(){const id=edCid();edBar.innerHTML='';edPalEl.innerHTML='';
   if(t==='deco')edDeco().forEach((k,i)=>add(i,k.replace(/^[a-z]_/,'').replace(/_/g,' '),(c,g)=>{const im=IMG['town/'+k];c.width=im.width;c.height=im.height;g.drawImage(im,0,0);}));
   if(t==='rot')ERO.forEach(([n],i)=>add(i,n,(c,g)=>{c.width=40;c.height=24;g.fillStyle='#35508a';g.fillRect(0,0,40,24);g.fillStyle='#fff';g.font='bold 13px system-ui';g.textAlign='center';g.fillText(n.replace('Sin giro','0°'),20,17);}));
   if(t==='size')ESZ.forEach(([n],i)=>add(i,n,(c,g)=>{c.width=40;c.height=24;g.fillStyle='#35508a';g.fillRect(0,0,40,24);g.fillStyle='#fff';g.font='bold 12px system-ui';g.textAlign='center';g.fillText(i===4?'1×':n,20,17);}));
+  if(t==='stump')add(0,'Tronco con luz',(c,g)=>{const im=IMG.stump;c.width=im.width;c.height=im.height;g.drawImage(im,0,0);});
   if(t==='block')add(0,'Bloque',(c,g)=>{const im=IMG.block;c.width=im.width;c.height=im.height;g.drawImage(im,0,0);});
   if(t==='solid')[['Bloquear',0],['Liberar',1]].forEach(([n],i)=>add(i,n,(c,g)=>{c.width=40;c.height=24;g.fillStyle=i?'#2a6a3a':'#a03030';g.fillRect(0,0,40,24);}));
   if(t==='erase'){const d=document.createElement('div');d.style.cssText='padding:6px 4px;font-size:12px';d.textContent='Toca un tile y borra lo que haya: casas, fuente, vallas, árboles, bloques, terraza, puertas (verdes). Si no hay nada, borra el suelo editado.';cells.appendChild(d);}}

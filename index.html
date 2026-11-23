@@ -302,7 +302,7 @@ const SETS=[
  {nm:'Set Campeón',nv:20,atq:.60,def:.35,pc:.22,dc:.80,rg:1.6,c:{a:'#25252d',A:'#e0b84a',b:'#0a0a0e'},r:{mad:[6,10,6,8],tela:[6,10,6,8],hilo:[6,10,6,8],baba:[6,10,6,8],chq:[6,10,6,8],frag:[2,4,2,4]}}];
 const gear=[], EQP=[null,null,null,null];
 let GS={atq:0,def:0,pc:0,dc:0,rg:0};
-function gsCalc(){const g={atq:0,def:0,pc:0,dc:0,rg:0};for(const id of EQP){if(id==null)continue;const S=SETS[id>>2];for(const k in g)g[k]+=S[k]/4;}GS=g;{const cnt=[0,0,0,0,0];for(const id of EQP)if(id!=null)cnt[id>>2]++;let sw=-1,mx=1;cnt.forEach((c,i)=>{if(c>=2&&c>=mx){mx=c;sw=i;}});heroTint(sw,sw===4&&cnt[4]===4);}}
+function gsCalc(){const g={atq:0,def:0,pc:0,dc:0,rg:0};for(const id of EQP){if(id==null)continue;const S=SETS[id>>2];for(const k in g)g[k]+=S[k]/4;}GS=g;{const cnt=[0,0,0,0,0];for(const id of EQP)if(id!=null)cnt[id>>2]++;let sw=-1,mx=1;cnt.forEach((c,i)=>{if(c>=2&&c>=mx){mx=c;sw=i;}});heroTint(sw,(sw===4&&cnt[4]===4)||sw===3);}}
 const HORIG={},HTINT={};let htTag='',htSw=-1;
 const SWC=[{m:[1.2,.22,.22],h:[255,175,165]},{m:[1.2,.68,.18],h:[245,200,130]},{m:[.6,.38,.2],h:[190,150,105]},{m:[1.25,1.25,1.3],a:[30,30,35],h:[255,255,255]},{m:[.2,.16,.3],h:[170,120,220]}];
 function heroTint(sw,hair){const tag=sw<0?'':sw+(hair?'h':'');if(tag===htTag||!IMG['hero/idleF'])return;
@@ -314,7 +314,7 @@ function heroTint(sw,hair){const tag=sw<0?'':sw+(hair?'h':'');if(tag===htTag||!I
         if(!T[k]){const im=HORIG[k]||IMG[k],c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);
           const d=x.getImageData(0,0,c.width,c.height),a=d.data,C=SWC[sw],ad=C.a||[0,0,0];
           for(let q=0;q<a.length;q+=4){if(a[q+3]<8)continue;const r=a[q],g=a[q+1],b=a[q+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b),L=(r+g+b)/3;
-            if(hair&&mx-mn<=28&&L>110){const v=L*.3;a[q]=v;a[q+1]=v;a[q+2]=v*1.2;}
+            if(hair&&k.startsWith('hero/')&&mx-mn<=28&&L>110){const t=Math.min(1,(L-110)/145),sh=Math.max(0,(t-.72)/.28),v=12+t*26;a[q]=v+sh*105;a[q+1]=v+sh*112;a[q+2]=v*1.3+sh*140;}
             else if(b>r+20&&g>r+10&&L>90){if(L>215){a[q]=C.h[0];a[q+1]=C.h[1];a[q+2]=C.h[2];}else{const v=L;a[q]=Math.min(255,v*C.m[0]+ad[0]);a[q+1]=Math.min(255,v*C.m[1]+ad[1]);a[q+2]=Math.min(255,v*C.m[2]+ad[2]);}}}
           x.putImageData(d,0,0);T[k]=c;}
         if(!HORIG[k])HORIG[k]=IMG[k];IMG[k]=T[k];
@@ -328,16 +328,17 @@ const ZXP=[1,2.2,4,7];
 const MATD=[[['chq',.45],['baba',.35],['hilo',.30]],[['chq',.48],['baba',.54],['hilo',.42],['tela',.30]],[['chq',.60],['baba',.68],['hilo',.60],['tela',.52]],[['chq',.63],['baba',.81],['hilo',.72],['tela',.72]]];
 const MATN={tela:['Tela','#bfe0ff'],hilo:['Hilo','#ffe9a0'],baba:['Baba','#9be86a'],chq:['Champiñón chiq.','#e8b08a'],frag:['Fragmento','#c89cff']};
 const LV={lvl:1,xp:0,sk:{atk:1,onda:1,ult:1}},LVMAX=20,SKMAX=10;
+const HP_LV=35,DMG_LV=.05,hpOf=l=>100+HP_LV*(l-1);   /* nv20 = 765 de vida; +5% de daño por nivel */
 const xpNeed=l=>50+50*l;
 const ZCAP=[5,10,15,20];let xpWarnT=0;
 function xpMul(z){const o=LV.lvl-ZCAP[Math.min(3,z|0)];return o<=0?1:Math.max(.03,Math.pow(.35,o));}
 let lvTimer=0;
 function lvToast(l0){const e=document.getElementById('lvup'),n=LV.lvl-l0;
-  e.innerHTML='<b>¡Subiste a nivel '+LV.lvl+'!</b><span>Vida máx '+(100+2*(l0-1))+' → '+hero.mhp+' (+'+(2*n)+')</span><span>Daño +'+(3*(LV.lvl-1))+'% en total (+'+(3*n)+'%)</span>';
+  e.innerHTML='<b>¡Subiste a nivel '+LV.lvl+'!</b><span>Vida máx '+hpOf(l0)+' → '+hero.mhp+' (+'+(HP_LV*n)+')</span><span>Daño +'+(5*(LV.lvl-1))+'% en total (+'+(5*n)+'%)</span>';
   e.classList.add('on');clearTimeout(lvTimer);lvTimer=setTimeout(()=>e.classList.remove('on'),3000);}
-function dm(k,b){let v=b*(1+.12*(LV.sk[k]-1))*(1+.03*(LV.lvl-1))*(1+GS.atq);if(GS.pc>0&&Math.random()<GS.pc)v*=1.5+GS.dc;return Math.max(1,Math.round(v));}
+function dm(k,b){let v=b*(1+.12*(LV.sk[k]-1))*(1+DMG_LV*(LV.lvl-1))*(1+GS.atq);if(GS.pc>0&&Math.random()<GS.pc)v*=1.5+GS.dc;return Math.max(1,Math.round(v));}
 function addXp(n){if(LV.lvl>=LVMAX)return;LV.xp+=n;const l0=LV.lvl;
-  while(LV.lvl<LVMAX&&LV.xp>=xpNeed(LV.lvl)){LV.xp-=xpNeed(LV.lvl);LV.lvl++;hero.mhp=100+2*(LV.lvl-1);hero.hp=hero.mhp;addFloat(hero.x,hero.y,'¡Nivel '+LV.lvl+'!','#ffe27a');ring(hero.x,hero.y);}
+  while(LV.lvl<LVMAX&&LV.xp>=xpNeed(LV.lvl)){LV.xp-=xpNeed(LV.lvl);LV.lvl++;hero.mhp=hpOf(LV.lvl);hero.hp=hero.mhp;addFloat(hero.x,hero.y,'¡Nivel '+LV.lvl+'!','#ffe27a');ring(hero.x,hero.y);}
   if(LV.lvl>=LVMAX)LV.xp=0;
   if(LV.lvl>l0)lvToast(l0);}
 const R=0.17;
@@ -1061,7 +1062,7 @@ function invRender(){
 const SKN=[['atk','Ataque básico'],['onda','Espadas del cielo (ONDA)'],['ult','Ultimate']];
 let PJT='est';
 function pjRender(){
-  const n=document.getElementById('pjn');n.innerHTML='<b>Guerrero · Nv '+LV.lvl+(LV.lvl>=LVMAX?' (máx)':'')+'</b><div class="xpb"><i style="width:'+(LV.lvl>=LVMAX?100:Math.round(LV.xp/xpNeed(LV.lvl)*100))+'%"></i></div><small>'+(LV.lvl>=LVMAX?'Nivel máximo':'XP '+LV.xp+' / '+xpNeed(LV.lvl))+'<br>Cada nivel: +3% daño, +2 vida<br>Vida máx '+hero.mhp+'</small>';
+  const n=document.getElementById('pjn');n.innerHTML='<b>Guerrero · Nv '+LV.lvl+(LV.lvl>=LVMAX?' (máx)':'')+'</b><div class="xpb"><i style="width:'+(LV.lvl>=LVMAX?100:Math.round(LV.xp/xpNeed(LV.lvl)*100))+'%"></i></div><small>'+(LV.lvl>=LVMAX?'Nivel máximo':'XP '+LV.xp+' / '+xpNeed(LV.lvl))+'<br>Cada nivel: +5% daño, +35 vida<br>Vida máx '+hero.mhp+'</small>';
   const r=document.getElementById('pjr');r.innerHTML='';
   {const tb=document.createElement('div');tb.className='ptabs';[['est','Estadísticas'],['hab','Habilidades'],['ofi','Oficios']].forEach(([k,nm])=>{const b=document.createElement('button');b.className='ptab'+(PJT===k?' on':'');b.textContent=nm;b.onclick=()=>{PJT=k;pjRender();};tb.appendChild(b);});r.appendChild(tb);}
   if(PJT==='ofi'){[['lena','Leñador','lena','Talas más rápido y sacas más leña por árbol.'],['pesca','Pescador','f1','Pescas más rápido, más seguido y más peces.']].forEach(([k,nm,ic,tx])=>{const p=PR[k],mx=p.lv>=PMAX,d=document.createElement('div');d.className='pr';d.appendChild(ICONS[ic]());const t=document.createElement('div');t.className='pt';t.style.flex='1';
@@ -1159,7 +1160,7 @@ function cfgOpen(v){if(v&&SC==='dg'&&!document.getElementById('tback')){}documen
 document.getElementById('sgb').onclick=()=>cfgOpen(!document.getElementById('cfg').classList.contains('on'));
 document.getElementById('cfgx').onclick=()=>cfgOpen(false);
 document.getElementById('cfg').addEventListener('pointerdown',e=>{if(e.target.id==='cfg')cfgOpen(false);});
-function saveGame(){if(window.__noSave)return;try{localStorage.setItem(SKEY,JSON.stringify({v:1,map:3,prof:PR,gld:GLD,sc:(SC==='dg'?'dg':'town'),lvl:LV.lvl,xp:LV.xp,sk:LV.sk,bag,gear,EQP,pos:[hero.x,hero.y],hp:hero.hp,gone:trees.map((t,i)=>t.gone?i:-1).filter(i=>i>=0)}));}catch(e){}}
+function saveGame(){if(window.__noSave)return;try{localStorage.setItem(SKEY,JSON.stringify({v:1,hv:2,map:3,prof:PR,gld:GLD,sc:(SC==='dg'?'dg':'town'),lvl:LV.lvl,xp:LV.xp,sk:LV.sk,bag,gear,EQP,pos:[hero.x,hero.y],hp:hero.hp,gone:trees.map((t,i)=>t.gone?i:-1).filter(i=>i>=0)}));}catch(e){}}
 function loadGame(){let d=null;try{d=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
   if(!d||d.v!==1)return;
   LV.lvl=Math.max(1,Math.min(LVMAX,d.lvl|0));LV.xp=Math.max(0,d.xp|0);if(LV.lvl>=LVMAX)LV.xp=0;
@@ -1167,7 +1168,7 @@ function loadGame(){let d=null;try{d=JSON.parse(localStorage.getItem(SKEY)||'nul
   for(const k in bag)bag[k]=Math.max(0,(d.bag&&d.bag[k])|0);
   (d.gear||[]).forEach(id=>{if(Number.isInteger(id)&&id>=0&&id<SETS.length*4&&!gear.includes(id))gear.push(id);});
   (d.EQP||[]).forEach((id,i)=>{if(i<4&&Number.isInteger(id)&&gear.includes(id)&&(id&3)===i)EQP[i]=id;});gsCalc();
-  hero.mhp=100+2*(LV.lvl-1);hero.hp=Math.max(1,Math.min(hero.mhp,+d.hp||hero.mhp));
+  {const oldM=100+2*(LV.lvl-1);hero.mhp=hpOf(LV.lvl);hero.hp=Math.max(1,Math.min(hero.mhp,d.hv===2?(+d.hp||hero.mhp):Math.round(hero.mhp*Math.min(1,(+d.hp||oldM)/oldM))));}
   if(d.map!==3){d.pos=null;d.gone=[];}
   if(d.pos&&isFinite(d.pos[0])&&isFinite(d.pos[1])&&!blockedAt(d.pos[0],d.pos[1],.3)){hero.x=d.pos[0];hero.y=d.pos[1];}
   (d.gone||[]).forEach(i=>{const t=trees[i];if(t){t.gone=true;t.fall=-1;t.rg=30+Math.random()*60;}});

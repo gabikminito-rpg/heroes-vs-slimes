@@ -114,7 +114,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <script>
 (()=>{
 'use strict';
-const VER='iso-prueba v83';
+const VER='iso-prueba v84';
 const CKEY='hvs_iso_cfg_v1';const FX=Object.assign({water:1,tiles:1,fly:1,fire:1,light:1,rays:1},(()=>{try{return JSON.parse(localStorage.getItem('hvs_iso_cfg_v1')||'{}');}catch(e){return {};}})());
 const cv=document.getElementById('c'); let ctx=cv.getContext('2d'); const ctxMain=ctx;
 const dark=document.createElement('canvas'), dctx=dark.getContext('2d');
@@ -1213,7 +1213,7 @@ function tNpc(s,x,y,col,name,lines,o){s.npcs.push(Object.assign({x,y,tx:x,ty:y,h
   tNpc(s,17,10,'#5a8ad0','Beto',['Las espadas rojas se ven geniales.','¿Ya pescaste algo hoy?','Compra un tomo cuando tengas oro.'],{rad:3,hx:17,hy:10});
   tNpc(s,12,17,'#5ab070','Lupe',['El pueblo está tranquilo hoy.','Cuidado con los troncosos.','La taberna sirve el mejor caldo.'],{rad:3,hx:12,hy:17});
   tNpc(s,22,17,'#d0b05a','Chuy',['Yo vendo leña... bueno, la compro.','Mi abuelo fue aventurero.','¿Qué rango tienes?'],{rad:3,hx:22,hy:17});
-  tNpc(s,3,10,'#a05ad0','Nina',['Busco a mi gato.','Dicen que el pantano brilla de noche.'],{rad:1.5,hx:3,hy:10});
+  tNpc(s,17,16,'#a05ad0','Nina',['Busco a mi gato.','Dicen que el pantano brilla de noche.'],{rad:1.5,hx:17,hy:16});
   s=tMk('guild',9,7,'Gremio');TSC.guild=s;
   tBox(s,2,1,4,1,.9,'#8a5a3a','#a0703a',{label:'Mostrador',spr:'i_mostrador_del_gremio',sprScale:0.7});
   tBox(s,6,1,2,1,1.6,'#c9b27a','#e8d49a',{label:'Pergaminos',board:true,spr:'i_tablero_de_pergaminos',sprScale:0.7});
@@ -1367,8 +1367,9 @@ function tFrame(dt,t){tUpdate(dt);const s=tSc(),dpr=window.devicePixelRatio||1,W
   list.push({k:TWN.x+TWN.y,f:()=>{const [sx,sy]=S2(TWN.x,TWN.y);c.fillStyle='rgba(0,0,0,.25)';c.beginPath();c.ellipse(sx,sy,9,3.5,0,0,6.283);c.fill();tHero(c,sx,sy);}});
   for(const p of s.props)if(!p.floor)list.push({k:p.k!==undefined?p.k:p.x+p.y,f:()=>tDrawProp(c,p)});
   list.sort((a,b)=>a.k-b.k);for(const o of list)o.f();
-  for(const n of s.npcs)if(n.bub){const [sx,sy]=S2(n.x,n.y);tBubble(c,sx,sy-30,n.bub.txt);}
-  if(TWN.bub){const [sx,sy]=S2(TWN.x,TWN.y);tBubble(c,sx,sy-52,TWN.bub.txt);}
+  const bcl=x=>Math.max(-ox+82,Math.min(-ox+vw-82,x));
+  for(const n of s.npcs)if(n.bub){const [sx,sy]=S2(n.x,n.y);tBubble(c,bcl(sx),sy-30,n.bub.txt);}
+  if(TWN.bub){const [sx,sy]=S2(TWN.x,TWN.y);tBubble(c,bcl(sx),sy-52,TWN.bub.txt);}
   c.setTransform(1,0,0,1,0,0);const k=dpr;c.font='700 '+(11*k)+'px system-ui';c.textAlign='left';c.textBaseline='top';c.fillStyle='rgba(0,0,0,.6)';c.fillRect(6*k,6*k,190*k,32*k);tIcon(c,'u_rango_'+RK[GLD.rank].toLowerCase(),10*k,8*k,18*k);c.fillStyle='#fff';c.fillText(s.name+' · Rango '+RK[GLD.rank],32*k,10*k);tIcon(c,'u_moneda',12*k,23*k,13*k);c.fillStyle='#ffe27a';c.fillText('Oro: '+GLD.gold,29*k,24*k);
   if(joy){const j2=joy;c.strokeStyle='rgba(220,255,220,.55)';c.lineWidth=2*k;c.beginPath();c.arc(j2.ox*k,j2.oy*k,50*k,0,6.283);c.stroke();const dx=j2.x-j2.ox,dy=j2.y-j2.oy,d=Math.min(50,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);c.fillStyle='rgba(220,255,220,.4)';c.beginPath();c.arc((j2.ox+Math.cos(a)*d)*k,(j2.oy+Math.sin(a)*d)*k,22*k,0,6.283);c.fill();}
   if(tFade>0){c.fillStyle='rgba(0,0,0,'+tFade+')';c.fillRect(0,0,W,H);}}

@@ -170,7 +170,8 @@ box-shadow:0 -3px var(--o),0 3px var(--o),-3px 0 var(--o),3px 0 var(--o),0 7px v
 .avQ i img,.avSide i img{height:30px;width:auto;display:block;margin:0 auto 2px}
 .chest .ic img{height:50px}.gem .ic img{height:36px;margin:0 auto}
 .hc i{position:relative}.hc i::after{content:'';position:absolute;inset:-9px;background:url(ui/i_f_r.webp) center/100% 100% no-repeat;pointer-events:none}
-#avBg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}#pAv>*:not(#avBg){z-index:1}#avHero{margin-top:70px}
+#pAv{background:linear-gradient(rgba(10,8,25,.15),rgba(10,8,25,.35)),url(fondo_cap1.webp) center bottom/cover no-repeat!important}#avHero{margin-top:70px}
+.ivS{display:flex;gap:6px;flex:1;min-height:0;width:100%;justify-content:center}.ivC{position:relative;flex:1;max-width:110px;border:3px solid var(--o);background:#1e1b38;overflow:hidden}.ivC img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}.ivC .ssr{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);color:#ffd76a;font:900 10px PX,ui-monospace,monospace;padding:3px 0;text-align:center}.ivM{min-height:0}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="ld" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font:900 20px PX,ui-monospace,monospace;letter-spacing:3px;text-shadow:2px 2px #232346;z-index:9">CARGANDO…</div>
@@ -279,6 +280,7 @@ const ethan=mkE({nm:'ETHAN',p:'a18',hero:1,hp:105,max:105,en:40,frames:ET_IDLE,h
 const katy=mkE({nm:'KATY',p:'a19',hero:1,hp:100,max:100,en:40,frames:KA_IDLE,hy:34,ly:0});
 const elo=mkE({nm:'ELOISE',p:'a13',hero:1,hp:180,max:180,en:40,frames:EL_IDLE,hy:34,ly:0});
 const ROSTER=[luke,gun,rayo,ember,hielo,paladin,lance,lancera,artillero,tanque,jack,influ,mx,elo,nani,rocket,ginny,monte,ethan,katy].filter(h=>!HIDDEN.includes(h)),GS=[g1,g2,g3];let HS=ROSTER.slice(0,3),ALL=[...HS,...GS];
+const RN={CABALLERO:'IBIR',GUERRERA:'SHINO','PALADÍN':'FREUDIN',LANCERA:'JIN',ARTILLERO:'XAVIER',SARGENTO:'BAAM',INFLUENCER:'BECK'};ROSTER.forEach(h=>{h.k=h.nm.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();if(RN[h.nm])h.nm=RN[h.nm]});
 const alive=a=>a.filter(e=>e.hp>0);
 /* ---------- audio ---------- */
 let ac;const sfx=(f,d,t='square',v=.05,e=.4)=>{try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;o.type=t;o.frequency.setValueAtTime(f,n);o.frequency.exponentialRampToValueAtTime(Math.max(30,f*e),n+d);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g).connect(ac.destination);o.start();o.stop(n+d)}catch(_){}};
@@ -292,7 +294,7 @@ function fit(){S=Math.max(.5,Math.min(innerWidth/300,innerHeight/260,3.4)*.7);W=
 const BGA={},BGC={};['cap1','jefe'].forEach(k=>{const i=new Image();i.onload=()=>BGA[k]=i;i.src='fondo_'+k+'.webp'});
 function curBg(){const k=(CAMP.st===10||/[?&]jefe/.test(location.search))?'jefe':'cap1',im=BGA[k];if(!im)return bg;const key=k+W+'x'+H+'q'+Q;let c=BGC[k];
  if(!c||c.key!==key){c=document.createElement('canvas');c.width=W*Q;c.height=H*Q;const g=c.getContext('2d');g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
-  const hh=H*1.16*Q,ww=hh*im.naturalWidth/im.naturalHeight,gy=GY*Q;g.drawImage(im,(c.width-ww)/2,gy-.62*hh,ww,hh);c.key=key;BGC[k]=c}return c}
+  const hh=H*1.16*Q,ww=hh*im.naturalWidth/im.naturalHeight,gy=GY*Q;const x0=Math.round((c.width-ww)/2),y0=Math.round(gy-.62*hh),n=Math.ceil(c.width/ww/2)+1;for(let i=-n;i<=n;i++){const xx=Math.round(x0+i*ww);if(xx>c.width||xx+ww<0)continue;if(i%2===0)g.drawImage(im,xx,y0,Math.ceil(ww),hh);else{g.save();g.translate(xx+ww,0);g.scale(-1,1);g.drawImage(im,0,y0,Math.ceil(ww),hh);g.restore()}}c.key=key;BGC[k]=c}return c}
 function mkBg(){bg=document.createElement('canvas');bg.width=W;bg.height=H;const g=bg.getContext('2d');
 const top=[91,155,213],bot=[196,230,255],n=12;
 for(let i=0;i<n;i++){const k=i/(n-1),c=top.map((v,j)=>Math.round(L(v,bot[j],k)));g.fillStyle=`rgb(${c})`;g.fillRect(0,Math.floor(GY*i/n),W,Math.ceil(GY/n)+1);
@@ -564,7 +566,7 @@ function setEnemies(){const f=/[?&]jefe/.test(location.search),st=f?10:CAMP.st,p
  GS.forEach((g,i)=>{const d=ENM[pk[i]];g.def=d;g.nm=d.nm;g.hp=g.max=Math.round(d.hp*hm);g.dm=dm;g.frames=d.idle;g.flip=1;g.hy=d.hy;g.cf=null});buildHud()}
 /* ---------- Menú principal ---------- */
 const ECO=(()=>{const d={en:30,gems:0,gold:486};try{return Object.assign(d,JSON.parse(localStorage.getItem('eco3v3')||'{}'))}catch(_){return d}})();
-let MTAB='av',EQH=0,MTM=null;
+let MTAB='av',EQH=0,EQV=null,IVB=0,MTM=null;
 const teamH=()=>ROSTER.filter(h=>POS.has(h));
 function sprDiv(h,sc,box){const f=h.frames[0],c=f.sw,d=document.createElement('div');const sz=c*sc;
  d.style.cssText=`width:${sz}px;height:${sz}px;background:url(${f.img.src}) 0 0/${c*10*sc}px ${c*3*sc}px no-repeat;image-rendering:pixelated`+(box?';'+box:'');
@@ -646,7 +648,7 @@ function enRegen(){const now=Date.now();if(ECO.en>=30){ECO.t=now;return}if(!ECO.
 function payEn(){enRegen();if(ECO.en<EN_COST)return false;if(ECO.en>=30)ECO.t=Date.now();ECO.en-=EN_COST;misAdd('en',EN_COST);misSave();return true}
 const stN=(c,n)=>{const m=CAMP.stars[c+'_'+n]||0;return (m&1?1:0)+(m&2?1:0)+(m&4?1:0)};
 const totStars=c=>{let t=0;for(let i=1;i<=10;i++)t+=stN(c,i);return t};
-const spKey=h=>h.nm.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const spKey=h=>h.k||h.nm.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 const SPL={};ROSTER.forEach(h=>{const i=new Image();i.onload=()=>SPL[h.p]=i;i.src='splash_'+spKey(h)+'.webp'});
 const CUTC={caballero:['#ff5a1f','#b81a14'],guerrera:['#35c8ff','#1b4fc0'],paladin:['#ffd24a','#c07a14'],lance:['#c0243c','#2a0a14'],lancera:['#e0304a','#7a2a9a'],artillero:['#ffa030','#5a3a22'],sargento:['#3a6ad0','#16285a'],jack:['#5a6074','#14141c'],influencer:['#a85ae0','#44157a'],max:['#ffd02a','#e0701a'],eloise:['#d0243e','#5a0a20'],nani:['#b48ae8','#5a3a98'],rocket:['#4fd06a','#16683a'],ginny:['#ff8ac8','#6a4ad8'],monte:['#8a3ad0','#24103c'],ethan:['#2ad0a0','#e09a1a'],katy:['#8a3ab8','#20b8d0']};
 function cutIn(h,name){return new Promise(r=>{const el=document.createElement('div');el.id='cut';const cc=CUTC[spKey(h)];if(cc)el.style.background=`linear-gradient(100deg,rgba(0,0,0,0) 0,${cc[0]} 24%,${cc[1]} 100%)`;const im=SPL[h.p];let art;
@@ -687,19 +689,24 @@ function renderMenu(){enRegen();(MTM||[]).forEach(clearInterval);MTM=[];const T=
  document.querySelectorAll('.mt').forEach(b=>b.onclick=()=>{MTAB=b.dataset.t;renderMenu()});
  const B=$('mBody');B.innerHTML='<div id="mModal"></div>';const pg=document.createElement('div');pg.className='pg';B.insertBefore(pg,B.firstChild);
  if(MTAB==='av'){pg.id='pAv';const c=Math.min(10,clrOf(CAMP.ch));
-  pg.innerHTML=`<video id="avBg" src="fondo_base.mp4" autoplay muted loop playsinline preload="auto"></video><div class="avT">CAPÍTULO ${CAMP.ch}<small>Etapas superadas: ${c}/10</small></div><div id="avHero"></div><div class="avQ"><div><i>${IC('gift','')}</i>Recompensas<br>PRONTO</div><div><i>${IC('compass','')}</i>Patrulla<br>PRONTO</div><div><i>${IC('st1','')}</i>Desafío<br>PRONTO</div></div><button class="pb or" id="avGo">INICIO</button><div class="avSide"><button id="avMis"><i>${IC('clip','')}</i>MISIONES${misN()?'<span class="dot">'+misN()+'</span>':''}</button><button id="avCar"><i>${IC('chest','')}</i>CARNAVAL${carN()?'<span class="dot">'+carN()+'</span>':''}</button></div>`;
+  pg.innerHTML=`<div class="avT">CAPÍTULO ${CAMP.ch}<small>Etapas superadas: ${c}/10</small></div><div id="avHero"></div><div class="avQ"><div><i>${IC('gift','')}</i>Recompensas<br>PRONTO</div><div><i>${IC('compass','')}</i>Patrulla<br>PRONTO</div><div><i>${IC('st1','')}</i>Desafío<br>PRONTO</div></div><button class="pb or" id="avGo">INICIO</button><div class="avSide"><button id="avMis"><i>${IC('clip','')}</i>MISIONES${misN()?'<span class="dot">'+misN()+'</span>':''}</button><button id="avCar"><i>${IC('chest','')}</i>CARNAVAL${carN()?'<span class="dot">'+carN()+'</span>':''}</button></div>`;
   $('avCar').onclick=()=>{CVD=Math.min(carDay(),7);openCar()};
   $('avMis').onclick=()=>openMis('lg');
   if(lead)$('avHero').appendChild(sprDiv(lead,.8));$('avGo').onclick=()=>{$('menu').style.display='none';showMap()}}
- else if(MTAB==='eq'){pg.id='pEq';const h=T[EQH]||T[0]||lead;EQH=Math.min(EQH,Math.max(0,T.length-1));
-  pg.innerHTML=`<div class="eqSel">${T.map((x,i)=>`<button class="${i===EQH?'on':''}" data-i="${i}">${x.nm}</button>`).join('')}</div><div class="eqMid" id="eqMid"><div class="slot" style="left:10px;top:4px">🗡</div><div class="slot" style="left:10px;top:84px">💍</div><div class="slot" style="left:10px;top:164px">📿</div><div class="slot" style="right:10px;top:4px">🥋</div><div class="slot" style="right:10px;top:84px">💍</div><div class="slot" style="right:10px;top:164px">📿</div></div>
+ else if(MTAB==='eq'){pg.id='pEq';
+  if(EQV==null){pg.id='pHe';const inT=new Set(T);pg.innerHTML=`<div class="shT">Equipo</div><div class="hg">${ROSTER.map((h,i)=>`<div class="hc" data-i="${i}"><span class="rt">R</span>${inT.has(h)?'<span class="ac">ACTIVO</span>':''}<i ${avImg(h)}></i>${h.nm}<br><span class="sr" style="color:#8a7a60;font-size:9px">Sin equipo</span></div>`).join('')}</div>`;
+   pg.querySelectorAll('.hc').forEach(e=>e.onclick=()=>{EQV=+e.dataset.i;renderMenu()})}
+  else{const h=ROSTER[EQV];
+  pg.innerHTML=`<div class="eqSel"><button data-i="-1">◂ TODOS</button><button class="on">${h.nm}</button></div><div class="eqMid" id="eqMid"><div class="slot" style="left:10px;top:4px">🗡</div><div class="slot" style="left:10px;top:84px">💍</div><div class="slot" style="left:10px;top:164px">📿</div><div class="slot" style="right:10px;top:4px">🥋</div><div class="slot" style="right:10px;top:84px">💍</div><div class="slot" style="right:10px;top:164px">📿</div></div>
   <div class="eqSt"><div>❤ VIDA<span>${h.max}</span></div><div>⚔ ATQ<span>—</span></div><div>🛡 DEF<span>—</span></div></div><div class="eqBt"><button class="pb" id="eqDet">DETALLES</button></div><div class="eqEmpty">Aún no tienes equipo</div>`;
   $('eqMid').appendChild(sprDiv(h,.75));
-  pg.querySelectorAll('.eqSel button').forEach(b=>b.onclick=()=>{EQH=+b.dataset.i;renderMenu()});
-  $('eqDet').onclick=()=>{const r=(a,b)=>`<div class="row">${a}<span>${b}</span></div>`;mModal('Detalles de atributo','<div class="sec">◆ Estadísticas básicas</div>'+r('HP Base',h.max)+r('ATQ Base','—')+r('DEF Base','—')+'<div class="sec">◆ Estadísticas avanzadas</div>'+r('Tasa de críticos','—')+r('Daño crítico %','—')+r('Tasa de contraataque','—')+r('Tasa de evasión','—')+r('Velocidad','—')+'<div class="sec">◆ Atributos finales</div>'+r('HP Final',h.max))}}
+  pg.querySelector('.eqSel button').onclick=()=>{EQV=null;renderMenu()};
+  $('eqDet').onclick=()=>{const r=(a,b)=>`<div class="row">${a}<span>${b}</span></div>`;mModal('Detalles de atributo','<div class="sec">◆ Estadísticas básicas</div>'+r('HP Base',h.max)+r('ATQ Base','—')+r('DEF Base','—')+'<div class="sec">◆ Estadísticas avanzadas</div>'+r('Tasa de críticos','—')+r('Daño crítico %','—')+r('Tasa de contraataque','—')+r('Tasa de evasión','—')+r('Velocidad','—')+'<div class="sec">◆ Atributos finales</div>'+r('HP Final',h.max))}}}
  else if(MTAB==='sh'){pg.id='pSh';
   pg.innerHTML=`<div class="shT">Cofres de Equipo</div><div class="cardG"><div class="chest p"><b>Cofre de Plata</b><div>Equipo común o superior</div><div class="ic">${IC("chest","")}</div><button class="pb" disabled>PRONTO</button></div><div class="chest o"><b>Cofre de Obsidiana</b><div>Equipo superior, raro o épico</div><div class="ic">${IC("gem","")}</div><button class="pb" disabled>PRONTO</button></div></div><div class="shT">Gemas</div><div class="cardG"><div class="gem"><span class="ic">${IC("gem","")}</span>x120</div><div class="gem"><span class="ic">${IC("gem","")}</span>x600</div><div class="gem"><span class="ic">${IC("gem","")}</span>x1800</div></div>`}
- else if(MTAB==='iv'){pg.id='pHe';const th=ROSTER.slice(-3);pg.innerHTML=`<div class="iv"><div class="ivL"><div class="on">Oferta novato<br>x10 = 1 SSR</div><div>Himno de salvación</div><div>Invocación de radiante</div></div><div class="ivM"><div style="font-size:11px">Intentos de invocación restantes: 1</div><div class="sh" id="ivSh"></div><div style="font-size:15px">Oferta invocación novato seleccionada</div><div>Invoca x10 y recibe 1 compañero <span style="color:#ffd76a">SSR</span> garantizado</div><button class="pb" disabled style="flex:none;width:180px;max-width:none;margin:0">INVOCACIÓN x10 · PRONTO</button><div style="font-size:11px">🎟 Boletos x10</div></div></div>`;th.forEach(h=>{const d=document.createElement('div');d.appendChild(sprDiv(h,Math.min(1,100/h.frames[0].sw)));d.insertAdjacentHTML('beforeend','<span class="ssr">'+h.nm+'</span>');$('ivSh').appendChild(d)})}
+ else if(MTAB==='iv'){pg.id='pHe';const BN=[['Oferta novato<br>x10 = 1 SSR','Oferta invocación novato seleccionada',['katy','ethan','ginny']],['Himno de salvación','Himno de salvación seleccionado',['lance','paladin','guerrera']],['Invocación de radiante','Invocación de radiante seleccionada',['caballero','monte','eloise']]];IVB=Math.min(IVB,2);const bn=BN[IVB],nmOf=k=>(ROSTER.find(h=>spKey(h)===k)||{nm:k}).nm;
+  pg.innerHTML=`<div class="iv"><div class="ivL">${BN.map((x,i)=>`<div class="${i===IVB?'on':''}" data-b="${i}">${x[0]}</div>`).join('')}</div><div class="ivM"><div style="font-size:11px">Intentos de invocación restantes: 1</div><div class="ivS">${bn[2].map(k=>`<div class="ivC"><img src="splash_${k}.webp"><span class="ssr">${nmOf(k)}</span></div>`).join('')}</div><div style="font-size:14px">${bn[1]}</div><div>Invoca x10 y recibe 1 compañero <span style="color:#ffd76a">SSR</span> garantizado</div><button class="pb" disabled style="flex:none;width:180px;max-width:none;margin:0">INVOCACIÓN x10 · PRONTO</button><div style="font-size:11px">${IC('gift','ci')} Boletos x10</div></div></div>`;
+  pg.querySelectorAll('.ivL div').forEach(e=>e.onclick=()=>{IVB=+e.dataset.b;renderMenu()})}
  else if(MTAB==='he'){pg.id='pHe';const inT=new Set(T);pg.innerHTML=`<div class="shT">Compañeros</div><div class="hg">${ROSTER.map((h,i)=>{const c=CARDINFO[h.p]||{};return `<div class="hc" data-i="${i}"><span class="rt">R</span>${inT.has(h)?'<span class="ac">ACTIVO</span>':''}<i ${avImg(h)}></i>${h.nm}<br><span class="sr">★☆☆☆☆</span></div>`}).join('')}</div><button class="pb or" id="heTeam" style="flex:none;width:200px;max-width:none;margin:12px 0">ARMAR EQUIPO</button>`;
   pg.querySelectorAll('.hc').forEach(e=>e.onclick=()=>openHero(ROSTER[+e.dataset.i]))
   $('heTeam').onclick=()=>{$('menu').style.display='none';showSelect()}}}

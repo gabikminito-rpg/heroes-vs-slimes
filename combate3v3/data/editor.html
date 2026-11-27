@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Editor de datos</title>
+<style>
+body{margin:0;background:#15171c;color:#e8e2d0;font:14px system-ui,sans-serif}
+header{position:sticky;top:0;background:#0d0e11;border-bottom:2px solid #c9a227;padding:8px;z-index:5}
+header button,header select{background:#2a2d35;color:#ffd24a;border:1px solid #c9a227;border-radius:6px;padding:7px 10px;margin:2px;font-size:14px}
+#tabs{display:flex;flex-wrap:wrap}
+#tabs button.on{background:#c9a227;color:#000}
+main{padding:8px;overflow:auto}
+table{border-collapse:collapse;min-width:100%}
+th{background:#23262e;color:#ffd24a;position:sticky;top:0;padding:4px 6px;text-align:left;font-size:12px;white-space:nowrap}
+td{border:1px solid #2f333c;padding:0}
+td input,td textarea{background:transparent;color:#e8e2d0;border:0;padding:5px;width:100%;min-width:70px;box-sizing:border-box;font:inherit}
+td input:focus,td textarea:focus{background:#262a33;outline:1px solid #ffd24a}
+td.x{padding:2px 6px;color:#f66;cursor:pointer}
+.obj{color:#8ab;font-size:12px;padding:4px}
+.note{padding:8px;color:#9a9;font-size:12px}
+</style></head><body>
+<header><div id="tabs"></div>
+<button onclick="addRow()">+ Fila</button><button onclick="save()">Descargar JSON</button>
+<button onclick="document.getElementById('f').click()">Cargar JSON</button><input id="f" type="file" accept=".json" hidden>
+<span id="msg" class="note"></span></header>
+<div class="note">Celdas vacías = null (por decidir). Listas/objetos se editan como JSON. Para una columna nueva escríbela en cualquier fila; para una sección nueva pídemelo o agrégala al JSON.</div>
+<main><table id="t"></table></main>
+<script>
+let DB={},sec='',ORIG='data';
+const $=id=>document.getElementById(id);
+async function init(){try{DB=await (await fetch('juego.json?'+Date.now())).json()}catch(e){$('msg').textContent='Abre con servidor o usa Cargar JSON'}tabs()}
+function tabs(){const ks=Object.keys(DB).filter(k=>Array.isArray(DB[k]));if(!sec||!DB[sec])sec=ks[0];$('tabs').innerHTML=ks.map(k=>`<button class="${k==sec?'on':''}" onclick="sec='${k}';tabs()">${k} (${DB[k].length})</button>`).join('');draw()}
+function cols(a){const c=[];a.forEach(r=>Object.keys(r).forEach(k=>{if(!c.includes(k))c.push(k)}));return c}
+function show(v){return v===null||v===undefined?'':typeof v==='object'?JSON.stringify(v):String(v)}
+function parse(s,old){if(s==='')return null;if(typeof old==='object'&&old!==null||/^[\[{]/.test(s)){try{return JSON.parse(s)}catch(e){}}if(typeof old==='boolean'||s==='true'||s==='false')return s==='true';if(s!==''&&!isNaN(s)&&/^-?\d+(\.\d+)?$/.test(s))return Number(s);return s}
+function draw(){const a=DB[sec],c=cols(a);let h='<tr><th></th>'+c.map(k=>`<th>${k}</th>`).join('')+'</tr>';
+a.forEach((r,i)=>{h+=`<tr><td class="x" onclick="del(${i})">✕</td>`+c.map(k=>`<td><input value="${show(r[k]).replace(/"/g,'&quot;')}" onchange="setv(${i},'${k}',this.value)"></td>`).join('')+'</tr>'});
+$('t').innerHTML=h}
+function setv(i,k,v){DB[sec][i][k]=parse(v,DB[sec][i][k])}
+function del(i){if(confirm('¿Borrar fila?')){DB[sec].splice(i,1);tabs()}}
+function addRow(){const a=DB[sec],o={};cols(a).forEach(k=>o[k]=null);const k=prompt('Columna nueva (opcional, vacío para ninguna):');if(k)o[k]=null;a.push(o);tabs()}
+function save(){const b=new Blob([JSON.stringify(DB,null,1)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='juego.json';a.click()}
+$('f').onchange=e=>{const r=new FileReader();r.onload=()=>{DB=JSON.parse(r.result);tabs()};r.readAsText(e.target.files[0])};
+init();
+</script></body></html>

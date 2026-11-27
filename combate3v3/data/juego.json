@@ -1,0 +1,2653 @@
+{
+ "meta": {
+  "version": 1,
+  "juego": "Pixiros",
+  "nota": "Base de datos del juego. Los valores null están por decidir. verificado=false: extraído del código, por revisar."
+ },
+ "constantes": {
+  "energia_max_jugador": 30,
+  "energia_por_etapa": 6,
+  "regen_energia_ms": 180000,
+  "limite_turnos_estrella": 8,
+  "etapas_por_capitulo": 10,
+  "energia_combate_max": 100,
+  "costo_habilidad2": 40,
+  "costo_ultimate": 100,
+  "energia_por_basico": 25,
+  "critico_mult": 1.5,
+  "critico_prob_base": 0,
+  "velocidad_regla": "Mayor velocidad = actúa antes. Orden de turnos por velocidad descendente; empate: héroe primero.",
+  "velocidad_base_heroe": 100,
+  "limite_critico_prob": 100,
+  "copias_max": 6,
+  "nivel_max": 60
+ },
+ "rarezas": [
+  {
+   "id": "SR",
+   "nombre": "SR",
+   "orden": 2,
+   "mult_vida": 1.0,
+   "mult_dano": 1.0,
+   "marco": "ui/i_f_sr.webp",
+   "color": "#7a3fc2",
+   "tasa_gacha": 15
+  },
+  {
+   "id": "SSR",
+   "nombre": "SSR",
+   "orden": 3,
+   "mult_vida": 1.25,
+   "mult_dano": 1.25,
+   "marco": "ui/i_f_gold.webp",
+   "color": "#e0a82e",
+   "notas": "+25% vida y daño sobre SR (confirmado)",
+   "tasa_gacha": 10
+  },
+  {
+   "id": "UR",
+   "nombre": "UR",
+   "orden": 4,
+   "mult_vida": null,
+   "mult_dano": null,
+   "marco": null,
+   "color": null,
+   "notas": "Planeada. Héroes controladores de turnos y efectos.",
+   "tasa_gacha": 3
+  }
+ ],
+ "roles": [
+  {
+   "id": "Distancia",
+   "nombre": "Distancia"
+  },
+  {
+   "id": "Maga",
+   "nombre": "Maga"
+  },
+  {
+   "id": "Magia",
+   "nombre": "Magia"
+  },
+  {
+   "id": "Mago",
+   "nombre": "Mago"
+  },
+  {
+   "id": "Melee",
+   "nombre": "Melee"
+  },
+  {
+   "id": "Sanador",
+   "nombre": "Sanador"
+  },
+  {
+   "id": "Sanadora",
+   "nombre": "Sanadora"
+  },
+  {
+   "id": "Tanque",
+   "nombre": "Tanque"
+  },
+  {
+   "id": "Controlador",
+   "nombre": "Controlador",
+   "notas": "Planeado (UR): manipula turnos y efectos"
+  }
+ ],
+ "heroes": [
+  {
+   "id": "luke",
+   "nombre": "Luke",
+   "sprite": "a0",
+   "rareza": "SR",
+   "rol": "Melee · espada",
+   "vida_base": 120,
+   "activo": false,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "gun",
+   "nombre": "Gun",
+   "sprite": "a1",
+   "rareza": "SR",
+   "rol": "Distancia · armas",
+   "vida_base": 100,
+   "activo": false,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "rayo",
+   "nombre": "Rayo",
+   "sprite": "a2",
+   "rareza": "SR",
+   "rol": "Melee · puños",
+   "vida_base": 140,
+   "activo": false,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "caballero",
+   "nombre": "Ibir",
+   "sprite": "a3",
+   "rareza": "SR",
+   "rol": "Melee · espada de fuego",
+   "vida_base": 130,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "guerrera",
+   "nombre": "Shino",
+   "sprite": "a4",
+   "rareza": "SR",
+   "rol": "Melee · espada de hielo",
+   "vida_base": 130,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "paladin",
+   "nombre": "Freudin",
+   "sprite": "a5",
+   "rareza": "SR",
+   "rol": "Melee · espada gigante",
+   "vida_base": 150,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "lance",
+   "nombre": "Lance",
+   "sprite": "a6",
+   "rareza": "SSR",
+   "rol": "Melee · espada oscura",
+   "vida_base": 120,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "lancera",
+   "nombre": "Jin",
+   "sprite": "a7",
+   "rareza": "SR",
+   "rol": "Melee · lanza",
+   "vida_base": 125,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "artillero",
+   "nombre": "Xavier",
+   "sprite": "a8",
+   "rareza": "SR",
+   "rol": "Distancia · minigun",
+   "vida_base": 110,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "sargento",
+   "nombre": "Baam",
+   "sprite": "a9",
+   "rareza": "SR",
+   "rol": "Tanque · escudos y piedra",
+   "vida_base": 170,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "jack",
+   "nombre": "Jack",
+   "sprite": "a10",
+   "rareza": "SR",
+   "rol": "Tanque · soporte",
+   "vida_base": 170,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "influencer",
+   "nombre": "Beck",
+   "sprite": "a11",
+   "rareza": "SR",
+   "rol": "Magia · flash y binario",
+   "vida_base": 115,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "max",
+   "nombre": "Max",
+   "sprite": "a12",
+   "rareza": "SR",
+   "rol": "Tanque · puertas y escudos",
+   "vida_base": 175,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "eloise",
+   "nombre": "Eloise",
+   "sprite": "a13",
+   "rareza": "SSR",
+   "rol": "Tanque · contraataques",
+   "vida_base": 180,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "nani",
+   "nombre": "Nani",
+   "sprite": "a14",
+   "rareza": "SR",
+   "rol": "Tanque · escudos y siesta",
+   "vida_base": 190,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "rocket",
+   "nombre": "Rocket",
+   "sprite": "a15",
+   "rareza": "SSR",
+   "rol": "Mago · monedas y monstruos",
+   "vida_base": 115,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "ginny",
+   "nombre": "Ginny",
+   "sprite": "a16",
+   "rareza": "SSR",
+   "rol": "Maga · burbujas y dragón",
+   "vida_base": 110,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "monte",
+   "nombre": "Monte",
+   "sprite": "a17",
+   "rareza": "SR",
+   "rol": "Mago · veneno y humo",
+   "vida_base": 120,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "ethan",
+   "nombre": "Ethan",
+   "sprite": "a18",
+   "rareza": "SR",
+   "rol": "Sanador · música y energía",
+   "vida_base": 105,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "katy",
+   "nombre": "Katy",
+   "sprite": "a19",
+   "rareza": "SSR",
+   "rol": "Sanadora · vudú y fantasmas",
+   "vida_base": 100,
+   "activo": true,
+   "etiquetas": [],
+   "notas": "",
+   "velocidad": 100
+  }
+ ],
+ "habilidades": [
+  {
+   "id": "luke_1",
+   "heroe": "luke",
+   "ranura": 1,
+   "nombre": "Espadazo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "objetivo": "uno",
+     "min": 7,
+     "max": 10
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_luke_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "luke_2",
+   "heroe": "luke",
+   "ranura": 2,
+   "nombre": "Salto De Hielo",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 14,
+     "max": 18
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_luke_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "luke_3",
+   "heroe": "luke",
+   "ranura": 3,
+   "nombre": "Embestida",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 10,
+     "max": 13
+    },
+    {
+     "objetivo": "todos",
+     "min": 20,
+     "max": 26
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_luke_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "gun_1",
+   "heroe": "gun",
+   "ranura": 1,
+   "nombre": "Pistola",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 10,
+     "max": 13
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_gun_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "gun_2",
+   "heroe": "gun",
+   "ranura": 2,
+   "nombre": "Escopeta",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 14,
+     "max": 18
+    }
+   ],
+   "efectos": [],
+   "descripcion": "daño · 40",
+   "icono": "sk_gun_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "gun_3",
+   "heroe": "gun",
+   "ranura": 3,
+   "nombre": "Láser",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 8,
+     "max": 10
+    },
+    {
+     "objetivo": "todos",
+     "min": 8,
+     "max": 10
+    },
+    {
+     "objetivo": "todos",
+     "min": 18,
+     "max": 24
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_gun_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "rayo_1",
+   "heroe": "rayo",
+   "ranura": 1,
+   "nombre": "Puñetazo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 10,
+     "max": 14
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_rayo_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "rayo_2",
+   "heroe": "rayo",
+   "ranura": 2,
+   "nombre": "Puño De Fuego",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 14,
+     "max": 18
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_rayo_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "rayo_3",
+   "heroe": "rayo",
+   "ranura": 3,
+   "nombre": "Uppercut",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 10,
+     "max": 13
+    },
+    {
+     "objetivo": "todos",
+     "min": 22,
+     "max": 28
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_rayo_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "caballero_1",
+   "heroe": "caballero",
+   "ranura": 1,
+   "nombre": "Tajo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_caballero_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "caballero_2",
+   "heroe": "caballero",
+   "ranura": 2,
+   "nombre": "Arco De Fuego",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "objetivo": "uno",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "objetivo": "uno",
+     "min": 5,
+     "max": 7
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    },
+    {
+     "id": "quemadura",
+     "prob": 60
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_caballero_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "caballero_3",
+   "heroe": "caballero",
+   "ranura": 3,
+   "nombre": "Espada De Fuego",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 20,
+     "max": 26
+    }
+   ],
+   "efectos": [
+    {
+     "id": "quemadura",
+     "prob": 100
+    }
+   ],
+   "descripcion": "área · 100",
+   "icono": "sk_caballero_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "guerrera_1",
+   "heroe": "guerrera",
+   "ranura": 1,
+   "nombre": "Corte",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 1,
+     "max": 2
+    },
+    {
+     "objetivo": "uno",
+     "min": 1,
+     "max": 2
+    },
+    {
+     "objetivo": "uno",
+     "min": 1,
+     "max": 2
+    },
+    {
+     "objetivo": "uno",
+     "min": 2,
+     "max": 3
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_guerrera_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "guerrera_2",
+   "heroe": "guerrera",
+   "ranura": 2,
+   "nombre": "Onda",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    },
+    {
+     "objetivo": "uno",
+     "min": 7,
+     "max": 9
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_guerrera_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "guerrera_3",
+   "heroe": "guerrera",
+   "ranura": 3,
+   "nombre": "Tormenta",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 6,
+     "max": 8
+    },
+    {
+     "objetivo": "todos",
+     "min": 6,
+     "max": 8
+    },
+    {
+     "objetivo": "todos",
+     "min": 8,
+     "max": 10
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_guerrera_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "paladin_1",
+   "heroe": "paladin",
+   "ranura": 1,
+   "nombre": "Estocada",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_paladin_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "paladin_2",
+   "heroe": "paladin",
+   "ranura": 2,
+   "nombre": "Golpe Sísmico",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 13,
+     "max": 17
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_paladin_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "paladin_3",
+   "heroe": "paladin",
+   "ranura": 3,
+   "nombre": "Rayo Oscuro",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 10,
+     "max": 13
+    },
+    {
+     "objetivo": "todos",
+     "min": 10,
+     "max": 13
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_paladin_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "lance_1",
+   "heroe": "lance",
+   "ranura": 1,
+   "nombre": "Tajo Oscuro",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_lance_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "lance_2",
+   "heroe": "lance",
+   "ranura": 2,
+   "nombre": "Doble Luna",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    },
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_lance_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "lance_3",
+   "heroe": "lance",
+   "ranura": 3,
+   "nombre": "Embestida Sombra",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 8,
+     "max": 10
+    },
+    {
+     "objetivo": "todos",
+     "min": 12,
+     "max": 16
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_lance_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "lancera_1",
+   "heroe": "lancera",
+   "ranura": 1,
+   "nombre": "Estocada",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_lancera_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "lancera_2",
+   "heroe": "lancera",
+   "ranura": 2,
+   "nombre": "Patada De Pértiga",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 13,
+     "max": 17
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_lancera_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "lancera_3",
+   "heroe": "lancera",
+   "ranura": 3,
+   "nombre": "Torbellino Oscuro",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 10,
+     "max": 13
+    },
+    {
+     "objetivo": "todos",
+     "min": 10,
+     "max": 13
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_lancera_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "artillero_1",
+   "heroe": "artillero",
+   "ranura": 1,
+   "nombre": "Ráfaga",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "objetivo": "uno",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "objetivo": "uno",
+     "min": 3,
+     "max": 5
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_artillero_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "artillero_2",
+   "heroe": "artillero",
+   "ranura": 2,
+   "nombre": "Fuego Cruzado",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "objetivo": "uno",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde · 40",
+   "icono": "sk_artillero_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "artillero_3",
+   "heroe": "artillero",
+   "ranura": 3,
+   "nombre": "Láser De Plasma",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 7,
+     "max": 9
+    },
+    {
+     "objetivo": "todos",
+     "min": 7,
+     "max": 9
+    },
+    {
+     "objetivo": "todos",
+     "min": 7,
+     "max": 9
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · 100",
+   "icono": "sk_artillero_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "sargento_1",
+   "heroe": "sargento",
+   "ranura": 1,
+   "nombre": "Escudo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 0,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "escudo",
+     "valor": null
+    }
+   ],
+   "descripcion": "escudo a todos · +25",
+   "icono": "sk_sargento_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "sargento_2",
+   "heroe": "sargento",
+   "ranura": 2,
+   "nombre": "Barrera",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [],
+   "descripcion": "−15% daño · 40",
+   "icono": "sk_sargento_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "sargento_3",
+   "heroe": "sargento",
+   "ranura": 3,
+   "nombre": "Piel De Piedra",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [],
+   "descripcion": "2 turnos · 100",
+   "icono": "sk_sargento_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "jack_1",
+   "heroe": "jack",
+   "ranura": 1,
+   "nombre": "Red",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [],
+   "descripcion": "provoca 50%",
+   "icono": "sk_jack_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "jack_2",
+   "heroe": "jack",
+   "ranura": 2,
+   "nombre": "Extracción",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 5,
+     "max": 7
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "jala y aturde · 40",
+   "icono": "sk_jack_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "jack_3",
+   "heroe": "jack",
+   "ranura": 3,
+   "nombre": "Suplex",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "objetivo": "uno",
+     "min": 14,
+     "max": 18
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "aturde 2 turnos · 100",
+   "icono": "sk_jack_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "influencer_1",
+   "heroe": "influencer",
+   "ranura": 1,
+   "nombre": "Flash",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_influencer_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "influencer_2",
+   "heroe": "influencer",
+   "ranura": 2,
+   "nombre": "Selfie",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [],
+   "descripcion": "+30% ataque · +20% crit · 40",
+   "icono": "sk_influencer_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "influencer_3",
+   "heroe": "influencer",
+   "ranura": 3,
+   "nombre": "Guerrero Binario",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 3,
+     "max": 4
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · mucho crit · 100",
+   "icono": "sk_influencer_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "max_1",
+   "heroe": "max",
+   "ranura": 1,
+   "nombre": "Puertazo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [
+    {
+     "id": "aturdir",
+     "turnos": 1,
+     "prob": 100
+    }
+   ],
+   "descripcion": "30% aturde · +25 energía",
+   "icono": "sk_max_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "max_2",
+   "heroe": "max",
+   "ranura": 2,
+   "nombre": "Embestida",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "efectos": [
+    {
+     "id": "escudo",
+     "valor": null
+    }
+   ],
+   "descripcion": "escudo x2 (70%) · 40",
+   "icono": "sk_max_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "max_3",
+   "heroe": "max",
+   "ranura": 3,
+   "nombre": "Muro De Puertas",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "escudo",
+     "valor": null
+    }
+   ],
+   "descripcion": "escudo a todos · 100",
+   "icono": "sk_max_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "eloise_1",
+   "heroe": "eloise",
+   "ranura": 1,
+   "nombre": "Sombrillazo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [],
+   "efectos": [],
+   "descripcion": "+25 energía",
+   "icono": "sk_eloise_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "eloise_2",
+   "heroe": "eloise",
+   "ranura": 2,
+   "nombre": "Giro Brillante",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [],
+   "descripcion": "50% contra x2 · 40",
+   "icono": "sk_eloise_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "eloise_3",
+   "heroe": "eloise",
+   "ranura": 3,
+   "nombre": "Hora Del Té",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [],
+   "descripcion": "área · contra x2 · 100",
+   "icono": "sk_eloise_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "nani_1",
+   "heroe": "nani",
+   "ranura": 1,
+   "nombre": "Abrazo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "objetivo": "uno",
+     "min": 12,
+     "max": 16
+    }
+   ],
+   "efectos": [
+    {
+     "id": "escudo",
+     "valor": null
+    }
+   ],
+   "descripcion": "+25 energía · 5% a escudo",
+   "icono": "sk_nani_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "nani_2",
+   "heroe": "nani",
+   "ranura": 2,
+   "nombre": "Galletas Y Leche",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "escudo",
+     "valor": null
+    }
+   ],
+   "descripcion": "escudo 30% a tanques · 40",
+   "icono": "sk_nani_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "nani_3",
+   "heroe": "nani",
+   "ranura": 3,
+   "nombre": "A Dormir",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [],
+   "descripcion": "−50% daño enemigo · 100",
+   "icono": "sk_nani_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "rocket_1",
+   "heroe": "rocket",
+   "ranura": 1,
+   "nombre": "Monedas",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 3,
+     "max": 4
+    },
+    {
+     "objetivo": "uno",
+     "min": 3,
+     "max": 4
+    },
+    {
+     "objetivo": "uno",
+     "min": 3,
+     "max": 5
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía · −10% res. mág.",
+   "icono": "sk_rocket_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "rocket_2",
+   "heroe": "rocket",
+   "ranura": 2,
+   "nombre": "Monstruo",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 10,
+     "max": 14
+    }
+   ],
+   "efectos": [],
+   "descripcion": "−10% res. mág. · 40",
+   "icono": "sk_rocket_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "rocket_3",
+   "heroe": "rocket",
+   "ranura": 3,
+   "nombre": "Perdiste",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    },
+    {
+     "objetivo": "uno",
+     "min": 16,
+     "max": 20
+    }
+   ],
+   "efectos": [],
+   "descripcion": "golpe fuerte · 100",
+   "icono": "sk_rocket_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "ginny_1",
+   "heroe": "ginny",
+   "ranura": 1,
+   "nombre": "Corazón",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 9,
+     "max": 12
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía · −10% res. mág.",
+   "icono": "sk_ginny_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "ginny_2",
+   "heroe": "ginny",
+   "ranura": 2,
+   "nombre": "Burbujas",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    },
+    {
+     "objetivo": "uno",
+     "min": 7,
+     "max": 9
+    },
+    {
+     "objetivo": "uno",
+     "min": 12,
+     "max": 15
+    }
+   ],
+   "efectos": [],
+   "descripcion": "golpe fuerte · 40 · recarga 3",
+   "icono": "sk_ginny_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "ginny_3",
+   "heroe": "ginny",
+   "ranura": 3,
+   "nombre": "Dragón",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 10,
+     "max": 12
+    },
+    {
+     "objetivo": "uno",
+     "min": 15,
+     "max": 18
+    },
+    {
+     "objetivo": "uno",
+     "min": 20,
+     "max": 24
+    }
+   ],
+   "efectos": [],
+   "descripcion": "el más fuerte · 100 · recarga 5",
+   "icono": "sk_ginny_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "monte_1",
+   "heroe": "monte",
+   "ranura": 1,
+   "nombre": "Sorbo Tóxico",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "efectos": [],
+   "descripcion": "veneno 2 turnos · +25 energía",
+   "icono": "sk_monte_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "monte_2",
+   "heroe": "monte",
+   "ranura": 2,
+   "nombre": "Esqueleto",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 5,
+     "max": 6
+    },
+    {
+     "objetivo": "uno",
+     "min": 5,
+     "max": 6
+    },
+    {
+     "objetivo": "uno",
+     "min": 7,
+     "max": 9
+    }
+   ],
+   "efectos": [],
+   "descripcion": "−10% res. mág. · 40",
+   "icono": "sk_monte_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "monte_3",
+   "heroe": "monte",
+   "ranura": 3,
+   "nombre": "Humo Rojo",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "objetivo": "todos",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "objetivo": "todos",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "objetivo": "todos",
+     "min": 5,
+     "max": 7
+    }
+   ],
+   "efectos": [],
+   "descripcion": "área · veneno · 100",
+   "icono": "sk_monte_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "ethan_1",
+   "heroe": "ethan",
+   "ranura": 1,
+   "nombre": "Burbuja Armónica",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "curar",
+     "valor": null
+    }
+   ],
+   "descripcion": "cura al aliado que toques · +25 energía",
+   "icono": "sk_ethan_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "ethan_2",
+   "heroe": "ethan",
+   "ranura": 2,
+   "nombre": "Canción De Cuna",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "curar",
+     "valor": null
+    }
+   ],
+   "descripcion": "cura a todos · 40",
+   "icono": "sk_ethan_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "ethan_3",
+   "heroe": "ethan",
+   "ranura": 3,
+   "nombre": "Eco",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 20,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "curar",
+     "valor": null
+    }
+   ],
+   "descripcion": "cura a todos · +20 energía · 100",
+   "icono": "sk_ethan_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "katy_1",
+   "heroe": "katy",
+   "ranura": 1,
+   "nombre": "Curita Vudú",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "curar",
+     "valor": null
+    }
+   ],
+   "descripcion": "cura al aliado que toques · +25 energía",
+   "icono": "sk_katy_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "katy_2",
+   "heroe": "katy",
+   "ranura": 2,
+   "nombre": "Corazón Fantasma",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "curar",
+     "valor": null
+    },
+    {
+     "id": "escudo",
+     "valor": null
+    }
+   ],
+   "descripcion": "cura y escudo a todos · 40",
+   "icono": "sk_katy_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "katy_3",
+   "heroe": "katy",
+   "ranura": 3,
+   "nombre": "Infusión",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "curar",
+     "valor": null
+    }
+   ],
+   "descripcion": "cura a todos · revive · 100",
+   "icono": "sk_katy_3.webp",
+   "verificado": false
+  }
+ ],
+ "efectos": [
+  {
+   "id": "aturdir",
+   "nombre": "Aturdido",
+   "tipo": "control",
+   "turnos": 1,
+   "descripcion": "Pierde su turno",
+   "estado": "activo"
+  },
+  {
+   "id": "provocar",
+   "nombre": "Provoca",
+   "tipo": "control",
+   "turnos": null,
+   "descripcion": "Los enemigos lo atacan a él",
+   "estado": "activo"
+  },
+  {
+   "id": "escudo",
+   "nombre": "Escudo",
+   "tipo": "defensa",
+   "turnos": null,
+   "descripcion": "Absorbe daño",
+   "estado": "activo"
+  },
+  {
+   "id": "barrera",
+   "nombre": "Barrera",
+   "tipo": "defensa",
+   "turnos": null,
+   "valor": -15,
+   "descripcion": "-15% daño recibido",
+   "estado": "activo"
+  },
+  {
+   "id": "piel_de_piedra",
+   "nombre": "Piel de piedra",
+   "tipo": "defensa",
+   "turnos": 2,
+   "valor": -70,
+   "descripcion": "-70% daño recibido (x0.3)",
+   "estado": "activo"
+  },
+  {
+   "id": "reduccion",
+   "nombre": "Reducción de daño",
+   "tipo": "defensa",
+   "valor": -50,
+   "descripcion": "-50% daño recibido (x0.5)",
+   "estado": "activo"
+  },
+  {
+   "id": "marca",
+   "nombre": "Marca",
+   "tipo": "debuff",
+   "valor": 10,
+   "descripcion": "+10% daño recibido por acumulación",
+   "estado": "activo"
+  },
+  {
+   "id": "ataque_up",
+   "nombre": "Ataque aumentado",
+   "tipo": "buff",
+   "descripcion": "Aumenta el daño causado",
+   "estado": "activo"
+  },
+  {
+   "id": "critico",
+   "nombre": "Crítico",
+   "tipo": "buff",
+   "valor": 150,
+   "descripcion": "Daño x1.5 con probabilidad",
+   "estado": "activo"
+  },
+  {
+   "id": "curar",
+   "nombre": "Curación",
+   "tipo": "curación",
+   "descripcion": "Recupera vida",
+   "estado": "activo"
+  },
+  {
+   "id": "revivir",
+   "nombre": "Revivir",
+   "tipo": "curación",
+   "descripcion": "Revive a un aliado caído",
+   "estado": "activo"
+  },
+  {
+   "id": "veneno",
+   "nombre": "Veneno",
+   "tipo": "daño continuo",
+   "turnos": 3,
+   "valor": null,
+   "descripcion": "Daño al inicio de cada turno",
+   "estado": "planeado",
+   "valor_pct_vida_max": 4,
+   "apila_max": 3,
+   "notas": "Propuesta: 4% vida máx por turno, apila hasta 3. Jefe: 2%"
+  },
+  {
+   "id": "quemadura",
+   "nombre": "Quemadura",
+   "tipo": "daño continuo",
+   "turnos": 2,
+   "valor": null,
+   "descripcion": "Daño al inicio de cada turno",
+   "estado": "planeado",
+   "valor_pct_vida_max": 6,
+   "apila_max": 1,
+   "notas": "Propuesta: más fuerte y corta; no apila"
+  },
+  {
+   "id": "sangrado",
+   "nombre": "Sangrado",
+   "tipo": "daño continuo",
+   "turnos": 3,
+   "valor": null,
+   "descripcion": "Daño al inicio de cada turno",
+   "estado": "planeado",
+   "valor_pct_vida_max": 3,
+   "apila_max": 2,
+   "notas": "Propuesta"
+  },
+  {
+   "id": "adelantar_turno",
+   "nombre": "Adelantar turno",
+   "tipo": "control de turnos",
+   "descripcion": "Mueve a un aliado adelante en la cola de turnos",
+   "estado": "planeado",
+   "valor_velocidad": 30,
+   "notas": "Propuesta: +30 velocidad ese turno"
+  },
+  {
+   "id": "retrasar_turno",
+   "nombre": "Retrasar turno",
+   "tipo": "control de turnos",
+   "descripcion": "Manda a un enemigo atrás en la cola",
+   "estado": "planeado",
+   "valor_velocidad": -30,
+   "turnos": 1,
+   "notas": "Propuesta"
+  },
+  {
+   "id": "turno_extra",
+   "nombre": "Turno extra",
+   "tipo": "control de turnos",
+   "descripcion": "Un aliado actúa otra vez",
+   "estado": "planeado",
+   "turnos": 1,
+   "notas": "Propuesta: no se encadena"
+  },
+  {
+   "id": "saltar_turno",
+   "nombre": "Saltar turno",
+   "tipo": "control de turnos",
+   "descripcion": "Un enemigo pierde su siguiente turno",
+   "estado": "planeado",
+   "turnos": 1,
+   "notas": "Propuesta: jefe inmune 1 de cada 2 veces"
+  },
+  {
+   "id": "robar_energia",
+   "nombre": "Robar energía",
+   "tipo": "control",
+   "descripcion": "Quita energía a un enemigo y se la da a un aliado",
+   "estado": "planeado",
+   "valor": 30,
+   "notas": "Propuesta: 30 de 100"
+  },
+  {
+   "id": "copiar_efecto",
+   "nombre": "Copiar efecto",
+   "tipo": "control",
+   "descripcion": "Transfiere un efecto de un objetivo a otro",
+   "estado": "planeado",
+   "notas": "Propuesta: copia 1 efecto"
+  },
+  {
+   "id": "velocidad_up",
+   "nombre": "Velocidad aumentada",
+   "tipo": "buff",
+   "turnos": 2,
+   "valor": 20,
+   "estado": "planeado",
+   "descripcion": "Propuesta"
+  },
+  {
+   "id": "velocidad_down",
+   "nombre": "Velocidad reducida",
+   "tipo": "debuff",
+   "turnos": 2,
+   "valor": -20,
+   "estado": "planeado",
+   "descripcion": "Propuesta"
+  }
+ ],
+ "enemigos": [
+  {
+   "id": "emg",
+   "nombre": "Mago Del Cubo",
+   "vida_base": 80,
+   "jefe": false,
+   "golpes_por_ataque": [
+    {
+     "min": 13,
+     "max": 17
+    }
+   ],
+   "efectos": [],
+   "notas": "",
+   "velocidad": 100
+  },
+  {
+   "id": "eso",
+   "nombre": "Soldado",
+   "vida_base": 90,
+   "jefe": false,
+   "golpes_por_ataque": [
+    {
+     "min": 5,
+     "max": 7
+    },
+    {
+     "min": 5,
+     "max": 7
+    },
+    {
+     "min": 5,
+     "max": 7
+    }
+   ],
+   "efectos": [],
+   "notas": "",
+   "velocidad": 95
+  },
+  {
+   "id": "esa",
+   "nombre": "Samurái",
+   "vida_base": 85,
+   "jefe": false,
+   "golpes_por_ataque": [
+    {
+     "min": 15,
+     "max": 19
+    }
+   ],
+   "efectos": [
+    {
+     "efecto": "sangrado",
+     "turnos": 3,
+     "prob": 30
+    }
+   ],
+   "notas": "Efectos propuestos, no existen aún en el juego",
+   "velocidad": 110
+  },
+  {
+   "id": "eba",
+   "nombre": "Batero",
+   "vida_base": 90,
+   "jefe": false,
+   "golpes_por_ataque": [
+    {
+     "min": 8,
+     "max": 11
+    },
+    {
+     "min": 10,
+     "max": 13
+    }
+   ],
+   "efectos": [],
+   "notas": "",
+   "velocidad": 90
+  },
+  {
+   "id": "emu",
+   "nombre": "Muñeca",
+   "vida_base": 75,
+   "jefe": false,
+   "golpes_por_ataque": [
+    {
+     "min": 14,
+     "max": 18
+    }
+   ],
+   "efectos": [],
+   "notas": "",
+   "velocidad": 105
+  },
+  {
+   "id": "ejf",
+   "nombre": "Dr. Jeringa",
+   "vida_base": 350,
+   "jefe": true,
+   "golpes_por_ataque": [
+    {
+     "min": 26,
+     "max": 32
+    }
+   ],
+   "efectos": [
+    {
+     "efecto": "veneno",
+     "turnos": 3,
+     "prob": 40
+    }
+   ],
+   "notas": "Efectos propuestos, no existen aún en el juego",
+   "velocidad": 100
+  }
+ ],
+ "escalado_etapas": [
+  {
+   "capitulo": 1,
+   "vida_base_mult": 0.8,
+   "vida_por_etapa": 0.04,
+   "dano_mult": 1.0,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 2,
+   "vida_base_mult": 1.5,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 1.5,
+   "jefe_etapa": 10
+  }
+ ],
+ "composicion_etapas": [
+  {
+   "capitulo": "todos",
+   "etapa": "1-9",
+   "regla": "3 enemigos normales al azar fijo por capítulo/etapa",
+   "enemigos_posibles": [
+    "emg",
+    "eso",
+    "esa",
+    "eba",
+    "emu"
+   ]
+  },
+  {
+   "capitulo": "todos",
+   "etapa": 10,
+   "regla": "Jefe",
+   "enemigos_posibles": [
+    "ejf"
+   ]
+  }
+ ],
+ "recompensas": [
+  {
+   "id": "primer_despeje",
+   "oro": 300,
+   "gemas": 0
+  },
+  {
+   "id": "primer_despeje_jefe",
+   "oro": 300,
+   "gemas": 60
+  },
+  {
+   "id": "repetir_etapa",
+   "oro": 60,
+   "gemas": 0
+  },
+  {
+   "id": "estrella",
+   "gemas": 5,
+   "notas": "Por cada objetivo de estrella logrado una vez"
+  }
+ ],
+ "equipo_ranuras": [
+  {
+   "id": "arma",
+   "nombre": "Arma",
+   "cantidad": 2,
+   "stats_posibles": [
+    "ataque",
+    "dano_critico",
+    "prob_critico"
+   ]
+  },
+  {
+   "id": "armadura",
+   "nombre": "Pecho",
+   "cantidad": 1,
+   "stats_posibles": [
+    "res_fisica",
+    "vida",
+    "res_efectos"
+   ],
+   "notas": "Pecho: físico/vida/efectos"
+  },
+  {
+   "id": "botas",
+   "nombre": "Botas",
+   "cantidad": 1,
+   "stats_posibles": [
+    "velocidad",
+    "ataque",
+    "prob_critico"
+   ],
+   "notas": "Ranura nueva; faltan íconos"
+  },
+  {
+   "id": "collar",
+   "nombre": "Amuleto/Collar",
+   "cantidad": 2,
+   "stats_posibles": [
+    "dano_critico",
+    "ataque",
+    "velocidad",
+    "res_magica"
+   ]
+  },
+  {
+   "id": "anillo",
+   "nombre": "Anillo",
+   "cantidad": 2,
+   "stats_posibles": [
+    "vida",
+    "res_fisica",
+    "res_magica"
+   ],
+   "notas": "Propuesta"
+  }
+ ],
+ "equipo_niveles": [
+  {
+   "id": 1,
+   "nombre": "Común",
+   "color": "#9a9a9a",
+   "mult_stats": null
+  },
+  {
+   "id": 2,
+   "nombre": "Raro",
+   "color": "#3f9bff",
+   "mult_stats": null
+  },
+  {
+   "id": 3,
+   "nombre": "Épico",
+   "color": "#a65be0",
+   "mult_stats": null
+  },
+  {
+   "id": 4,
+   "nombre": "Legendario",
+   "color": "#ffd24a",
+   "mult_stats": null
+  }
+ ],
+ "equipo": [],
+ "gacha": [
+  {
+   "id": "permanente",
+   "nombre": "Invocación permanente",
+   "boleto": "normal",
+   "costo_x1": 1200,
+   "costo_x10": 12000,
+   "rareza_heroes": [
+    "SR"
+   ],
+   "tasas": {
+    "SR": 15,
+    "SSR": 0,
+    "UR": 0
+   },
+   "heroes_destacados": [
+    "caballero",
+    "monte",
+    "guerrera"
+   ],
+   "consolacion": [
+    {
+     "premio": "fragmentos normales",
+     "cantidad": 5,
+     "prob_pct": 50
+    },
+    {
+     "premio": "fragmentos élite",
+     "cantidad": 10,
+     "prob_pct": 50
+    }
+   ],
+   "notas": "Saca héroes SR. El resto da fragmentos"
+  },
+  {
+   "id": "especial",
+   "nombre": "Invocación especial",
+   "boleto": "especial",
+   "costo_x1": 1200,
+   "costo_x10": 12000,
+   "rareza_heroes": [
+    "SSR",
+    "UR"
+   ],
+   "tasas": {
+    "SR": 0,
+    "SSR": 10,
+    "UR": 3
+   },
+   "heroes_destacados": [
+    "katy",
+    "ginny",
+    "eloise"
+   ],
+   "garantia": "Primer x10 de la cuenta = 1 SSR garantizado (solo una vez, oferta de novato)",
+   "consolacion": [
+    {
+     "premio": "fragmentos normales",
+     "cantidad": 5,
+     "prob_pct": 50
+    },
+    {
+     "premio": "fragmentos élite",
+     "cantidad": 10,
+     "prob_pct": 50
+    }
+   ],
+   "notas": "Saca SSR y UR. Usa boleto especial"
+  }
+ ],
+ "copias": [
+  {
+   "copias": 1,
+   "color": "gris",
+   "bono_stats_pct": 0,
+   "notas": "Bono % a vida y ataque. Propuesta"
+  },
+  {
+   "copias": 2,
+   "color": "verde",
+   "bono_stats_pct": 4,
+   "notas": "Bono % a vida y ataque. Propuesta"
+  },
+  {
+   "copias": 3,
+   "color": "azul",
+   "bono_stats_pct": 8,
+   "notas": "Bono % a vida y ataque. Propuesta"
+  },
+  {
+   "copias": 4,
+   "color": "morado",
+   "bono_stats_pct": 13,
+   "notas": "Bono % a vida y ataque. Propuesta"
+  },
+  {
+   "copias": 5,
+   "color": "arcoíris",
+   "bono_stats_pct": 19,
+   "notas": "Bono % a vida y ataque. Propuesta"
+  },
+  {
+   "copias": 6,
+   "color": "dorado",
+   "bono_stats_pct": 26,
+   "notas": "Bono % a vida y ataque. Propuesta"
+  }
+ ],
+ "estadisticas": [
+  {
+   "id": "vida",
+   "nombre": "Vida",
+   "tipo": "plano",
+   "notas": ""
+  },
+  {
+   "id": "ataque",
+   "nombre": "Ataque",
+   "tipo": "porcentaje",
+   "notas": "% extra al daño"
+  },
+  {
+   "id": "velocidad",
+   "nombre": "Velocidad",
+   "tipo": "plano",
+   "notas": "Más alta = turno antes"
+  },
+  {
+   "id": "prob_critico",
+   "nombre": "Prob. crítico",
+   "tipo": "porcentaje",
+   "notas": ""
+  },
+  {
+   "id": "dano_critico",
+   "nombre": "Daño crítico",
+   "tipo": "porcentaje",
+   "notas": "Se suma al x1.5 base"
+  },
+  {
+   "id": "res_fisica",
+   "nombre": "Resistencia física",
+   "tipo": "porcentaje",
+   "notas": "% menos daño físico"
+  },
+  {
+   "id": "res_magica",
+   "nombre": "Resistencia mágica",
+   "tipo": "porcentaje",
+   "notas": "% menos daño mágico"
+  },
+  {
+   "id": "res_efectos",
+   "nombre": "Resistencia a efectos",
+   "tipo": "porcentaje",
+   "notas": "% de evitar/acortar efectos"
+  }
+ ],
+ "equipo_stats": [
+  {
+   "stat": "ataque",
+   "tipo": "%",
+   "comun": 5,
+   "raro": 8,
+   "epico": 12,
+   "legendario": 18,
+   "notas": "Propuesta"
+  },
+  {
+   "stat": "dano_critico",
+   "tipo": "%",
+   "comun": 10,
+   "raro": 18,
+   "epico": 28,
+   "legendario": 40,
+   "notas": "Propuesta"
+  },
+  {
+   "stat": "prob_critico",
+   "tipo": "%",
+   "comun": 3,
+   "raro": 5,
+   "epico": 8,
+   "legendario": 12,
+   "notas": "Propuesta"
+  },
+  {
+   "stat": "vida",
+   "tipo": "plano",
+   "comun": 10,
+   "raro": 18,
+   "epico": 28,
+   "legendario": 40,
+   "notas": "Propuesta (héroes tienen 100-190)"
+  },
+  {
+   "stat": "velocidad",
+   "tipo": "plano",
+   "comun": 3,
+   "raro": 5,
+   "epico": 8,
+   "legendario": 12,
+   "notas": "Propuesta (base 100)"
+  },
+  {
+   "stat": "res_fisica",
+   "tipo": "%",
+   "comun": 3,
+   "raro": 5,
+   "epico": 8,
+   "legendario": 12,
+   "notas": "Propuesta; reemplaza a defensa"
+  },
+  {
+   "stat": "res_magica",
+   "tipo": "%",
+   "comun": 3,
+   "raro": 5,
+   "epico": 8,
+   "legendario": 12,
+   "notas": "Propuesta"
+  },
+  {
+   "stat": "res_efectos",
+   "tipo": "%",
+   "comun": 4,
+   "raro": 7,
+   "epico": 11,
+   "legendario": 16,
+   "notas": "Propuesta"
+  }
+ ],
+ "reglas_efectos": {
+  "jefe": {
+   "control_dura_mitad": true,
+   "veneno_pct_vida_max": 2,
+   "nota": "Propuesta"
+  },
+  "orden": "Daño continuo se aplica al inicio del turno del afectado"
+ },
+ "boletos": [
+  {
+   "id": "normal",
+   "nombre": "Boleto normal",
+   "usa_en": "banner general",
+   "valor_gemas": 1200,
+   "notas": "Se da al completar un capítulo (10-20)"
+  },
+  {
+   "id": "especial",
+   "nombre": "Boleto especial",
+   "usa_en": "banner de héroes SR y UR",
+   "valor_gemas": 1200,
+   "notas": "Se da al completar un capítulo (cantidad por definir)"
+  }
+ ],
+ "fuentes_gemas": [
+  {
+   "id": "primera_semana",
+   "limite": "hasta cierto nivel",
+   "valor": null
+  },
+  {
+   "id": "recompensas",
+   "limite": "hasta cierto nivel",
+   "valor": null
+  },
+  {
+   "id": "carnaval",
+   "limite": "hasta cierto nivel",
+   "valor": null
+  },
+  {
+   "id": "correo",
+   "limite": "hasta cierto nivel",
+   "valor": null
+  },
+  {
+   "id": "logros_etapa",
+   "limite": "hasta cierto nivel",
+   "valor": null
+  }
+ ],
+ "fuentes_boletos": [
+  {
+   "id": "capitulo_completo",
+   "boleto": "normal",
+   "cantidad_min": 10,
+   "cantidad_max": 20
+  },
+  {
+   "id": "capitulo_completo",
+   "boleto": "especial",
+   "cantidad_min": 2,
+   "cantidad_max": 3,
+   "notas": "Propuesta"
+  },
+  {
+   "id": "carnaval",
+   "boleto": "ambos",
+   "notas": "Recompensas por completar capítulo, matar X monstruos, etc."
+  }
+ ],
+ "gacha_premios_consolacion": [
+  {
+   "id": "frag_normal",
+   "cantidad": 5,
+   "prob_pct": 50
+  },
+  {
+   "id": "frag_sr",
+   "cantidad": 10,
+   "prob_pct": 50
+  }
+ ],
+ "carnaval_tipos": [
+  {
+   "id": "completar_capitulo"
+  },
+  {
+   "id": "matar_monstruos",
+   "cantidad": null
+  },
+  {
+   "id": "matar_jefes",
+   "cantidad": null
+  }
+ ],
+ "progreso": {
+  "iniciales": [
+   "paladin",
+   "guerrera",
+   "jack"
+  ],
+  "recompensas": [
+   {
+    "heroe": "ginny",
+    "origen": "Recompensa de 7 días, día 7"
+   },
+   {
+    "heroe": "eloise",
+    "origen": "Recompensa final del carnaval"
+   }
+  ],
+  "modo_prueba": "Mientras se prueba, todos los héroes están desbloqueados (MODO_PRUEBA en el juego)",
+  "pestana_heroes": "Subpestaña Colección: héroes no obtenidos en sombra, sin stats ni idle. Equipo: solo los obtenidos."
+ },
+ "fragmentos": [
+  {
+   "id": "por_heroe",
+   "nombre": "Fragmentos de héroe",
+   "costo_copia_SR": 60,
+   "costo_copia_SSR": 80,
+   "costo_copia_UR": 80,
+   "icono": "ui/fr_<heroe>.webp",
+   "notas": "Cada héroe tiene sus propios fragmentos (rompecabezas con su cara). Premio de consolación del gacha: 5 de un héroe SR o 10 de un héroe SSR, 50/50"
+  }
+ ],
+ "niveles": {
+  "max": 60,
+  "bono_stats_por_nivel_pct": 2.5,
+  "costo_oro_base": 40,
+  "costo_oro_crece_pct": 35,
+  "xp_por_victoria": 10,
+  "xp_necesaria_mult_oro": 2,
+  "notas": "Propuesta. Costo nivel n->n+1 = base*(1+(n-1)*crece/100). Oro es la vía rápida; las batallas dan XP lenta."
+ }
+}

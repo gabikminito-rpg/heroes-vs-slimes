@@ -58,7 +58,7 @@ box-shadow:0 -3px var(--o),0 3px var(--o),-3px 0 var(--o),3px 0 var(--o),0 7px v
 /* horizontal */
 #rot{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#10101a;color:#ffd24a;font:900 22px/1.2 PX,ui-monospace,monospace;text-align:center}
 #rot i{font-size:64px;font-style:normal;display:block;animation:rt 1.6s ease-in-out infinite}@keyframes rt{0%,30%{transform:rotate(0)}70%,100%{transform:rotate(-90deg)}}
-@media(pointer:coarse) and (orientation:portrait){#rot{display:flex}}
+
 @media(orientation:landscape) and (max-height:560px){
 #btns{padding:0 10px 6px;gap:8px}#btns .pb{margin-top:0!important;padding:6px 6px 6px 56px!important;min-height:44px;max-width:240px;flex-direction:row!important;align-items:center;text-align:left}
 #btns .pb .sk{position:absolute!important;top:50%!important;left:6px!important;transform:translateY(-50%)!important;width:40px!important;height:40px!important}
@@ -1208,5 +1208,4 @@ addEventListener('resize',fit);
 const LOADS=[...Object.keys(SHEET).map(f=>new Promise(r=>{const i=SHEET[f];const d=()=>(i.decode?i.decode().catch(()=>{}):Promise.resolve()).then(r);i.complete&&i.naturalWidth?d():(i.onload=d,i.onerror=r)})),loadDB(),new Promise(r=>setTimeout(r,700))];
 {let n=0;const T=LOADS.length;LOADS.forEach(p=>p.then(()=>{n++;const b=document.getElementById('ldI');if(b)b.style.width=Math.round(n/T*100)+'%'}))}
 Promise.all(LOADS).then(()=>{const l=document.getElementById('ld');if(l){l.style.opacity=0;setTimeout(()=>l.remove(),380)}loadTeam();fit();requestAnimationFrame(loop);CAMP.ch=chOpen(2)?2:1;CAMP.st=Math.min(10,clrOf(CAMP.ch)+1);showMenu()});
-addEventListener('pointerdown',function f(){removeEventListener('pointerdown',f);try{const de=document.documentElement;(de.requestFullscreen?de.requestFullscreen():Promise.resolve()).then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}},{once:true});
 </script></body></html>

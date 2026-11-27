@@ -170,6 +170,7 @@ box-shadow:0 -3px var(--o),0 3px var(--o),-3px 0 var(--o),3px 0 var(--o),0 7px v
 .avQ i img,.avSide i img{height:30px;width:auto;display:block;margin:0 auto 2px}
 .chest .ic img{height:50px}.gem .ic img{height:36px;margin:0 auto}
 .hc i{position:relative}.hc i::after{content:'';position:absolute;inset:-9px;background:url(ui/i_f_r.webp) center/100% 100% no-repeat;pointer-events:none}
+#avBg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}#pAv>*:not(#avBg){z-index:1}#avHero{margin-top:70px}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="ld" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font:900 20px PX,ui-monospace,monospace;letter-spacing:3px;text-shadow:2px 2px #232346;z-index:9">CARGANDO…</div>
@@ -568,7 +569,7 @@ const teamH=()=>ROSTER.filter(h=>POS.has(h));
 function sprDiv(h,sc,box){const f=h.frames[0],c=f.sw,d=document.createElement('div');const sz=c*sc;
  d.style.cssText=`width:${sz}px;height:${sz}px;background:url(${f.img.src}) 0 0/${c*10*sc}px ${c*3*sc}px no-repeat;image-rendering:pixelated`+(box?';'+box:'');
  let n=0;MTM=MTM||[];MTM.push(setInterval(()=>{n=(n+1)%30;d.style.backgroundPosition=`-${(n%10)*sz}px -${Math.floor(n/10)*sz}px`},100));return d}
-const avImg=h=>{const i=CARDINFO[h.p];return i?`style="background:#8ec5f0 url(${i.sheet}) ${i.bp} /${i.bs} no-repeat"`:''};
+const PTR=new Set(['nani','rocket','sargento','paladin','max','monte','lancera','lance','katy','jack','influencer','guerrera','ethan','ginny','caballero','eloise','artillero']);const avImg=h=>{const k=spKey(h);if(PTR.has(k))return `style="background:#8ec5f0 url(ptr_${k}.webp) center/cover no-repeat;image-rendering:auto"`;const i=CARDINFO[h.p];return i?`style="background:#8ec5f0 url(${i.sheet}) ${i.bp} /${i.bs} no-repeat"`:''};
 function mModal(title,body){const m=$('mModal');m.innerHTML=`<div class="box"><h3>${title}</h3>${body}</div><button class="x" id="mx">✕</button>`;m.style.display='flex';$('mx').onclick=()=>m.style.display='none'}
 
 /* ---------- Misiones ---------- */
@@ -686,7 +687,7 @@ function renderMenu(){enRegen();(MTM||[]).forEach(clearInterval);MTM=[];const T=
  document.querySelectorAll('.mt').forEach(b=>b.onclick=()=>{MTAB=b.dataset.t;renderMenu()});
  const B=$('mBody');B.innerHTML='<div id="mModal"></div>';const pg=document.createElement('div');pg.className='pg';B.insertBefore(pg,B.firstChild);
  if(MTAB==='av'){pg.id='pAv';const c=Math.min(10,clrOf(CAMP.ch));
-  pg.innerHTML=`<div class="avT">CAPÍTULO ${CAMP.ch}<small>Etapas superadas: ${c}/10</small></div><div id="avHero"></div><div class="avQ"><div><i>${IC('gift','')}</i>Recompensas<br>PRONTO</div><div><i>${IC('compass','')}</i>Patrulla<br>PRONTO</div><div><i>${IC('st1','')}</i>Desafío<br>PRONTO</div></div><button class="pb or" id="avGo">INICIO</button><div class="avSide"><button id="avMis"><i>${IC('clip','')}</i>MISIONES${misN()?'<span class="dot">'+misN()+'</span>':''}</button><button id="avCar"><i>${IC('chest','')}</i>CARNAVAL${carN()?'<span class="dot">'+carN()+'</span>':''}</button></div>`;
+  pg.innerHTML=`<video id="avBg" src="fondo_base.mp4" autoplay muted loop playsinline preload="auto"></video><div class="avT">CAPÍTULO ${CAMP.ch}<small>Etapas superadas: ${c}/10</small></div><div id="avHero"></div><div class="avQ"><div><i>${IC('gift','')}</i>Recompensas<br>PRONTO</div><div><i>${IC('compass','')}</i>Patrulla<br>PRONTO</div><div><i>${IC('st1','')}</i>Desafío<br>PRONTO</div></div><button class="pb or" id="avGo">INICIO</button><div class="avSide"><button id="avMis"><i>${IC('clip','')}</i>MISIONES${misN()?'<span class="dot">'+misN()+'</span>':''}</button><button id="avCar"><i>${IC('chest','')}</i>CARNAVAL${carN()?'<span class="dot">'+carN()+'</span>':''}</button></div>`;
   $('avCar').onclick=()=>{CVD=Math.min(carDay(),7);openCar()};
   $('avMis').onclick=()=>openMis('lg');
   if(lead)$('avHero').appendChild(sprDiv(lead,.8));$('avGo').onclick=()=>{$('menu').style.display='none';showMap()}}

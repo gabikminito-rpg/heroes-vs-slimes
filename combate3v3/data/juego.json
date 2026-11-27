@@ -50,11 +50,11 @@
    "id": "UR",
    "nombre": "UR",
    "orden": 4,
-   "mult_vida": null,
-   "mult_dano": null,
-   "marco": null,
-   "color": null,
-   "notas": "Planeada. Héroes controladores de turnos y efectos.",
+   "mult_vida": 1.5,
+   "mult_dano": 1.5,
+   "marco": "ui/i_f_gold.webp",
+   "color": "#e0402e",
+   "notas": "+50% vida y daño sobre SR (confirmado). Héroes controladores de turnos y efectos.",
    "tasa_gacha": 3
   }
  ],
@@ -337,6 +337,48 @@
    "etiquetas": [],
    "notas": "",
    "velocidad": 100
+  },
+  {
+   "id": "atena",
+   "nombre": "Atena",
+   "sprite": "a20",
+   "rareza": "UR",
+   "rol": "Distancia · flechas",
+   "vida_base": 105,
+   "velocidad": 110,
+   "activo": true,
+   "etiquetas": [
+    "controladora"
+   ],
+   "notas": "Arquera: deja flechas en cola que se disparan en su siguiente turno."
+  },
+  {
+   "id": "gabriel",
+   "nombre": "Gabriel",
+   "sprite": "a21",
+   "rareza": "UR",
+   "rol": "Mago · relojero",
+   "vida_base": 100,
+   "velocidad": 115,
+   "activo": true,
+   "etiquetas": [
+    "controlador"
+   ],
+   "notas": "Mago relojero: controla el orden de turnos y la velocidad."
+  },
+  {
+   "id": "hilde",
+   "nombre": "Hilde",
+   "sprite": "a22",
+   "rareza": "UR",
+   "rol": "Soporte · peluche",
+   "vida_base": 125,
+   "velocidad": 105,
+   "activo": true,
+   "etiquetas": [
+    "controladora"
+   ],
+   "notas": "Niña con peluche: soporte que controla estados (sueño, provocar, miedo)."
   }
  ],
  "habilidades": [
@@ -1827,6 +1869,225 @@
    "descripcion": "cura a todos · revive · 100",
    "icono": "sk_katy_3.webp",
    "verificado": false
+  },
+  {
+   "id": "atena_1",
+   "heroe": "atena",
+   "ranura": 1,
+   "nombre": "Flechas en espera",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "flecha_pendiente"
+    }
+   ],
+   "descripcion": "+25 energía · deja 2 flechas en cola (disparan en su próximo turno, hasta 6)",
+   "icono": "sk_atena_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "atena_2",
+   "heroe": "atena",
+   "ranura": 2,
+   "nombre": "Trampa de flechas",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "trampa_flechas"
+    },
+    {
+     "id": "retrasar_turno"
+    }
+   ],
+   "descripcion": "40 · 3 flechas en un enemigo; si actúa antes de su próximo turno se disparan y le retrasan el turno",
+   "icono": "sk_atena_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "atena_3",
+   "heroe": "atena",
+   "ranura": 3,
+   "nombre": "Tormenta programada",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "flecha_pendiente"
+    },
+    {
+     "id": "turno_extra"
+    }
+   ],
+   "descripcion": "100 · 4 flechas nuevas + dispara todas las pendientes con +50% daño · turno extra",
+   "icono": "sk_atena_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "gabriel_1",
+   "heroe": "gabriel",
+   "ranura": 1,
+   "nombre": "Tic-Tac",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 8,
+     "max": 11
+    }
+   ],
+   "efectos": [
+    {
+     "id": "adelantar_turno"
+    }
+   ],
+   "descripcion": "+25 energía · daño mágico y adelanta el turno del aliado más lento",
+   "icono": "sk_gabriel_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "gabriel_2",
+   "heroe": "gabriel",
+   "ranura": 2,
+   "nombre": "Pausa",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 7,
+     "max": 9
+    }
+   ],
+   "efectos": [
+    {
+     "id": "retrasar_turno"
+    },
+    {
+     "id": "velocidad_down"
+    }
+   ],
+   "descripcion": "40 · retrasa al enemigo más rápido y le baja la velocidad 2 turnos",
+   "icono": "sk_gabriel_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "gabriel_3",
+   "heroe": "gabriel",
+   "ranura": 3,
+   "nombre": "Tiempo detenido",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "efectos": [
+    {
+     "id": "saltar_turno"
+    },
+    {
+     "id": "velocidad_up"
+    },
+    {
+     "id": "turno_extra"
+    }
+   ],
+   "descripcion": "100 · enemigos normales pierden su siguiente turno; equipo +velocidad; turno extra para él (jefes: solo retraso)",
+   "icono": "sk_gabriel_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "hilde_1",
+   "heroe": "hilde",
+   "ranura": 1,
+   "nombre": "Abrazo",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "curar"
+    },
+    {
+     "id": "escudo"
+    }
+   ],
+   "descripcion": "+25 energía · cura al aliado más herido y le da un escudo pequeño",
+   "icono": "sk_hilde_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "hilde_2",
+   "heroe": "hilde",
+   "ranura": 2,
+   "nombre": "Peluche guardián",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "provocar"
+    },
+    {
+     "id": "contraataque"
+    },
+    {
+     "id": "sueno"
+    }
+   ],
+   "descripcion": "40 · el peluche provoca, absorbe y contraataca; duerme 1 turno a un enemigo",
+   "icono": "sk_hilde_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "hilde_3",
+   "heroe": "hilde",
+   "ranura": 3,
+   "nombre": "Pesadilla",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "reduccion"
+    },
+    {
+     "id": "aturdir"
+    },
+    {
+     "id": "curar"
+    }
+   ],
+   "descripcion": "100 · enemigos hacen -40% de daño 2 turnos con prob. de aturdirse; curación en el tiempo al equipo",
+   "icono": "sk_hilde_3.webp",
+   "verificado": false
   }
  ],
  "efectos": [
@@ -2024,6 +2285,37 @@
    "valor": -20,
    "estado": "planeado",
    "descripcion": "Propuesta"
+  },
+  {
+   "id": "flecha_pendiente",
+   "nombre": "Flecha en cola",
+   "tipo": "control",
+   "turnos": 1,
+   "descripcion": "Se dispara al inicio del siguiente turno de Hilde. Máx 6 en cola.",
+   "estado": "planeado"
+  },
+  {
+   "id": "trampa_flechas",
+   "nombre": "Trampa de flechas",
+   "tipo": "control",
+   "turnos": 1,
+   "descripcion": "Se dispara si el enemigo actúa antes del siguiente turno de Hilde",
+   "estado": "planeado"
+  },
+  {
+   "id": "sueno",
+   "nombre": "Sueño",
+   "tipo": "control",
+   "turnos": 1,
+   "descripcion": "Pierde su turno; no funciona en jefes",
+   "estado": "planeado"
+  },
+  {
+   "id": "contraataque",
+   "nombre": "Contraataque",
+   "tipo": "defensa",
+   "descripcion": "Devuelve golpe al ser atacado",
+   "estado": "planeado"
   }
  ],
  "enemigos": [

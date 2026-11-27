@@ -20,7 +20,9 @@
   "velocidad_base_heroe": 100,
   "limite_critico_prob": 100,
   "copias_max": 6,
-  "nivel_max": 60
+  "nivel_max": 60,
+  "ataque_base": 100,
+  "notas_objetivo_nivel60": "Todo al máximo: vida 2000-3000, ataque 800-1000, crítico 60-70%, daño crítico 150-200%, velocidad máx 260, res. efectos/física/mágica 30-50%."
  },
  "rarezas": [
   {
@@ -244,7 +246,7 @@
    "id": "max",
    "nombre": "Max",
    "sprite": "a12",
-   "rareza": "SR",
+   "rareza": "SSR",
    "rol": "Tanque · puertas y escudos",
    "vida_base": 175,
    "activo": true,
@@ -304,7 +306,7 @@
    "id": "monte",
    "nombre": "Monte",
    "sprite": "a17",
-   "rareza": "SR",
+   "rareza": "SSR",
    "rol": "Mago · veneno y humo",
    "vida_base": 120,
    "activo": true,
@@ -2154,6 +2156,132 @@
    "vida_por_etapa": 0.05,
    "dano_mult": 1.5,
    "jefe_etapa": 10
+  },
+  {
+   "capitulo": 3,
+   "vida_base_mult": 1.66,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 1.71,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 4,
+   "vida_base_mult": 1.83,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 1.95,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 5,
+   "vida_base_mult": 2.02,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 2.22,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 6,
+   "vida_base_mult": 2.24,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 2.53,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 7,
+   "vida_base_mult": 2.47,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 2.89,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 8,
+   "vida_base_mult": 2.73,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 3.29,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 9,
+   "vida_base_mult": 3.02,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 3.75,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 10,
+   "vida_base_mult": 3.33,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 4.28,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 11,
+   "vida_base_mult": 3.68,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 4.88,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 12,
+   "vida_base_mult": 4.07,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 5.56,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 13,
+   "vida_base_mult": 4.5,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 6.34,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 14,
+   "vida_base_mult": 4.97,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 7.23,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 15,
+   "vida_base_mult": 5.49,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 8.24,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 16,
+   "vida_base_mult": 6.07,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 9.39,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 17,
+   "vida_base_mult": 6.71,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 10.71,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 18,
+   "vida_base_mult": 7.41,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 12.21,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 19,
+   "vida_base_mult": 8.19,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 13.91,
+   "jefe_etapa": 10
+  },
+  {
+   "capitulo": 20,
+   "vida_base_mult": 9.05,
+   "vida_por_etapa": 0.05,
+   "dano_mult": 15.86,
+   "jefe_etapa": 10
   }
  ],
  "composicion_etapas": [
@@ -2204,56 +2332,230 @@
   {
    "id": "arma",
    "nombre": "Arma",
-   "cantidad": 2,
-   "stats_posibles": [
-    "ataque",
-    "dano_critico",
-    "prob_critico"
+   "cantidad": 1,
+   "stats": [
+    {
+     "stat": "ataque_plano",
+     "max": 150,
+     "comun_min": 22,
+     "comun_max": 68,
+     "raro_min": 45,
+     "raro_max": 90,
+     "epico_min": 75,
+     "epico_max": 120,
+     "legendario_min": 105,
+     "legendario_max": 150
+    },
+    {
+     "stat": "dano_critico",
+     "max": 75,
+     "comun_min": 11,
+     "comun_max": 34,
+     "raro_min": 22,
+     "raro_max": 45,
+     "epico_min": 38,
+     "epico_max": 60,
+     "legendario_min": 52,
+     "legendario_max": 75
+    },
+    {
+     "stat": "prob_critico",
+     "max": 25,
+     "comun_min": 4,
+     "comun_max": 11,
+     "raro_min": 8,
+     "raro_max": 15,
+     "epico_min": 12,
+     "epico_max": 20,
+     "legendario_min": 18,
+     "legendario_max": 25
+    }
+   ]
+  },
+  {
+   "id": "anillo",
+   "nombre": "Anillo",
+   "cantidad": 1,
+   "stats": [
+    {
+     "stat": "prob_critico",
+     "max": 25,
+     "comun_min": 4,
+     "comun_max": 11,
+     "raro_min": 8,
+     "raro_max": 15,
+     "epico_min": 12,
+     "epico_max": 20,
+     "legendario_min": 18,
+     "legendario_max": 25
+    },
+    {
+     "stat": "dano_critico",
+     "max": 75,
+     "comun_min": 11,
+     "comun_max": 34,
+     "raro_min": 22,
+     "raro_max": 45,
+     "epico_min": 38,
+     "epico_max": 60,
+     "legendario_min": 52,
+     "legendario_max": 75
+    },
+    {
+     "stat": "res_efectos",
+     "max": 25,
+     "comun_min": 4,
+     "comun_max": 11,
+     "raro_min": 8,
+     "raro_max": 15,
+     "epico_min": 12,
+     "epico_max": 20,
+     "legendario_min": 18,
+     "legendario_max": 25
+    }
    ]
   },
   {
    "id": "armadura",
    "nombre": "Pecho",
    "cantidad": 1,
-   "stats_posibles": [
-    "res_fisica",
-    "vida",
-    "res_efectos"
+   "stats": [
+    {
+     "stat": "vida_pct",
+     "max": 60,
+     "comun_min": 9,
+     "comun_max": 27,
+     "raro_min": 18,
+     "raro_max": 36,
+     "epico_min": 30,
+     "epico_max": 48,
+     "legendario_min": 42,
+     "legendario_max": 60
+    },
+    {
+     "stat": "vida",
+     "max": 700,
+     "comun_min": 105,
+     "comun_max": 315,
+     "raro_min": 210,
+     "raro_max": 420,
+     "epico_min": 350,
+     "epico_max": 560,
+     "legendario_min": 490,
+     "legendario_max": 700
+    },
+    {
+     "stat": "res_fisica",
+     "max": 50,
+     "comun_min": 8,
+     "comun_max": 22,
+     "raro_min": 15,
+     "raro_max": 30,
+     "epico_min": 25,
+     "epico_max": 40,
+     "legendario_min": 35,
+     "legendario_max": 50
+    },
+    {
+     "stat": "res_magica",
+     "max": 50,
+     "comun_min": 8,
+     "comun_max": 22,
+     "raro_min": 15,
+     "raro_max": 30,
+     "epico_min": 25,
+     "epico_max": 40,
+     "legendario_min": 35,
+     "legendario_max": 50
+    }
    ],
-   "notas": "Pecho: físico/vida/efectos"
+   "notas": "Defensa % = resistencia física"
   },
   {
    "id": "botas",
    "nombre": "Botas",
    "cantidad": 1,
-   "stats_posibles": [
-    "velocidad",
-    "ataque",
-    "prob_critico"
-   ],
-   "notas": "Ranura nueva; faltan íconos"
-  },
-  {
-   "id": "collar",
-   "nombre": "Amuleto/Collar",
-   "cantidad": 2,
-   "stats_posibles": [
-    "dano_critico",
-    "ataque",
-    "velocidad",
-    "res_magica"
+   "stats": [
+    {
+     "stat": "velocidad",
+     "max": 80,
+     "comun_min": 12,
+     "comun_max": 36,
+     "raro_min": 24,
+     "raro_max": 48,
+     "epico_min": 40,
+     "epico_max": 64,
+     "legendario_min": 56,
+     "legendario_max": 80
+    },
+    {
+     "stat": "vel_pct",
+     "max": 40,
+     "comun_min": 6,
+     "comun_max": 18,
+     "raro_min": 12,
+     "raro_max": 24,
+     "epico_min": 20,
+     "epico_max": 32,
+     "legendario_min": 28,
+     "legendario_max": 40
+    },
+    {
+     "stat": "res_efectos",
+     "max": 25,
+     "comun_min": 4,
+     "comun_max": 11,
+     "raro_min": 8,
+     "raro_max": 15,
+     "epico_min": 12,
+     "epico_max": 20,
+     "legendario_min": 18,
+     "legendario_max": 25
+    }
    ]
   },
   {
-   "id": "anillo",
-   "nombre": "Anillo",
-   "cantidad": 2,
-   "stats_posibles": [
-    "vida",
-    "res_fisica",
-    "res_magica"
-   ],
-   "notas": "Propuesta"
+   "id": "collar",
+   "nombre": "Amuleto",
+   "cantidad": 1,
+   "stats": [
+    {
+     "stat": "prob_critico",
+     "max": 20,
+     "comun_min": 3,
+     "comun_max": 9,
+     "raro_min": 6,
+     "raro_max": 12,
+     "epico_min": 10,
+     "epico_max": 16,
+     "legendario_min": 14,
+     "legendario_max": 20
+    },
+    {
+     "stat": "vel_pct",
+     "max": 40,
+     "comun_min": 6,
+     "comun_max": 18,
+     "raro_min": 12,
+     "raro_max": 24,
+     "epico_min": 20,
+     "epico_max": 32,
+     "legendario_min": 28,
+     "legendario_max": 40
+    },
+    {
+     "stat": "ataque",
+     "max": 50,
+     "comun_min": 8,
+     "comun_max": 22,
+     "raro_min": 15,
+     "raro_max": 30,
+     "epico_min": 25,
+     "epico_max": 40,
+     "legendario_min": 35,
+     "legendario_max": 50
+    }
+   ]
   }
  ],
  "equipo_niveles": [
@@ -2300,7 +2602,7 @@
    },
    "heroes_destacados": [
     "caballero",
-    "monte",
+    "lancera",
     "guerrera"
    ],
    "consolacion": [
@@ -2399,8 +2701,20 @@
    "notas": ""
   },
   {
-   "id": "ataque",
+   "id": "vida_pct",
+   "nombre": "Vida %",
+   "tipo": "porcentaje",
+   "notas": "Multiplica la vida base"
+  },
+  {
+   "id": "ataque_plano",
    "nombre": "Ataque",
+   "tipo": "plano",
+   "notas": "Daño extra fijo por golpe, antes de multiplicadores"
+  },
+  {
+   "id": "ataque",
+   "nombre": "Ataque %",
    "tipo": "porcentaje",
    "notas": "% extra al daño"
   },
@@ -2409,6 +2723,12 @@
    "nombre": "Velocidad",
    "tipo": "plano",
    "notas": "Más alta = turno antes"
+  },
+  {
+   "id": "vel_pct",
+   "nombre": "Velocidad %",
+   "tipo": "porcentaje",
+   "notas": "Multiplica la velocidad base"
   },
   {
    "id": "prob_critico",
@@ -2426,93 +2746,19 @@
    "id": "res_fisica",
    "nombre": "Resistencia física",
    "tipo": "porcentaje",
-   "notas": "% menos daño físico"
+   "notas": ""
   },
   {
    "id": "res_magica",
    "nombre": "Resistencia mágica",
    "tipo": "porcentaje",
-   "notas": "% menos daño mágico"
+   "notas": ""
   },
   {
    "id": "res_efectos",
    "nombre": "Resistencia a efectos",
    "tipo": "porcentaje",
-   "notas": "% de evitar/acortar efectos"
-  }
- ],
- "equipo_stats": [
-  {
-   "stat": "ataque",
-   "tipo": "%",
-   "comun": 5,
-   "raro": 8,
-   "epico": 12,
-   "legendario": 18,
-   "notas": "Propuesta"
-  },
-  {
-   "stat": "dano_critico",
-   "tipo": "%",
-   "comun": 10,
-   "raro": 18,
-   "epico": 28,
-   "legendario": 40,
-   "notas": "Propuesta"
-  },
-  {
-   "stat": "prob_critico",
-   "tipo": "%",
-   "comun": 3,
-   "raro": 5,
-   "epico": 8,
-   "legendario": 12,
-   "notas": "Propuesta"
-  },
-  {
-   "stat": "vida",
-   "tipo": "plano",
-   "comun": 10,
-   "raro": 18,
-   "epico": 28,
-   "legendario": 40,
-   "notas": "Propuesta (héroes tienen 100-190)"
-  },
-  {
-   "stat": "velocidad",
-   "tipo": "plano",
-   "comun": 3,
-   "raro": 5,
-   "epico": 8,
-   "legendario": 12,
-   "notas": "Propuesta (base 100)"
-  },
-  {
-   "stat": "res_fisica",
-   "tipo": "%",
-   "comun": 3,
-   "raro": 5,
-   "epico": 8,
-   "legendario": 12,
-   "notas": "Propuesta; reemplaza a defensa"
-  },
-  {
-   "stat": "res_magica",
-   "tipo": "%",
-   "comun": 3,
-   "raro": 5,
-   "epico": 8,
-   "legendario": 12,
-   "notas": "Propuesta"
-  },
-  {
-   "stat": "res_efectos",
-   "tipo": "%",
-   "comun": 4,
-   "raro": 7,
-   "epico": 11,
-   "legendario": 16,
-   "notas": "Propuesta"
+   "notas": ""
   }
  ],
  "reglas_efectos": {
@@ -2648,6 +2894,515 @@
   "costo_oro_crece_pct": 35,
   "xp_por_victoria": 10,
   "xp_necesaria_mult_oro": 2,
-  "notas": "Propuesta. Costo nivel n->n+1 = base*(1+(n-1)*crece/100). Oro es la vía rápida; las batallas dan XP lenta."
+  "notas": "Propuesta. Costo nivel n->n+1 = base*(1+(n-1)*crece/100). Oro es la vía rápida; las batallas dan XP lenta. Vida +8%/nivel, ataque +6%/nivel (nivel 60: x5.7 vida, x4.5 ataque).",
+  "bono_vida_pct_por_nivel": 8,
+  "bono_ataque_pct_por_nivel": 6
+ },
+ "patrulla": {
+  "oro_base_h": 60,
+  "oro_por_etapa_h": 8,
+  "gemas_h": 1,
+  "xp_h": 30,
+  "limite_horas": 12,
+  "rapido_gratis": {
+   "veces": 2,
+   "horas": 3
+  },
+  "rapido_pago": [
+   {
+    "horas": 2,
+    "gemas": 20
+   },
+   {
+    "horas": 2,
+    "gemas": 30
+   },
+   {
+    "horas": 2,
+    "gemas": 50
+   }
+  ],
+  "reinicio": "diario",
+  "notas": "Propuesta. Oro/h = base + por_etapa x etapas superadas. XP va al equipo activo."
+ },
+ "desafio": {
+  "cada_etapas": 10,
+  "boletos_normales": 10,
+  "max_hitos": 10,
+  "notas": "10 boletos normales por cada 10 etapas superadas (acumulado de todos los capítulos)"
+ },
+ "recompensas_capitulo": [
+  {
+   "capitulo": 5,
+   "etapa": 10,
+   "tipo": "selector",
+   "rareza": "SR",
+   "notas": "Héroe gratis (por confirmar si es SR o fijo)"
+  },
+  {
+   "capitulo": 6,
+   "etapa": 10,
+   "tipo": "selector",
+   "rareza": "SSR"
+  },
+  {
+   "capitulo": 8,
+   "etapa": 10,
+   "tipo": "selector",
+   "rareza": "SSR"
+  },
+  {
+   "capitulo": 10,
+   "etapa": 10,
+   "tipo": "selector",
+   "rareza": "UR"
+  }
+ ],
+ "economia_capitulos": [
+  {
+   "capitulo": 1,
+   "oro_primer_despeje": 300,
+   "oro_jefe_primer_despeje": 600,
+   "oro_repetir": 60,
+   "gemas_jefe": 60,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 85,
+    "raro": 15,
+    "epico": 0,
+    "legendario": 0
+   }
+  },
+  {
+   "capitulo": 2,
+   "oro_primer_despeje": 345,
+   "oro_jefe_primer_despeje": 690,
+   "oro_repetir": 68,
+   "gemas_jefe": 65,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 85,
+    "raro": 15,
+    "epico": 0,
+    "legendario": 0
+   }
+  },
+  {
+   "capitulo": 3,
+   "oro_primer_despeje": 390,
+   "oro_jefe_primer_despeje": 780,
+   "oro_repetir": 76,
+   "gemas_jefe": 70,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 85,
+    "raro": 15,
+    "epico": 0,
+    "legendario": 0
+   }
+  },
+  {
+   "capitulo": 4,
+   "oro_primer_despeje": 435,
+   "oro_jefe_primer_despeje": 870,
+   "oro_repetir": 84,
+   "gemas_jefe": 75,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 55,
+    "raro": 40,
+    "epico": 5,
+    "legendario": 0
+   }
+  },
+  {
+   "capitulo": 5,
+   "oro_primer_despeje": 480,
+   "oro_jefe_primer_despeje": 960,
+   "oro_repetir": 92,
+   "gemas_jefe": 80,
+   "boletos_normales_capitulo": 15,
+   "boletos_especiales_capitulo": 3,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 55,
+    "raro": 40,
+    "epico": 5,
+    "legendario": 0
+   }
+  },
+  {
+   "capitulo": 6,
+   "oro_primer_despeje": 525,
+   "oro_jefe_primer_despeje": 1050,
+   "oro_repetir": 100,
+   "gemas_jefe": 85,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 55,
+    "raro": 40,
+    "epico": 5,
+    "legendario": 0
+   }
+  },
+  {
+   "capitulo": 7,
+   "oro_primer_despeje": 570,
+   "oro_jefe_primer_despeje": 1140,
+   "oro_repetir": 108,
+   "gemas_jefe": 90,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 30,
+    "raro": 50,
+    "epico": 18,
+    "legendario": 2
+   }
+  },
+  {
+   "capitulo": 8,
+   "oro_primer_despeje": 615,
+   "oro_jefe_primer_despeje": 1230,
+   "oro_repetir": 116,
+   "gemas_jefe": 95,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 30,
+    "raro": 50,
+    "epico": 18,
+    "legendario": 2
+   }
+  },
+  {
+   "capitulo": 9,
+   "oro_primer_despeje": 660,
+   "oro_jefe_primer_despeje": 1320,
+   "oro_repetir": 124,
+   "gemas_jefe": 100,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "raro",
+   "pesos_tier": {
+    "comun": 30,
+    "raro": 50,
+    "epico": 18,
+    "legendario": 2
+   }
+  },
+  {
+   "capitulo": 10,
+   "oro_primer_despeje": 705,
+   "oro_jefe_primer_despeje": 1410,
+   "oro_repetir": 132,
+   "gemas_jefe": 105,
+   "boletos_normales_capitulo": 15,
+   "boletos_especiales_capitulo": 3,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 15,
+    "raro": 45,
+    "epico": 32,
+    "legendario": 8
+   }
+  },
+  {
+   "capitulo": 11,
+   "oro_primer_despeje": 750,
+   "oro_jefe_primer_despeje": 1500,
+   "oro_repetir": 140,
+   "gemas_jefe": 110,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 15,
+    "raro": 45,
+    "epico": 32,
+    "legendario": 8
+   }
+  },
+  {
+   "capitulo": 12,
+   "oro_primer_despeje": 795,
+   "oro_jefe_primer_despeje": 1590,
+   "oro_repetir": 148,
+   "gemas_jefe": 115,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 15,
+    "raro": 45,
+    "epico": 32,
+    "legendario": 8
+   }
+  },
+  {
+   "capitulo": 13,
+   "oro_primer_despeje": 840,
+   "oro_jefe_primer_despeje": 1680,
+   "oro_repetir": 156,
+   "gemas_jefe": 120,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 5,
+    "raro": 35,
+    "epico": 42,
+    "legendario": 18
+   }
+  },
+  {
+   "capitulo": 14,
+   "oro_primer_despeje": 885,
+   "oro_jefe_primer_despeje": 1770,
+   "oro_repetir": 164,
+   "gemas_jefe": 125,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 5,
+    "raro": 35,
+    "epico": 42,
+    "legendario": 18
+   }
+  },
+  {
+   "capitulo": 15,
+   "oro_primer_despeje": 930,
+   "oro_jefe_primer_despeje": 1860,
+   "oro_repetir": 172,
+   "gemas_jefe": 130,
+   "boletos_normales_capitulo": 15,
+   "boletos_especiales_capitulo": 3,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 5,
+    "raro": 35,
+    "epico": 42,
+    "legendario": 18
+   }
+  },
+  {
+   "capitulo": 16,
+   "oro_primer_despeje": 975,
+   "oro_jefe_primer_despeje": 1950,
+   "oro_repetir": 180,
+   "gemas_jefe": 135,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 0,
+    "raro": 20,
+    "epico": 48,
+    "legendario": 32
+   }
+  },
+  {
+   "capitulo": 17,
+   "oro_primer_despeje": 1020,
+   "oro_jefe_primer_despeje": 2040,
+   "oro_repetir": 188,
+   "gemas_jefe": 140,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 0,
+    "raro": 20,
+    "epico": 48,
+    "legendario": 32
+   }
+  },
+  {
+   "capitulo": 18,
+   "oro_primer_despeje": 1065,
+   "oro_jefe_primer_despeje": 2130,
+   "oro_repetir": 196,
+   "gemas_jefe": 145,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 0,
+    "raro": 20,
+    "epico": 48,
+    "legendario": 32
+   }
+  },
+  {
+   "capitulo": 19,
+   "oro_primer_despeje": 1110,
+   "oro_jefe_primer_despeje": 2220,
+   "oro_repetir": 204,
+   "gemas_jefe": 150,
+   "boletos_normales_capitulo": 10,
+   "boletos_especiales_capitulo": 2,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 0,
+    "raro": 10,
+    "epico": 45,
+    "legendario": 45
+   }
+  },
+  {
+   "capitulo": 20,
+   "oro_primer_despeje": 1155,
+   "oro_jefe_primer_despeje": 2310,
+   "oro_repetir": 212,
+   "gemas_jefe": 155,
+   "boletos_normales_capitulo": 15,
+   "boletos_especiales_capitulo": 3,
+   "prob_botin_etapa": 40,
+   "botin_jefe": 2,
+   "tier_min_jefe": "epico",
+   "pesos_tier": {
+    "comun": 0,
+    "raro": 10,
+    "epico": 45,
+    "legendario": 45
+   }
+  }
+ ],
+ "botin_equipo": {
+  "pesos_ranura": {
+   "arma": 22,
+   "anillo": 22,
+   "armadura": 22,
+   "botas": 17,
+   "collar": 17
+  },
+  "notas": "Cada pieza trae TODOS los stats de su ranura. Cada victoria: prob_botin_etapa% de soltar 1 pieza; jefe suelta botin_jefe (tier mínimo tier_min_jefe)."
+ },
+ "equipo_calidad": {
+  "rangos_pct_del_max": {
+   "comun": [
+    15,
+    45
+   ],
+   "raro": [
+    30,
+    60
+   ],
+   "epico": [
+    50,
+    80
+   ],
+   "legendario": [
+    70,
+    100
+   ]
+  },
+  "notas": "Cada pieza tira cada stat al azar entre min y max de su rareza (min/max = % del máximo legendario). Los rangos se traslapan: una legendaria mala puede ser peor que una épica buena."
+ },
+ "equipo_fragmentos": {
+  "por_rareza": {
+   "comun": 5,
+   "raro": 10,
+   "epico": 20,
+   "legendario": 40
+  },
+  "costo_reroll": 100,
+  "nivel_reroll": 30,
+  "notas": "Desechar una pieza da fragmentos de pieza. 100 fragmentos = 1 reroll de todos los stats de una pieza (misma ranura y rareza). Se desbloquea al llegar a nivel 30 (nivel del héroe más alto). Propuesta de valores."
+ },
+ "cuenta": {
+  "nivel_max": 60,
+  "xp_base": 30,
+  "xp_por_nivel": 7,
+  "xp": {
+   "victoria": 8,
+   "primer_despeje": 20,
+   "primer_jefe": 60,
+   "torre_piso": 10,
+   "patrulla_hora": 5
+  },
+  "desbloqueos": {
+   "misiones": 3,
+   "patrulla": 5,
+   "carnaval": 7,
+   "torre": 8,
+   "recompensas": 8,
+   "invocar_x10": 10,
+   "desafio": 10,
+   "autoequipar": 12,
+   "desechar": 15,
+   "patrulla_pago": 18,
+   "barrido": 20,
+   "auto_combate": 25
+  },
+  "notas": "Nivel de cuenta solo desbloquea funciones. XP para subir de n a n+1 = xp_base + xp_por_nivel*n. Torre en nivel 8 porque la ruptura de héroes (nivel 10) necesita sus fragmentos."
+ },
+ "ruptura": {
+  "cada_niveles": 10,
+  "costos": [
+   30,
+   50,
+   75,
+   100,
+   125
+  ],
+  "torre_fragmentos_piso": 3,
+  "torre_fragmentos_jefe": 15,
+  "torre_oro_base": 50,
+  "torre_oro_por_piso": 3,
+  "torre_repetir_pct": 30,
+  "notas": "Ruptura en niveles 10,20,30,40,50 (cuesta fragmentos de ruptura; el héroe no sube del tope hasta romper). Fragmentos solo de la torre, la primera vez que se supera cada piso (jefe cada 10). Por héroe suma 380; 3 héroes = 1140 = piso ~270."
  }
 }

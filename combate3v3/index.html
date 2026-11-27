@@ -79,7 +79,7 @@ const HK=.42;
 const SHEET={};
 const sheet=f=>SHEET[f]||(SHEET[f]=mk(f));
 /* tamaño por héroe (misma estatura; artillero un poco menor, sargento mayor) y escala de cada ataque respecto a su idle */
-const SZ={"ember": 1.08, "hielo": 0.905, "paladin": 1.04, "lance": 0.92, "lancera": 0.95, "artillero": 0.93, "tanque": 0.88, "jack": 0.95, "influ": 0.85, "max": 1.0, "elo": 0.9, "nani": 0.9, "rocket": 0.95, "ginny": 0.97, "monte": 0.95, "katy": 0.95, "ethan": 0.95},ATS={"katy_sk1": 1.0, "katy_sk2": 1.0, "katy_ult": 1.0, "ethan_sk1": 1.004, "ethan_sk2": 1.016, "ethan_ult": 1.025, "rocket_sk1": 1, "rocket_sk2": 1, "rocket_ult": 1, "ginny_sk1": 1, "ginny_sk2": 1, "ginny_ult": 1, "monte_sk1": 0.96, "monte_sk2": 0.985, "monte_ult": 0.97, "nani_sk1": 0.965, "nani_sk2": 0.98, "nani_ult": 1.008, "elo_sk1": 0.977, "elo_sk2": 0.989, "elo_ult": 1.023, "ember_atk1": 1.02, "ember_atk2": 1.042, "ember_ult": 1.02, "max_sk1": 1.02, "max_sk2": 0.98, "max_ult": 1.02, "influ_sk1": 0.943, "influ_sk2": 0.993, "influ_ult": 0.97, "jack_sk1": 1.09, "jack_sk2": 1.0, "jack_ult": 1.01, "hielo_atk1": 1.0, "hielo_atk2": 0.98, "hielo_ult": 0.962, "paladin_atk1": 1.087, "paladin_atk2": 0.962, "paladin_ult": 1.064, "lance_atk1": 0.909, "lance_atk2": 0.943, "lance_ult": 0.926, "lancera_atk1": 0.962, "lancera_atk2": 0.962, "lancera_ult": 0.962, "artillero_atk1": 1.0, "artillero_atk2": 0.98, "artillero_ult": 0.962, "tanque_sk1": 0.962, "tanque_sk2": 1.0, "tanque_ult": 1.042};
+const SZ={"ember": 1.08, "hielo": 0.905, "paladin": 1.04, "lance": 0.92, "lancera": 0.95, "artillero": 0.93, "tanque": 0.88, "jack": 0.95, "influ": 0.85, "max": 1.0, "elo": 0.9, "nani": 0.9, "rocket": 0.95, "ginny": 0.97, "monte": 0.95, "katy": 0.95, "ethan": 0.95, "emg": 1.0, "eso": 1.0, "esa": 1.0, "eba": 1.0, "emu": 1.0, "ejf": 1.3},ATS={"emg_sk1": 1.0, "eso_sk1": 1.0, "esa_sk1": 1.0, "eba_sk1": 1.0, "emu_sk1": 0.991, "ejf_sk1": 1.0, "ejf_sk2": 1.0, "katy_sk1": 1.0, "katy_sk2": 1.0, "katy_ult": 1.0, "ethan_sk1": 1.004, "ethan_sk2": 1.016, "ethan_ult": 1.025, "rocket_sk1": 1, "rocket_sk2": 1, "rocket_ult": 1, "ginny_sk1": 1, "ginny_sk2": 1, "ginny_ult": 1, "monte_sk1": 0.96, "monte_sk2": 0.985, "monte_ult": 0.97, "nani_sk1": 0.965, "nani_sk2": 0.98, "nani_ult": 1.008, "elo_sk1": 0.977, "elo_sk2": 0.989, "elo_ult": 1.023, "ember_atk1": 1.02, "ember_atk2": 1.042, "ember_ult": 1.02, "max_sk1": 1.02, "max_sk2": 0.98, "max_ult": 1.02, "influ_sk1": 0.943, "influ_sk2": 0.993, "influ_ult": 0.97, "jack_sk1": 1.09, "jack_sk2": 1.0, "jack_ult": 1.01, "hielo_atk1": 1.0, "hielo_atk2": 0.98, "hielo_ult": 0.962, "paladin_atk1": 1.087, "paladin_atk2": 0.962, "paladin_ult": 1.064, "lance_atk1": 0.909, "lance_atk2": 0.943, "lance_ult": 0.926, "lancera_atk1": 0.962, "lancera_atk2": 0.962, "lancera_ult": 0.962, "artillero_atk1": 1.0, "artillero_atk2": 0.98, "artillero_ult": 0.962, "tanque_sk1": 0.962, "tanque_sk2": 1.0, "tanque_ult": 1.042};
 const idleF=(key,c=260)=>Array.from({length:30},(_,n)=>({img:sheet('idle_'+key+'.webp'),sx:(n%10)*c,sy:Math.floor(n/10)*c,sw:c,sh:c,width:c,height:c,ax:c/2,by:10,k:HK*(SZ[key.split('_')[0]]||1)}));
 const atkF=(nm,N=30)=>{const m=META[nm];return Array.from({length:N},(_,n)=>({img:sheet('atk_'+nm+'.webp'),sx:(n%10)*m.w,sy:Math.floor(n/10)*m.h,sw:m.w,sh:m.h,width:m.w,height:m.h,ax:m.ax,by:m.h-m.ay,k:HK*(SZ[nm.split('_')[0]]||1)/(ATS[nm]||1)}))};
 const LK_IDLE=idleF('luke'),GN_IDLE=idleF('gun'),RY_IDLE=idleF('rayo');
@@ -108,7 +108,7 @@ Object.assign(META,{"elo_sk1": {"w": 598, "h": 262, "ax": 159, "ay": 257}, "elo_
 const EL_IDLE=idleF('elo',320),EL1=atkF('elo_sk1'),EL2=atkF('elo_sk2'),EL3=atkF('elo_ult');
 Object.assign(META,{"nani_sk1": {"w": 553, "h": 339, "ax": 95, "ay": 301}, "nani_sk2": {"w": 479, "h": 291, "ax": 83, "ay": 270}, "nani_ult": {"w": 341, "h": 322, "ax": 174, "ay": 282}});
 const NA_IDLE=idleF('nani',290),NA1=atkF('nani_sk1'),NA2=atkF('nani_sk2'),NA3=atkF('nani_ult',71);
-Object.assign(META,{"katy_sk1": {"w": 261, "h": 284, "ax": 108, "ay": 281}, "katy_sk2": {"w": 640, "h": 360, "ax": 184, "ay": 329}, "katy_ult": {"w": 640, "h": 360, "ax": 184, "ay": 329}, "ethan_sk1": {"w": 562, "h": 360, "ax": 200, "ay": 324}, "ethan_sk2": {"w": 604, "h": 346, "ax": 184, "ay": 329}, "ethan_ult": {"w": 631, "h": 360, "ax": 184, "ay": 329}});Object.assign(META,{"rocket_sk1": {"w": 588, "h": 341, "ax": 80, "ay": 328}, "rocket_sk2": {"w": 562, "h": 264, "ax": 56, "ay": 257}, "rocket_ult": {"w": 585, "h": 360, "ax": 76, "ay": 328}, "ginny_sk1": {"w": 623, "h": 340, "ax": 124, "ay": 327}, "ginny_sk2": {"w": 630, "h": 330, "ax": 132, "ay": 327}, "ginny_ult": {"w": 622, "h": 336, "ax": 125, "ay": 327}, "monte_sk1": {"w": 540, "h": 324, "ax": 93, "ay": 315}, "monte_sk2": {"w": 601, "h": 306, "ax": 94, "ay": 299}, "monte_ult": {"w": 596, "h": 360, "ax": 97, "ay": 322}});
+Object.assign(META,{"katy_sk1": {"w": 261, "h": 284, "ax": 108, "ay": 281}, "katy_sk2": {"w": 640, "h": 360, "ax": 184, "ay": 329}, "katy_ult": {"w": 640, "h": 360, "ax": 184, "ay": 329}, "ethan_sk1": {"w": 562, "h": 360, "ax": 200, "ay": 324}, "ethan_sk2": {"w": 604, "h": 346, "ax": 184, "ay": 329}, "ethan_ult": {"w": 631, "h": 360, "ax": 184, "ay": 329}});Object.assign(META,{"emg_sk1": {"w": 605, "h": 354, "ax": 156, "ay": 323}, "eso_sk1": {"w": 608, "h": 260, "ax": 163, "ay": 251}, "esa_sk1": {"w": 623, "h": 286, "ax": 186, "ay": 274}, "eba_sk1": {"w": 634, "h": 334, "ax": 199, "ay": 319}, "emu_sk1": {"w": 640, "h": 347, "ax": 197, "ay": 318}, "ejf_sk1": {"w": 635, "h": 312, "ax": 180, "ay": 301}, "ejf_sk2": {"w": 640, "h": 360, "ax": 184, "ay": 328}});Object.assign(META,{"rocket_sk1": {"w": 588, "h": 341, "ax": 80, "ay": 328}, "rocket_sk2": {"w": 562, "h": 264, "ax": 56, "ay": 257}, "rocket_ult": {"w": 585, "h": 360, "ax": 76, "ay": 328}, "ginny_sk1": {"w": 623, "h": 340, "ax": 124, "ay": 327}, "ginny_sk2": {"w": 630, "h": 330, "ax": 132, "ay": 327}, "ginny_ult": {"w": 622, "h": 336, "ax": 125, "ay": 327}, "monte_sk1": {"w": 540, "h": 324, "ax": 93, "ay": 315}, "monte_sk2": {"w": 601, "h": 306, "ax": 94, "ay": 299}, "monte_ult": {"w": 596, "h": 360, "ax": 97, "ay": 322}});
 const RK_IDLE=idleF('rocket',280),RK1=atkF('rocket_sk1'),RK2=atkF('rocket_sk2'),RK3=atkF('rocket_ult');
 const GI_IDLE=idleF('ginny',350),GI1=atkF('ginny_sk1'),GI2=atkF('ginny_sk2'),GI3=atkF('ginny_ult');
 const MO_IDLE=idleF('monte',330),MO1=atkF('monte_sk1'),MO2=atkF('monte_sk2'),MO3=atkF('monte_ult');
@@ -307,12 +307,12 @@ async function ryUpper(a,t){sfx(200,.9,'sine',.07,3);tw(500,k=>dim=.7*k);
    22:()=>{tw(400,k=>dim=.7*(1-k))}})}
 
 async function gTurn(g){CUR=g;const hs=alive(HS),h=alive(HS).find(x=>x.taunt>0)||hs[R(0,hs.length-1)];actH=h;actG=g;ui();banner(g.nm+' ATACA',1);sfx(260,.2,'square',.04,.6);
- const y=await yieldMate(GS,g,h.ly);
- g.walk=1;await go(g,h.x+h.dx+38-g.x,320,h.ly);g.walk=0;g.dy=0;
- const n=Math.random()<.35?2:1;
+ const y=await yieldMate(GS,g,h.ly);const A=g.def?g.def.atks[R(0,g.def.atks.length-1)]:null;
+ g.walk=1;await go(g,h.x+h.dx+(A?A.D:38)-g.x,320,h.ly);g.walk=0;g.dy=0;
+ if(A)await A.fn(g,h);else{const n=Math.random()<.35?2:1;
  for(let s=0;s<n;s++){g.dy=-3;await wait(150);g.dy=0;g.cf=g.gs;g.kx-=10;
   sl(g.x+g.dx-14,GY+g.ly-22,-1.1,1.1,-1,'#fff',18);sfx(300,.1,'square',.04,.5);
-  hit(h,n==2?R(4,6):R(8,12),{c:['#fff','#ffd24a','#ff8a3d']});await wait(190);g.cf=null;if(h.hp<=0)break}
+  hit(h,n==2?R(4,6):R(8,12),{c:['#fff','#ffd24a','#ff8a3d']});await wait(190);g.cf=null;if(h.hp<=0)break}}
  await wait(80);if(h.hp>0&&g.hp>0&&h.cc>0){h.cc--;ui();await elCounter(h,g);CUR=g}
  const u=unyield(y);g.walk=1;await go(g,0,320,g.l0);g.walk=0;g.dy=0;await u}
 /* ---------- turnos ---------- */
@@ -336,11 +336,10 @@ async function lrAtk2(a,t){sfx(300,.25,'triangle',.05,1);
   await cast(a,t,LRD[1],LR2,MS,{14:()=>{sfx(700,.2,'triangle',.05,.5);hit(t,R(13,17),{big:1,c:ICE});if(t.hp>0)t.stun=1;spark(t.x+t.dx,GY+t.ly,16,ICE,2.5,1)}})}
 async function lrUlt(a,t){sfx(200,.9,'sine',.07,3);tw(500,k=>dim=.7*k);
   await cast(a,t,LRD[2],LR3,MS,{15:()=>{hitAll(t,10,13,{c:MAG})},21:()=>{hitAll(t,10,13,{big:1,c:MAG});flash=1;alive(GS).forEach(g=>FX.push({k:'ring',t:T,d:500,x:g.x+g.dx,y:GY+3+g.ly,c:'#fff'}))},28:()=>{tw(400,k=>dim=.7*(1-k))}})}
-const BUL=['#fff','#ffe27a','#ff8a3d'];
 async function arAtk1(a,t){sfx(180,.3,'sawtooth',.05,.5);
-  await cast(a,t,ARD[0],AR1,MS,{10:()=>{hit(t,R(3,5),{c:BUL});en25(a)},13:()=>{sfx(200,.1,'square',.04,.5);hit(t,R(3,5),{c:BUL})},16:()=>{sfx(200,.1,'square',.04,.5);hit(t,R(3,5),{c:BUL})}})}
+  await cast(a,t,ARD[0],AR1,MS,{10:()=>{hit(t,R(3,5),{c:GUNC});en25(a)},13:()=>{sfx(200,.1,'square',.04,.5);hit(t,R(3,5),{c:GUNC})},16:()=>{sfx(200,.1,'square',.04,.5);hit(t,R(3,5),{c:GUNC})}})}
 async function arAtk2(a,t){sfx(180,.3,'sawtooth',.05,.5);
-  await cast(a,t,ARD[1],AR2,MS,{5:()=>{hit(t,R(4,5),{c:BUL})},9:()=>{sfx(200,.1,'square',.04,.5);hit(t,R(4,5),{c:BUL})},17:()=>{sfx(700,.2,'triangle',.05,.5);hit(t,R(6,8),{big:1,c:BUL});if(t.hp>0)t.stun=1;spark(t.x+t.dx,GY+t.ly,16,BUL,2.5,1)}})}
+  await cast(a,t,ARD[1],AR2,MS,{5:()=>{hit(t,R(4,5),{c:GUNC})},9:()=>{sfx(200,.1,'square',.04,.5);hit(t,R(4,5),{c:GUNC})},17:()=>{sfx(700,.2,'triangle',.05,.5);hit(t,R(6,8),{big:1,c:GUNC});if(t.hp>0)t.stun=1;spark(t.x+t.dx,GY+t.ly,16,GUNC,2.5,1)}})}
 async function arUlt(a,t){sfx(200,.9,'sine',.07,3);tw(500,k=>dim=.7*k);
   await cast(a,t,ARD[2],AR3,MS,{11:()=>{hitAll(t,7,9,{big:1,c:VIO});flash=1},14:()=>{hitAll(t,7,9,{c:VIO});alive(GS).forEach(g=>FX.push({k:'ring',t:T,d:500,x:g.x+g.dx,y:GY+3+g.ly,c:'#fff'}))},17:()=>{hitAll(t,7,9,{big:1,c:VIO})},26:()=>{tw(400,k=>dim=.7*(1-k))}})}
 
@@ -418,6 +417,23 @@ async function naCookies(a){sfx(500,.3,'sine',.05,1.2);
   await pl(NA2,0,30,MS,{9:()=>{sfx(800,.4,'sine',.06,1.5);const T=[tanque,jack,mx,elo,nani].filter(h=>HS.includes(h)&&h.hp>0);T.forEach(h=>{const g=Math.max(1,Math.round(h.max*.3));h.sh=(h.sh||0)+g;fxTx(h,g,'#8ae8ff');spark(h.x+h.dx,GY+h.ly-30,12,SHD,2.2)});ui()}},a);a.cf=null}
 async function naSleep(a){sfx(180,.8,'sine',.06,3);
   await pl(NA3,0,71,MS*.85,{8:()=>sfx(600,.3,'sine',.04,1.5),34:()=>{sfx(300,.8,'sine',.07,2);alive(HS).forEach(h=>{h.dr=1;spark(h.x+h.dx,GY+h.ly-30,12,NAG,2.2)});banner('¡SUEÑO! −50% daño enemigo');ui()}},a);a.cf=null}
+/* ---------- Enemigos nuevos ---------- */
+const EMSE=50,EPUR=['#fff','#d18bff','#7b2fe0'],ESLS=['#fff','#8ae8ff','#3f9bff'],ERED=['#fff','#ff8a8a','#e0284a'],ETOX=['#fff','#c4f56a','#7be04a'];
+const EI={emg:270,eso:260,esa:290,eba:260,emu:260,ejf:390};
+const EF=(k,a,n)=>atkF(k+'_'+a,n);
+const ENM={
+ emg:{nm:'MAGO DEL CUBO',hp:80,hy:34,idle:idleF('emg',EI.emg),atks:[{D:145,fn:async(g,h)=>{sfx(300,.2,'sine',.05,.8);await pl(EF('emg','sk1',36),0,36,EMSE,{6:()=>sfx(520,.2,'sine',.05,1),16:()=>{sfx(120,.4,'sawtooth',.07,.4);hit(h,R(13,17),{big:1,c:EPUR});flash=.35}},g);g.cf=null}}]},
+ eso:{nm:'SOLDADO',hp:90,hy:34,idle:idleF('eso',EI.eso),atks:[{D:150,fn:async(g,h)=>{await pl(EF('eso','sk1',36),0,36,EMSE,{12:()=>{sfx(220,.1,'square',.06,.3);hit(h,R(5,7),{c:GUNC})},18:()=>{sfx(220,.1,'square',.06,.3);hit(h,R(5,7),{c:GUNC})},24:()=>{sfx(220,.1,'square',.06,.3);hit(h,R(5,7),{c:GUNC})}},g);g.cf=null}}]},
+ esa:{nm:'SAMURÁI',hp:85,hy:34,idle:idleF('esa',EI.esa),atks:[{D:95,fn:async(g,h)=>{sfx(500,.1,'sawtooth',.05,.5);await pl(EF('esa','sk1',36),0,36,EMSE,{12:()=>{sfx(900,.15,'sawtooth',.07,.4);hit(h,R(15,19),{big:1,c:ESLS});spark(h.x+h.dx,GY+h.ly-30,14,ESLS,2.6,1)}},g);g.cf=null}}]},
+ eba:{nm:'BATERO',hp:90,hy:34,idle:idleF('eba',EI.eba),atks:[{D:105,fn:async(g,h)=>{sfx(260,.1,'square',.05,.5);await pl(EF('eba','sk1',36),0,36,EMSE,{14:()=>{sfx(160,.2,'square',.07,.4);hit(h,R(8,11),{c:GUNC})},24:()=>{sfx(140,.3,'square',.08,.4);hit(h,R(10,13),{big:1,c:GUNC})}},g);g.cf=null}}]},
+ emu:{nm:'MUÑECA',hp:75,hy:34,idle:idleF('emu',EI.emu),atks:[{D:135,fn:async(g,h)=>{sfx(200,.4,'sine',.05,1);await pl(EF('emu','sk1',36),0,36,EMSE,{25:()=>{sfx(700,.2,'sawtooth',.07,.4);hit(h,R(14,18),{big:1,c:ERED})}},g);g.cf=null}}]},
+ ejf:{nm:'DR. JERINGA',hp:350,hy:50,idle:idleF('ejf',EI.ejf),atks:[
+  {D:140,fn:async(g,h)=>{sfx(200,.5,'sine',.05,1);await pl(EF('ejf','sk1',36),0,36,EMSE,{15:()=>{sfx(180,.3,'sawtooth',.06,.5);alive(HS).forEach(x=>hit(x,R(6,9),{c:ETOX}))},24:()=>{alive(HS).forEach(x=>hit(x,R(6,9),{c:ETOX}))}},g);g.cf=null}},
+  {D:150,fn:async(g,h)=>{sfx(160,.4,'square',.05,.5);await pl(EF('ejf','sk2',48),0,48,EMSE,{28:()=>{sfx(120,.5,'sawtooth',.08,.4);hit(h,R(26,32),{big:1,c:ETOX});flash=.5;shake=Math.max(shake,5)}},g);g.cf=null}}]}
+};
+['emg','eso','esa','eba','emu','ejf'].forEach(k=>EF(k,'sk1',1));EF('ejf','sk2',1);const NORM=['emg','eso','esa','eba','emu'];let BN=0;
+function setEnemies(){const boss=/[?&]jefe/.test(location.search)||BN%3===2;const pool=[...NORM].sort(()=>Math.random()-.5);const pk=boss?['ejf',pool[0],pool[1]]:pool.slice(0,3);
+ GS.forEach((g,i)=>{const d=ENM[pk[i]];g.def=d;g.nm=d.nm;g.hp=g.max=d.hp;g.frames=d.idle;g.flip=1;g.hy=d.hy;g.cf=null});buildHud()}
 /* Sanadores: Ethan y Katy */
 const HLC=['#fff','#9dffb0','#4fe07a'];
 let htgt=null;const isHl=h=>!!h&&(h.p==='a18'||h.p==='a19');const curHT=()=>htgt&&htgt.hp>0?htgt:lowest();
@@ -483,7 +499,7 @@ const NAMES={a0:['¡ESPADAZO!','¡SALTO DE HIELO!','¡EMBESTIDA!'],a1:['¡PISTOL
 async function heroTurn(h){CUR=h;if(h.st>0){banner(h.nm+' · PIEL DE PIEDRA',1);await wait(900);if(--h.st<=0){h.frames=h.nf;tw(300,k=>{flash=.4*(1-k)})}return}if(INF_EN)h.en=100;h.cd=h.cd.map(v=>Math.max(0,v-1));const i=await choose(h);curNeeds=NEEDS[h.p][i]?1:0;if(CDMAX[h.p]&&CDMAX[h.p][i])h.cd[i]=CDMAX[h.p][i];h.en-=COST[i];const t=tgt&&tgt.hp>0?tgt:alive(GS)[0];ui();banner(NAMES[h.p][i]);
  await({a0:[lkAtk,lkJump,lkUlt],a1:[gnRifle,gnPistol,gnLaser],a2:[ryPunch,ryFlames,ryUpper],a3:[emAtk1,emAtk2,emUlt],a4:[hiAtk1,hiAtk2,hiUlt],a5:[paAtk1,paAtk2,paUlt],a6:[laAtk1,laAtk2,laUlt],a7:[lrAtk1,lrAtk2,lrUlt],a8:[arAtk1,arAtk2,arUlt],a9:[tqShield,tqBarrier,tqStone],a10:[jkNet,jkPull,jkSuplex],a11:[ifFlash,ifSelfie,ifBinary],a12:[mxDoor,mxCharge,mxWall],a13:[elSlash,elSpin,elTea],a14:[naHug,naCookies,naSleep],a15:[rkCoins,rkMonster,rkLose],a16:[giHeart,giBubbles,giDragon],a17:[moSip,moSkel,moSmoke],a18:[etBubble,etLullaby,etEcho],a19:[kaPin,kaHeart,kaTea]})[h.p][i](h,t);await settle()}
 const result=()=>!alive(GS).length?1:!alive(HS).length?-1:0;
-async function finish(){const w=!alive(GS).length;act=null;actH=null;actG=null;waiting=false;await settle();sfx(w?660:150,.6,'triangle',.07,w?2:.4);ui();
+async function finish(){const w=!alive(GS).length;if(w)BN++;act=null;actH=null;actG=null;waiting=false;await settle();sfx(w?660:150,.6,'triangle',.07,w?2:.4);ui();
  $('et').textContent=w?'¡VICTORIA!':'DERROTA';$('end').className=w?'':'l';$('end').style.display='flex'}
 async function intro(){ALL.forEach(e=>e.walk=1);banner('¡COMBATE!');await Promise.all(ALL.map(e=>go(e,0,1100)));ALL.forEach(e=>{e.walk=0;e.dy=0});await wait(250)}
 async function battle(){const id=++run;await intro();
@@ -496,7 +512,7 @@ async function battle(){const id=++run;await intro();
   GS.forEach(g=>{if(g.mrT>0&&--g.mrT===0)g.mr=0});
   HS.forEach(h=>{if(h.bar>0)h.bar--;if(h.taunt>0)h.taunt--;if(h.critT>0&&--h.critT===0){h.critB=0;h.atkB=0}if(h.shE>0&&--h.shE===0){h.sh=Math.max(0,h.sh-h.shT);h.shT=0}h.cc=0;h.dr=0})
  }}
-function reset(){ALL.forEach(e=>Object.assign(e,{dx:e.hero?-90:90,kx:0,dy:0,fl:0,gl:0,al:1,hp:e.max,stun:0,sh:0,bar:0,st:0,taunt:0,crit:0,critB:0,critT:0,atkB:0,shT:0,shE:0,cc:0,dr:0,pz:0,pd:0,mr:0,mrT:0,cd:[0,0,0],cf:null,flip:0,walk:0,dead:0,sq:0,zo:0,rot:0,ly:e.l0}));HS.forEach(h=>{h.en=40;if(h.nf)h.frames=h.nf});
+function reset(){ALL.forEach(e=>Object.assign(e,{dx:e.hero?-90:90,kx:0,dy:0,fl:0,gl:0,al:1,hp:e.max,stun:0,sh:0,bar:0,st:0,taunt:0,crit:0,critB:0,critT:0,atkB:0,shT:0,shE:0,cc:0,dr:0,pz:0,pd:0,mr:0,mrT:0,cd:[0,0,0],cf:null,flip:0,walk:0,dead:0,sq:0,zo:0,rot:0,ly:e.l0}));setEnemies();HS.forEach(h=>{h.en=40;if(h.nf)h.frames=h.nf});
  P.length=TX.length=WT.length=FX.length=0;dim=0;waiting=false;act=null;actH=null;actG=null;tgt=g1;$('end').style.display='none';ui();battle()}
 const panel=e=>`<div class="pl${e.hero?'':' t'}" id="${e.p}P"><b>${e.nm}</b><div class="bar"><i id="${e.p}g" class="g"></i><i id="${e.p}f" class="${e.hero?'hf':'ff'}"></i></div><span id="${e.p}t"></span>${e.hero?`<div class="bar s" id="${e.p}b"><i id="${e.p}e" class="he"></i></div>`:''}</div>`;
 function buildHud(){$('colL').innerHTML=HS.map(panel).join('');$('colR').innerHTML=GS.map(panel).join('');

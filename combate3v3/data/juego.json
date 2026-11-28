@@ -56,6 +56,17 @@
    "color": "#e0402e",
    "notas": "+50% vida y daño sobre SR (confirmado). Héroes controladores de turnos y efectos.",
    "tasa_gacha": 3
+  },
+  {
+   "id": "SSS",
+   "nombre": "SSS",
+   "orden": 5,
+   "mult_vida": 1.75,
+   "mult_dano": 1.75,
+   "marco": "ui/i_f_gold.webp",
+   "color": "#ff3dd8",
+   "notas": "Rango más alto (+75% vida y daño sobre SR, propuesta).",
+   "tasa_gacha": 1
   }
  ],
  "roles": [
@@ -379,6 +390,63 @@
     "controladora"
    ],
    "notas": "Niña con peluche: soporte que controla estados (sueño, provocar, miedo)."
+  },
+  {
+   "id": "sereniel",
+   "nombre": "Sereniel",
+   "sprite": "a23",
+   "rareza": "UR",
+   "rol": "Controlador · agua",
+   "vida_base": 115,
+   "velocidad": 110,
+   "activo": true,
+   "etiquetas": [
+    "controlador"
+   ],
+   "notas": "Chica de pelo azul con tridente: controla el combate con agua (empapa, ralentiza y daña por rondas)."
+  },
+  {
+   "id": "alexandra",
+   "nombre": "Alexandra",
+   "sprite": "a24",
+   "rareza": "UR",
+   "rol": "Tanque · rayos",
+   "vida_base": 150,
+   "velocidad": 95,
+   "activo": true,
+   "etiquetas": [
+    "tanque"
+   ],
+   "notas": "Hija de Thor: tanque cuyas habilidades son todas de defensa; los rayos de su escudo y de ella crecen con cada habilidad."
+  },
+  {
+   "id": "mildred",
+   "nombre": "Mildred",
+   "sprite": "a25",
+   "rareza": "SSR",
+   "rol": "Mago · sueño",
+   "vida_base": 95,
+   "velocidad": 105,
+   "activo": true,
+   "etiquetas": [
+    "mago",
+    "control"
+   ],
+   "notas": "Maga con libro y gafas: baja resistencia mágica y duerme enemigos; su ultimate explota más fuerte contra dormidos."
+  },
+  {
+   "id": "ducky",
+   "nombre": "Ducky",
+   "sprite": "a26",
+   "rareza": "SSS",
+   "rol": "Asesino · espada celestial",
+   "vida_base": 100,
+   "velocidad": 125,
+   "activo": true,
+   "etiquetas": [
+    "asesino"
+   ],
+   "notas": "Su patito se convierte en espada celestial tras su primera habilidad. Muchos críticos, baja defensa; ultimate con dos opciones."
   }
  ],
  "habilidades": [
@@ -2088,6 +2156,311 @@
    "descripcion": "100 · enemigos hacen -40% de daño 2 turnos con prob. de aturdirse; curación en el tiempo al equipo",
    "icono": "sk_hilde_3.webp",
    "verificado": false
+  },
+  {
+   "id": "sereniel_1",
+   "heroe": "sereniel",
+   "ranura": 1,
+   "nombre": "Bola de agua",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "efectos": [
+    {
+     "id": "retrasar_turno"
+    }
+   ],
+   "descripcion": "+25 energía · golpe mágico; el enemigo queda empapado y se retrasa en el orden de turno",
+   "icono": "sk_sereniel_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "sereniel_2",
+   "heroe": "sereniel",
+   "ranura": 2,
+   "nombre": "Marea y torbellino",
+   "tipo": "habilidad",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 4,
+     "max": 6
+    }
+   ],
+   "efectos": [
+    {
+     "id": "velocidad_down"
+    }
+   ],
+   "descripcion": "40 · golpe mágico a todos los enemigos; quedan lentos 2 turnos",
+   "icono": "sk_sereniel_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "sereniel_3",
+   "heroe": "sereniel",
+   "ranura": 3,
+   "nombre": "Trono de medusas",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 3,
+     "max": 5
+    }
+   ],
+   "efectos": [
+    {
+     "id": "velocidad_down"
+    }
+   ],
+   "descripcion": "100 · el agua cubre el suelo 3 rondas: daña a todos los enemigos cada ronda y los mantiene lentos",
+   "icono": "sk_sereniel_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "alexandra_1",
+   "heroe": "alexandra",
+   "ranura": 1,
+   "nombre": "Escudo de trueno",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "escudo"
+    },
+    {
+     "id": "provocar"
+    },
+    {
+     "id": "contraataque"
+    }
+   ],
+   "descripcion": "+25 energía · escudo propio, provoca y contraataca con un rayo",
+   "icono": "sk_alexandra_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "alexandra_2",
+   "heroe": "alexandra",
+   "ranura": 2,
+   "nombre": "Escudo tormenta",
+   "tipo": "habilidad",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "escudo"
+    },
+    {
+     "id": "reduccion"
+    },
+    {
+     "id": "contraataque"
+    }
+   ],
+   "descripcion": "40 · escudo y barrera (−15% daño 2 turnos) a todo el equipo; ella contraataca 2 veces",
+   "icono": "sk_alexandra_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "alexandra_3",
+   "heroe": "alexandra",
+   "ranura": 3,
+   "nombre": "Furia de Thor",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [],
+   "efectos": [
+    {
+     "id": "escudo"
+    },
+    {
+     "id": "reduccion"
+    },
+    {
+     "id": "contraataque"
+    },
+    {
+     "id": "aturdir"
+    }
+   ],
+   "descripcion": "100 · equipo con escudo, barrera y −50% de daño esta ronda; rayos a todos los enemigos (a veces aturden); ella provoca y contraataca 3 veces",
+   "icono": "sk_alexandra_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "mildred_1",
+   "heroe": "mildred",
+   "ranura": 1,
+   "nombre": "Patito",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía · golpe mágico; −20% res. mág. al enemigo",
+   "icono": "sk_mildred_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "mildred_2",
+   "heroe": "mildred",
+   "ranura": 2,
+   "nombre": "Almohadazo",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 8,
+     "max": 11
+    }
+   ],
+   "efectos": [],
+   "descripcion": "40 · golpe mágico; 40% de probabilidad de dormir al enemigo",
+   "icono": "sk_mildred_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "mildred_3",
+   "heroe": "mildred",
+   "ranura": 3,
+   "nombre": "Sueño de peluches",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "efectos": [],
+   "descripcion": "100 · peluches explotan sobre todos los enemigos; +60% de daño a los dormidos",
+   "icono": "sk_mildred_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "ducky_1",
+   "heroe": "ducky",
+   "ranura": 1,
+   "nombre": "Patito celestial",
+   "tipo": "básico",
+   "objetivo": "uno",
+   "energia_gana": 25,
+   "energia_cuesta": 0,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 7,
+     "max": 9
+    },
+    {
+     "objetivo": "uno",
+     "min": 7,
+     "max": 9
+    }
+   ],
+   "efectos": [],
+   "descripcion": "+25 energía · el patito se vuelve espada y lanza 2 tajos; mucha prob. de crítico; −defensa al enemigo",
+   "icono": "sk_ducky_1.webp",
+   "verificado": false
+  },
+  {
+   "id": "ducky_2",
+   "heroe": "ducky",
+   "ranura": 2,
+   "nombre": "Embestida celestial",
+   "tipo": "habilidad",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 40,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 14,
+     "max": 18
+    }
+   ],
+   "efectos": [],
+   "descripcion": "40 · se abalanza y regresa arrastrando; crítico alto; −defensa. Con espada +20% daño",
+   "icono": "sk_ducky_2.webp",
+   "verificado": false
+  },
+  {
+   "id": "ducky_3",
+   "heroe": "ducky",
+   "ranura": 3,
+   "nombre": "Lluvia de tajos",
+   "tipo": "ultimate",
+   "objetivo": "todos",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "todos",
+     "min": 5,
+     "max": 7
+    }
+   ],
+   "efectos": [],
+   "descripcion": "100 · se teletransporta y da 7 tajos repartidos entre los enemigos; mucha prob. de crítico. Con espada +20% daño",
+   "icono": "sk_ducky_3.webp",
+   "verificado": false
+  },
+  {
+   "id": "ducky_4",
+   "heroe": "ducky",
+   "ranura": 4,
+   "nombre": "Por la espalda",
+   "tipo": "ultimate",
+   "objetivo": "uno",
+   "energia_gana": 0,
+   "energia_cuesta": 100,
+   "golpes": [
+    {
+     "objetivo": "uno",
+     "min": 26,
+     "max": 32
+    }
+   ],
+   "efectos": [],
+   "descripcion": "100 · alternativa de ultimate: se teletransporta detrás del enemigo y pega directo, ignorando todo escudo. Con espada +20% daño",
+   "icono": "sk_ducky_4.webp",
+   "verificado": false
   }
  ],
  "efectos": [
@@ -2919,12 +3292,14 @@
    "costo_x10": 12000,
    "rareza_heroes": [
     "SSR",
-    "UR"
+    "UR",
+    "SSS"
    ],
    "tasas": {
     "SR": 0,
     "SSR": 10,
-    "UR": 3
+    "UR": 3,
+    "SSS": 1
    },
    "heroes_destacados": [
     "katy",
@@ -2944,7 +3319,7 @@
      "prob_pct": 50
     }
    ],
-   "notas": "Saca SSR y UR. Usa boleto especial"
+   "notas": "Saca SSR, UR y SSS. Usa boleto especial"
   }
  ],
  "copias": [

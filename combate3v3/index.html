@@ -345,6 +345,9 @@ box-shadow:0 -3px var(--o),0 3px var(--o),-3px 0 var(--o),3px 0 var(--o),0 7px v
 #ld .ldB i{background:linear-gradient(#d9bfa6,#a8795a)!important}
 .pb,.pb.or,.mg{color:#fff3de!important;text-shadow:0 2px #3a2418!important}
 .pb:disabled,.mg:disabled{color:#efe3d2!important;text-shadow:0 2px #7a6350!important}
+#lab{display:none;position:fixed;left:0;right:0;top:118px;z-index:30;gap:4px;overflow-x:auto;padding:4px;white-space:nowrap;scrollbar-width:thin}
+#lab .pb{flex:0 0 auto;min-width:0;padding:2px 6px;font-size:11px;height:34px}
+#labGo{position:absolute;right:8px;bottom:70px;z-index:20;padding:4px 10px;font-size:12px}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="ld"><img class="ldT" src="logo_pixiros.webp" alt="Pixiros"><div class="ldB"><i id="ldI"></i></div><div class="ldS" id="ldS">CARGANDO…</div></div>
@@ -409,7 +412,7 @@ const KA_IDLE=idleF('katy',300),KA1=atkF('katy_sk1',36),KA2=atkF('katy_sk2',36),
 const ET_IDLE=idleF('ethan',470),ET1=atkF('ethan_sk1',36),ET2=atkF('ethan_sk2',36),ET3=atkF('ethan_ult',48);
 const MX_IDLE=idleF('max',270),MX1=atkF('max_sk1'),MX2=atkF('max_sk2'),MX3=atkF('max_ult');
 const HI_IDLE=idleF('hielo',300),HI1=atkF('hielo_atk1'),HI2=atkF('hielo_atk2'),HI3=atkF('hielo_ult');
-const INF_EN=true; /* modo prueba: energía siempre al 100 para probar las 3 habilidades. Pon false para volver a la energía normal. */
+let LAB=0;const INF_EN=true; /* modo prueba: energía siempre al 100 para probar las 3 habilidades. Pon false para volver a la energía normal. */
 
 /* ---------- duendes 16x16 ---------- */
 const GM={"IDLE": ["................", "................", "....oooooooo....", "...oggggggggo...", "oo.oggoggoggo.oo", "oggogwkggkwgoggo", ".ogoggggggggogo.", "...ogottttogo...", "nbn.oooooooo....", "bbbgocccccco.go.", "nbn.occddcco.go.", ".b..occccccogo..", ".b...ohhhho.o...", ".b..ooo..ooo....", "....oko..oko....", "....ooo..ooo...."], "SW": ["................", "................", "....oooooooo....", "...oggggggggo...", "oo.oggoggoggo.oo", "oggogwkggkwgoggo", ".ogoggggggggogo.", "...ogottttogo...", "....oooooooo....", "...gocccccco.go.", "..b.occddcco.go.", "nbbnoccccccogo..", "bbbb.ohhhho.o...", "nbbnooo..ooo....", "....oko..oko....", "....ooo..ooo...."]};const GP={"green": {"o": "#232346", "g": "#6bbf3f", "h": "#3f8f2a", "w": "#ffffff", "k": "#232346", "t": "#fff6d8", "c": "#b9772e", "d": "#7a4a1a", "b": "#a8743a", "n": "#5a3a1a"}, "red": {"o": "#232346", "g": "#e0593f", "h": "#a3301f", "w": "#ffffff", "k": "#232346", "t": "#fff6d8", "c": "#3f6fd0", "d": "#25448f", "b": "#aab0ba", "n": "#4a4f5a"}};
@@ -1255,19 +1258,20 @@ async function settle(){const d=ALL.filter(e=>e.hp<=0&&!e.dead);d.forEach(e=>e.d
  if(d.length){sfx(120,.35,'sawtooth',.06,.3);await Promise.all(d.map(e=>tw(700,k=>{e.al=1-k;e.dy=Math.round(k*8)})))}
  if(tgt&&tgt.hp<=0)tgt=alive(GS)[0]||null}
 const NAMES={a0:['¡ESPADAZO!','¡SALTO DE HIELO!','¡EMBESTIDA!'],a1:['¡PISTOLA!','¡ESCOPETA!','¡LÁSER!'],a2:['¡PUÑETAZO!','¡PUÑO DE FUEGO!','¡UPPERCUT!'],a3:['¡TAJO!','¡ARCO DE FUEGO!','¡ESPADA DE FUEGO!'],a4:['¡CORTE!','¡ONDA DE HIELO!','¡TORMENTA!'],a5:['¡ESTOCADA!','¡GOLPE SÍSMICO!','¡RAYO OSCURO!'],a6:['¡TAJO OSCURO!','¡DOBLE LUNA!','¡EMBESTIDA SOMBRA!'],a7:['¡ESTOCADA!','¡PATADA DE PÉRTIGA!','¡TORBELLINO OSCURO!'],a8:['¡RÁFAGA!','¡FUEGO CRUZADO!','¡LÁSER DE PLASMA!'],a9:['¡ESCUDO!','¡BARRERA!','¡PIEL DE PIEDRA!'],a10:['¡RED!','¡EXTRACCIÓN!','¡SUPLEX!'],a11:['¡FLASH!','¡SELFIE!','¡GUERRERO BINARIO!'],a12:['¡PUERTAZO!','¡EMBESTIDA!','¡MURO DE PUERTAS!'],a15:['¡MONEDAS!','¡MONSTRUO!','¡PERDISTE!'],a16:['¡CORAZÓN!','¡BURBUJAS!','¡DRAGÓN!'],a18:['¡BURBUJA ARMÓNICA!','¡CANCIÓN DE CUNA!','¡ECO!'],a19:['¡CURITA VUDÚ!','¡CORAZÓN FANTASMA!','¡INFUSIÓN!'],a20:['¡FLECHAS EN ESPERA!','¡TRAMPA DE FLECHAS!','¡TORMENTA PROGRAMADA!'],a21:['¡TIC-TAC!','¡PAUSA!','¡TIEMPO DETENIDO!'],a22:['¡ABRAZO!','¡PELUCHE GUARDIÁN!','¡PESADILLA!'],a26:['¡PATITO CELESTIAL!','¡EMBESTIDA CELESTIAL!','¡LLUVIA DE TAJOS!','¡POR LA ESPALDA!'],a24:['¡ESCUDO DE TRUENO!','¡ESCUDO TORMENTA!','¡FURIA DE THOR!'],a23:['¡BOLA DE AGUA!','¡MAREA Y TORBELLINO!','¡TRONO DE MEDUSAS!'],a20f:['¡FLECHA CELESTIAL!','¡LLUVIA DE PLUMAS!','¡TORMENTA PROGRAMADA!'],a21f:['¡LAZO DE LLAMAS!','¡RELOJ ARDIENTE!','¡TIEMPO DETENIDO!'],a17:['¡SORBO TÓXICO!','¡ESQUELETO!','¡HUMO ROJO!'],a14:['¡ABRAZO!','¡GALLETAS Y LECHE!','¡A DORMIR!'],a13:['¡SOMBRILLAZO!','¡GIRO BRILLANTE!','¡HORA DEL TÉ!']};
-async function heroTurn(h){CUR=h;if(h.st>0){banner(h.nm+' · PIEL DE PIEDRA',1);await wait(900);if(--h.st<=0){h.frames=h.nf;tw(300,k=>{flash=.4*(1-k)})}return}if(INF_EN)h.en=100;h.cd=h.cd.map(v=>Math.max(0,v-1));const i=await choose(h);curNeeds=(NEEDS[h.p][i]&&!(h.p==='a20'&&h.f2>0&&i===1))?1:0;if(CDMAX[h.p]&&CDMAX[h.p][i])h.cd[i]=CDMAX[h.p][i];h.en-=COST[i];const t=tgt&&tgt.hp>0?tgt:alive(GS)[0];ui();banner(((h.f2>0&&NAMES[h.p+'f'])||NAMES[h.p])[i]);if(i>=2)await cutIn(h,NAMES[h.p][i]);
+async function heroTurn(h){CUR=h;if(LAB){GS.forEach(g=>{g.max=99999;g.hp=99999;g.dead=0;g.al=1;g.stun=0;g.skip=0});h.hp=h.max;h.cd=[0,0,0,0]}if(h.st>0){banner(h.nm+' · PIEL DE PIEDRA',1);await wait(900);if(--h.st<=0){h.frames=h.nf;tw(300,k=>{flash=.4*(1-k)})}return}if(INF_EN)h.en=100;h.cd=h.cd.map(v=>Math.max(0,v-1));const i=await choose(h);curNeeds=(NEEDS[h.p][i]&&!(h.p==='a20'&&h.f2>0&&i===1))?1:0;if(CDMAX[h.p]&&CDMAX[h.p][i])h.cd[i]=CDMAX[h.p][i];h.en-=COST[i];const t=tgt&&tgt.hp>0?tgt:alive(GS)[0];ui();banner(((h.f2>0&&NAMES[h.p+'f'])||NAMES[h.p])[i]);if(i>=2)await cutIn(h,NAMES[h.p][i]);
  await(curT=t||null,curAoE=!t&&isAoE(h,i),({a0:[lkAtk,lkJump,lkUlt],a1:[gnRifle,gnPistol,gnLaser],a2:[ryPunch,ryFlames,ryUpper],a3:[emAtk1,emAtk2,emUlt],a4:[hiAtk1,hiAtk2,hiUlt],a5:[paAtk1,paAtk2,paUlt],a6:[laAtk1,laAtk2,laUlt],a7:[lrAtk1,lrAtk2,lrUlt],a8:[arAtk1,arAtk2,arUlt],a9:[tqShield,tqBarrier,tqStone],a10:[jkNet,jkPull,jkSuplex],a11:[ifFlash,ifSelfie,ifBinary],a12:[mxDoor,mxCharge,mxWall],a13:[elSlash,elSpin,elTea],a14:[naHug,naCookies,naSleep],a15:[rkCoins,rkMonster,rkLose],a16:[giHeart,giBubbles,giDragon],a17:[moSip,moSkel,moSmoke],a18:[etBubble,etLullaby,etEcho],a19:[kaPin,kaHeart,kaTea],a20:(h.f2>0?[acSk1,acSk2,atUlt]:[atSk1,atSk2,atUlt]),a21:(h.f2>0?[gbSk1,gbSk2,gaUlt]:[gaSk1,gaSk2,gaUlt]),a22:[hdSk1,hdSk2,hdUlt],a23:[srSk1,srSk2,srUlt],a24:[alSk1,alSk2,alUlt],a26:[dkSk1,dkSk2,dkUlt,dkUlt2]})[h.p][i](h,t));curT=null;curAoE=false;await settle();if((h.p==='a21'||h.p==='a20')&&h.f2>0){h.f2--;if(h.f2===0)gabRevert(h)}{const sk=DB&&DB.habilidades.find(x=>x.heroe===h.k&&x.ranura===i+1);if(sk&&!URS.has(spKey(h)))(sk.efectos||[]).forEach(x=>{if(x.id==='aturdir'||x.id==='curar'||x.id==='escudo')return;const ts=sk.objetivo==='todos'?alive(GS):[t];ts.forEach(q=>{if(q&&q.hp>0&&Math.random()*100<(x.prob||100))applyEff(q,x.id)})})}}
 const result=()=>!alive(GS).length?1:!alive(HS).length?-1:0;
 let LASTW=false;async function finish(){const w=!alive(GS).length;LASTW=w;const V=w?(TW?awardTower():awardStage()):null;if(w){misAdd("win",1);misAdd("kill",GS.length);const bj=GS.filter(g=>g.def&&g.def===ENM.ejf).length;if(bj)misAdd("boss",bj)}if(w&&!TW&&CAMP.st>clrOf(CAMP.ch)){CAMP.clr[CAMP.ch]=CAMP.st;saveCamp();misAdd("stage",1)}act=null;actH=null;actG=null;waiting=false;await settle();sfx(w?660:150,.6,'triangle',.07,w?2:.4);ui();
  $('et').textContent=w?(TW?'¡PISO '+TW.f+' SUPERADO!':CAMP.st===10?'¡CAPÍTULO '+CAMP.ch+' COMPLETO!':'¡VICTORIA!'):'DERROTA';$('again').textContent=w?(TW?'SIGUIENTE PISO':CAMP.st<10?'SIGUIENTE ETAPA':'VOLVER AL MAPA'):'REINTENTAR';$('end').className=w?'':'l';$('vic').innerHTML=V?vicHtml(V):'';$('end').style.display='flex'}
 async function intro(){ALL.forEach(e=>e.walk=1);banner('¡COMBATE!');await Promise.all(ALL.map(e=>go(e,0,1100)));ALL.forEach(e=>{e.walk=0;e.dy=0});await wait(250)}
-async function battle(){const id=++run;await intro();
+async function battle(){const id=++run;if(LAB)ALL.forEach(e=>{e.dx=0;e.walk=0});else await intro();
  while(run===id){RND++;
   const acted=new Set();
   for(let gd=0;gd<40;gd++){const c=ALL.filter(e=>e.hp>0&&!acted.has(e));if(!c.length)break;
    c.sort((a,b)=>(SPD_OF(b)-SPD_OF(a))||((b.hero?1:0)-(a.hero?1:0))||(ALL.indexOf(a)-ALL.indexOf(b)));const e=c[0];acted.add(e);if(run!==id)return;
    {const dl=e.dly;e.dly=0;if(!dl)await tickDots(e)}if(result())return finish();if(e.hp<=0)continue;
    if(!e.hero&&e.trap>0){await trapFire(e);if(result())return finish();if(e.hp<=0)continue;e.dly=1;e.vm=-1000;acted.delete(e);continue}
+   if(LAB&&!e.hero)continue;
    if(e.skip>0){e.skip--;banner('¡'+e.nm+' PIERDE SU TURNO!',1);await wait(800);continue}
    if(e.hero){await heroTurn(e);if(result())return finish();await wait(200)}
    else{if(e.stun){e.stun--;banner('¡'+e.nm+' ATURDIDO!',1);await wait(900);continue}
@@ -1342,6 +1346,15 @@ function showSelect(){$('menu').style.display='none';$('ctl').style.display='non
 function startBattle(){if(POS.size<3)return;if(!payEn()){showMap();return}misAdd("bat",1);SETUP=false;selH=null;
  HS=ROSTER.filter(h=>POS.has(h));ALL=[...HS,...GS];buildHud();fit();
  $('sel').style.display='none';$('hud').style.display='';$('btns').style.display='';$('ctl').style.display='flex';$('stg').style.display='block';$('stg').textContent=stLbl();reset()}
+
+/* ---------- LABORATORIO: probar habilidades de cualquier héroe ---------- */
+function labBar(){const b=$('lab');if(!b)return;b.innerHTML='<button class="pb rd" id="labX">← SALIR</button>'+ROSTER.map((h,i)=>`<button class="pb${HS[0]===h?' or':''}" data-i="${i}">${h.nm}</button>`).join('');
+ $('labX').onclick=exitLab;b.querySelectorAll('button[data-i]').forEach(x=>x.onclick=()=>startLab(ROSTER[+x.dataset.i]))}
+function startLab(h){LAB=1;SETUP=false;selH=null;run++;$('menu').style.display='none';$('sel').style.display='none';$('map').style.display='none';$('end').style.display='none';
+ HS=[h];ALL=[...HS,...GS];buildHud();fit();h.l0=h.ly=LAY.fy(.62);h.x=LAY.fx(.2);
+ $('hud').style.display='';$('btns').style.display='';$('ctl').style.display='flex';$('stg').style.display='block';$('stg').textContent='LABORATORIO';$('lab').style.display='flex';reset();h.l0=h.ly=LAY.fy(.62);labBar()}
+function exitLab(){LAB=0;run++;waiting=false;act=null;P.length=TX.length=WT.length=FX.length=0;FXO.length=0;dim=0;$('lab').style.display='none';HS=ROSTER.filter(h=>POS.has(h));HS.forEach(applyEq);ALL=[...HS,...GS];buildHud();placeHS();ALL.forEach(cleanE);$('msg').innerHTML='';showMenu()}
+{const d=document.createElement('div');d.id='lab';document.body.appendChild(d);const b=document.createElement('button');b.id='labGo';b.className='pb or';b.textContent='🧪 LAB';b.onclick=()=>startLab(ROSTER[0]);$('menu').appendChild(b)}
 $('fight').onclick=startBattle;
 $('change').onclick=showSelect;
 cv.addEventListener('pointerdown',e=>{if(!waiting)return;const lx=e.clientX/S,ly=e.clientY/S;let b=null,bd=1e9;
